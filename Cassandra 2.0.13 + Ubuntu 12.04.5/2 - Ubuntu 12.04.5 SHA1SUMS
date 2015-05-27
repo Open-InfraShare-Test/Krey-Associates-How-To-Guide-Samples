@@ -1,0 +1,24 @@
+
+#############################################################################################
+#
+# Ubuntu 12.04.5 SHA1SUMS - 03/30/2015 
+#
+#   http://releases.ubuntu.com/12.04/SHA1SUMS 
+#
+# Note: in the following, the SHA1SUM to validate is the 3rd for 
+#    ubuntu-12.04.5-desktop-amd64.iso 
+#
+#############################################################################################
+
+b8c2e054b2a398cf02f268fcc1966b29c6dc007e *ubuntu-12.04.5-alternate-amd64.iso
+505f7a1c27953b93cb75915559a59e1e1a59ba9f *ubuntu-12.04.5-alternate-i386.iso
+
+aa2802735c552d36e222e09fb64971d558142713 *ubuntu-12.04.5-desktop-amd64.iso
+
+3d9b4e7d6267e05b9e3d6e39c33f59db8e4ef6a4 *ubuntu-12.04.5-desktop-i386.iso
+7540ace2d6cdee264432f5ed987236d32edef798 *ubuntu-12.04.5-server-amd64.iso
+a34c224b7fe72a2f5c768be5afee5c53817743fd *ubuntu-12.04.5-server-i386.iso
+c15a5960500593b5b2b0d62832367b218a95d20b *wubi.exe
+
+
+

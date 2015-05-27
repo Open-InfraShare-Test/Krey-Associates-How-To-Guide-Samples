@@ -1,0 +1,254 @@
+
+#############################################################################################
+#
+#  Ubuntu 12.04.5 64-bit Desktop VMWare Fusion GuestOS Install VMWare Tools V#1-0 
+#
+#  2015-03-30 - V#1.0
+#
+#  Reference URLs:
+#
+# PK MacBook Retina laptop info: 
+#   - 2012 MacBook Pro Retina, OSX 10.8.5, 2.7GHz Intel Core i7, 16GB 1600NHz DDR3, 
+#     750GB SSD storage
+#   - VMWare Fusion Professional Version 7.1.1   
+#
+# 
+# IMPORTANT NOTE 
+#
+#  If there's any issues with failing to install the VMWare Tools within the
+#    Ubuntu 12.04.5 64-bit Desktop VM, use the following Bash shell commands to clean out 
+#    everything within /etc/vmware-tools/ and then remove /etc/vmware-tools/ 
+#
+#  Delete everything within /etc/vmware-tools/ via the following:
+# 
+#      peterkreyjr@Ubuntu1204-64-DT:~$ sudo rm -rf /etc/vmware-tools/*
+#
+#      peterkreyjr@Ubuntu1204-64-DT:~$ ls -l /etc/vmware-tools/
+#      total 0
+#
+#      peterkreyjr@Ubuntu1204-64-DT:~$ sudo rm -rf /etc/vmware-tools
+#
+#   
+#############################################################################################
+
+# From MacBook Pro Retina OSX laptop "pkjr-retina1", remotely ssh into the 
+#   Ubuntu 12.04.x 64-bit Desktop, and run the VMWare Tools installer script 
+#   "vmware-install.pl" 
+
+pkjr-retina1:~ peterkreyjr$ ssh peterkreyjr@192.168.12.170
+peterkreyjr@192.168.12.170's password:
+Welcome to Ubuntu 12.04.5 LTS (GNU/Linux 3.13.0-48-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com/
+
+New release '14.04.2 LTS' available.
+Run 'do-release-upgrade' to upgrade to it.
+
+
+Your Hardware Enablement Stack (HWE) is supported until April 2017.
+
+Last login: Mon Mar 30 13:09:09 2015 from pkjr-retina1.local
+peterkreyjr@Ubuntu1204-64-DT:~$
+peterkreyjr@Ubuntu1204-64-DT:~$ cd ~/Desktop/
+peterkreyjr@Ubuntu1204-64-DT:~/Desktop$
+peterkreyjr@Ubuntu1204-64-DT:~/Desktop$ cd ./vmware-tools-distrib/
+peterkreyjr@Ubuntu1204-64-DT:~/Desktop/vmware-tools-distrib$
+peterkreyjr@Ubuntu1204-64-DT:~/Desktop/vmware-tools-distrib$ sudo ./vmware-install.pl
+[sudo] password for peterkreyjr:
+Creating a new VMware Tools installer database using the tar4 format.
+
+Installing VMware Tools.
+
+In which directory do you want to install the binary files?
+[/usr/bin]
+
+What is the directory that contains the init directories (rc0.d/ to rc6.d/)?
+[/etc]
+
+What is the directory that contains the init scripts?
+[/etc/init.d]
+
+In which directory do you want to install the daemon files?
+[/usr/sbin]
+
+In which directory do you want to install the library files?
+[/usr/lib/vmware-tools]
+
+The path "/usr/lib/vmware-tools" does not exist currently. This program is
+going to create it, including needed parent directories. Is this what you want?
+[yes]
+
+In which directory do you want to install the documentation files?
+[/usr/share/doc/vmware-tools]
+
+The path "/usr/share/doc/vmware-tools" does not exist currently. This program
+is going to create it, including needed parent directories. Is this what you
+want? [yes]
+
+The installation of VMware Tools 9.9.2 build-2496486 for Linux completed
+successfully. You can decide to remove this software from your system at any
+time by invoking the following command: "/usr/bin/vmware-uninstall-tools.pl".
+
+Before running VMware Tools for the first time, you need to configure it by
+invoking the following command: "/usr/bin/vmware-config-tools.pl". Do you want
+this program to invoke the command for you now? [yes]
+
+Initializing...
+
+
+Making sure services for VMware Tools are stopped.
+
+
+
+The module vmci has already been installed on this system by another installer
+or package and will not be modified by this installer.
+
+The module vsock has already been installed on this system by another installer
+or package and will not be modified by this installer.
+
+The module vmxnet3 has already been installed on this system by another
+installer or package and will not be modified by this installer.
+
+The module pvscsi has already been installed on this system by another
+installer or package and will not be modified by this installer.
+
+The module vmmemctl has already been installed on this system by another
+installer or package and will not be modified by this installer.
+
+The VMware Host-Guest Filesystem allows for shared folders between the host OS
+and the guest OS in a Fusion or Workstation virtual environment.  Do you wish
+to enable this feature? [yes]
+
+
+Before you can compile modules, you need to have the following installed...
+
+make
+gcc
+kernel headers of the running kernel
+
+
+Searching for GCC...
+Detected GCC binary at "/usr/bin/gcc".
+The path "/usr/bin/gcc" appears to be a valid path to the gcc binary.
+Would you like to change it? [no]
+
+Searching for a valid kernel header path...
+Detected the kernel headers at "/lib/modules/3.13.0-48-generic/build/include".
+The path "/lib/modules/3.13.0-48-generic/build/include" appears to be a valid
+path to the 3.13.0-48-generic kernel headers.
+Would you like to change it? [no]
+
+Using kernel build system.
+make: Entering directory `/tmp/modconfig-pd8MxG/vmhgfs-only'
+/usr/bin/make -C /lib/modules/3.13.0-48-generic/build/include/.. SUBDIRS=$PWD SRCROOT=$PWD/. \
+	  MODULEBUILDDIR= modules
+make[1]: Entering directory `/usr/src/linux-headers-3.13.0-48-generic'
+  CC [M]  /tmp/modconfig-pd8MxG/vmhgfs-only/backdoorGcc64.o
+  CC [M]  /tmp/modconfig-pd8MxG/vmhgfs-only/backdoor.o
+  CC [M]  /tmp/modconfig-pd8MxG/vmhgfs-only/bdhandler.o
+  CC [M]  /tmp/modconfig-pd8MxG/vmhgfs-only/cpName.o
+  CC [M]  /tmp/modconfig-pd8MxG/vmhgfs-only/cpNameLinux.o
+  CC [M]  /tmp/modconfig-pd8MxG/vmhgfs-only/cpNameLite.o
+  CC [M]  /tmp/modconfig-pd8MxG/vmhgfs-only/dentry.o
+  CC [M]  /tmp/modconfig-pd8MxG/vmhgfs-only/dir.o
+  CC [M]  /tmp/modconfig-pd8MxG/vmhgfs-only/file.o
+  CC [M]  /tmp/modconfig-pd8MxG/vmhgfs-only/filesystem.o
+  CC [M]  /tmp/modconfig-pd8MxG/vmhgfs-only/fsutil.o
+  CC [M]  /tmp/modconfig-pd8MxG/vmhgfs-only/hgfsBd.o
+  CC [M]  /tmp/modconfig-pd8MxG/vmhgfs-only/hgfsEscape.o
+  CC [M]  /tmp/modconfig-pd8MxG/vmhgfs-only/hgfsUtil.o
+  CC [M]  /tmp/modconfig-pd8MxG/vmhgfs-only/inode.o
+  CC [M]  /tmp/modconfig-pd8MxG/vmhgfs-only/link.o
+/tmp/modconfig-pd8MxG/vmhgfs-only/inode.c: In function ‘HgfsPermission’:
+/tmp/modconfig-pd8MxG/vmhgfs-only/inode.c:1920:7: error: ‘struct dentry’ has no member named ‘d_alias’
+/tmp/modconfig-pd8MxG/vmhgfs-only/inode.c:1920:7: warning: initialization from incompatible pointer type [enabled by default]
+/tmp/modconfig-pd8MxG/vmhgfs-only/inode.c:1920:7: error: ‘struct dentry’ has no member named ‘d_alias’
+/tmp/modconfig-pd8MxG/vmhgfs-only/inode.c:1920:7: error: ‘struct dentry’ has no member named ‘d_alias’
+/tmp/modconfig-pd8MxG/vmhgfs-only/inode.c:1920:7: error: ‘struct dentry’ has no member named ‘d_alias’
+/tmp/modconfig-pd8MxG/vmhgfs-only/inode.c:1920:7: error: ‘struct dentry’ has no member named ‘d_alias’
+/tmp/modconfig-pd8MxG/vmhgfs-only/inode.c:1920:7: warning: initialization makes pointer from integer without a cast [enabled by default]
+/tmp/modconfig-pd8MxG/vmhgfs-only/inode.c:1920:7: error: ‘struct dentry’ has no member named ‘d_alias’
+make[2]: *** [/tmp/modconfig-pd8MxG/vmhgfs-only/inode.o] Error 1
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [_module_/tmp/modconfig-pd8MxG/vmhgfs-only] Error 2
+make[1]: Leaving directory `/usr/src/linux-headers-3.13.0-48-generic'
+make: *** [vmhgfs.ko] Error 2
+make: Leaving directory `/tmp/modconfig-pd8MxG/vmhgfs-only'
+
+The filesystem driver (vmhgfs module) is used only for the shared folder
+feature. The rest of the software provided by VMware Tools is designed to work
+independently of this feature.
+
+If you wish to have the shared folders feature, you can install the driver by
+running vmware-config-tools.pl again after making sure that gcc, binutils, make
+and the kernel sources for your running kernel are installed on your machine.
+These packages are available on your distribution's installation CD.
+[ Press Enter key to continue ]
+
+The vmxnet driver is no longer supported on kernels 3.3 and greater. Please
+upgrade to a newer virtual NIC. (e.g., vmxnet3 or e1000e)
+
+The vmblock enables dragging or copying files between host and guest in a
+Fusion or Workstation virtual environment.  Do you wish to enable this feature?
+[yes]
+
+VMware automatic kernel modules enables automatic building and installation of
+VMware kernel modules at boot that are not already present. This feature can be
+
+enabled/disabled by re-running vmware-config-tools.pl.
+
+Would you like to enable VMware automatic kernel modules?
+[no]
+
+Thinprint provides driver-free printing. Do you wish to enable this feature?
+[yes]
+
+
+Disabling timer-based audio scheduling in pulseaudio.
+
+Do you want to enable Guest Authentication (vgauth)? [yes]
+
+
+
+Detected X server version 1.15.1
+
+
+
+Distribution provided drivers for Xorg X server are used.
+
+Skipping X configuration because X drivers are not included.
+
+Creating a new initrd boot image for the kernel.
+update-initramfs: Generating /boot/initrd.img-3.13.0-48-generic
+vmware-tools-thinprint start/running
+vmware-tools start/running
+The configuration of VMware Tools 9.9.2 build-2496486 for Linux for this
+running kernel completed successfully.
+
+You must restart your X session before any mouse or graphics changes take
+effect.
+
+You can now run VMware Tools by invoking "/usr/bin/vmware-toolbox-cmd" from the
+command line.
+
+To enable advanced X features (e.g., guest resolution fit, drag and drop, and
+file and text copy/paste), you will need to do one (or more) of the following:
+1. Manually start /usr/bin/vmware-user
+2. Log out and log back into your desktop session; and,
+3. Restart your X session.
+
+Enjoy,
+
+--the VMware team
+
+peterkreyjr@Ubuntu1204-64-DT:~/Desktop/vmware-tools-distrib$
+
+peterkreyjr@Ubuntu1204-64-DT:~/Desktop/vmware-tools-distrib$ exit
+logout
+Connection to 192.168.12.170 closed.
+pkjr-retina1:~ peterkreyjr$ 
+
+
+# So per the above, the VMWare Tools are successfully installed & config'd ...
+
+

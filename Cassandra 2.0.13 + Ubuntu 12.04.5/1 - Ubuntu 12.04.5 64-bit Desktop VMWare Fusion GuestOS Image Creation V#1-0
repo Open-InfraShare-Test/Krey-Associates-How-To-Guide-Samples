@@ -1,0 +1,482 @@
+
+#############################################################################################
+#
+#  Ubuntu 12.04.5 64-bit Desktop VMWare Fusion GuestOS Image Creation   
+#
+#  2015-03-30,
+#  2015-04-02 - V#1-0 
+#
+#  Reference URLs:
+#
+# Canonical Ubuntu 12.04 ISO Image Downloads Page
+# http://releases.ubuntu.com/12.04/ 
+#
+# Ubuntu 12.04.5 LTS ISO Images SHA1SUMS 
+#   http://releases.ubuntu.com/12.04/SHA1SUMS 
+#
+# "How to install GNOME classic desktop in ubuntu 12.04"
+# http://makandracards.com/makandra/11081-how-to-install-gnome-classic-desktop-in-ubuntu-12-04
+#
+# "Ubuntu 12.04 - How to get a Command Line, Shell, or Terminal"
+# http://complete-concrete-concise.com/ubuntu-2/ubuntu-12-04/ubuntu-12-04-how-to-get-a-command-line-shell-or-terminal
+#
+# Enable ssh on ubuntu 12.04
+# http://www.ubuntututorials.com/enable-ssh-ubuntu-12-04/
+#
+#
+#############################################################################################
+#
+# PK MacBook Retina laptop info: 
+#   - 2012 MacBook Pro Retina, OSX 10.8.5, 2.7GHz Intel Core i7, 16GB 1600MHz DDR3, 
+#     750GB SSD storage
+#   - VMWare Fusion Professional Version 7.1.1   
+#
+#############################################################################################
+
+
+#############################################################################################
+#
+#  Ubuntu 12.04.5 64-bit Desktop .ISO Image Download
+#
+#############################################################################################
+
+# From Canonical Ubuntu web page http://releases.ubuntu.com/12.04/ download the current 
+#   Ubuntu 12.04.5 64-bit Desktop .iso image 
+
+# In the following, on my pkjr-Retina1 MacBook Pro Retina laptop, the OSX working 
+#   directory for Ubuntu Linux .iso images are in /Users/peterkreyjr/Desktop/Ubuntu ISO's/
+
+# Open iTerm command shell or Bash command shell, and cd to 
+#   "/Users/peterkreyjr/Desktop/Linux ISO's/Ubuntu ISO's" directory ...
+
+# ... and download the latest Ubuntu 12.04.5 64-bit desktop .iso image from
+#   http://releases.ubuntu.com/12.04/ubuntu-12.04.5-desktop-amd64.iso
+
+# Open Bash shell, cd to /Users/peterkreyjr/Desktop/Ubuntu ISO's/ and download using curl
+#  current Ubuntu 12.04.5 64-bit desktop .iso image ...
+
+Last login: Sun Mar 29 17:18:43 on ttys001
+in .bash_profile
+in .bashrc
+pkjr-retina1:~ peterkreyjr$ 
+
+cd ./Desktop/Linux\ ISO\'s/
+
+pkjr-retina1:Linux ISO's peterkreyjr$ pwd
+/Users/peterkreyjr/Desktop/Linux ISO's
+
+pkjr-retina1:Linux ISO's peterkreyjr$ ls
+CentOS ISO's	RHEL ISO's	Ubuntu ISO's
+pkjr-retina1:Linux ISO's peterkreyjr$ cd ./Ubuntu\ ISO\'s/
+
+pkjr-retina1:Ubuntu ISO's peterkreyjr$ pwd
+/Users/peterkreyjr/Desktop/Linux ISO's/Ubuntu ISO's
+
+pkjr-retina1:Ubuntu ISO's peterkreyjr$ curl -O http://releases.ubuntu.com/12.04/ubuntu-12.04.5-desktop-amd64.iso
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  758M  100  758M    0     0  4297k      0  0:03:00  0:03:00 --:--:-- 4326k
+
+
+# Confirm the SHA1SUM for the downloaded file ... 
+#
+#   per http://releases.ubuntu.com/12.04/SHA1SUMS ubuntu-12.04.5-desktop-amd64.iso should be
+#     aa2802735c552d36e222e09fb64971d558142713 *ubuntu-12.04.5-desktop-amd64.iso
+
+pkjr-retina1:Ubuntu ISO's peterkreyjr$ shasum ubuntu-12.04.5-desktop-amd64.iso
+aa2802735c552d36e222e09fb64971d558142713  ubuntu-12.04.5-desktop-amd64.iso
+
+# Per the above the SHA1SUM for the ubuntu-12.04.5-desktop-amd64.iso image is correct 
+
+
+#############################################################################################
+#
+#  Initial Ubuntu 12.04.x Guest OS VM Creation Using .ISO Image ... 
+# 
+#############################################################################################
+
+# Launch the OSX VMWare Fusion GUI to create a Ubuntu 12.04.5 64-bit Desktop guest OS ...
+
+# Along the bottom of the MacBook desktop ICONs click on the "VMWare Fusion" ICON ... 
+
+# For the following I am using VMWare Fusion Professional Version 7.1.1 ... Once started, 
+#   the following are all GUI based commands ...
+
+# From the top of desktop screen menu bar in ULHC, click on File, click on New, and Within 
+#   the "Create a Virtual Machine" screen, "Select the Installation Method" GUI window  
+#   will appear 
+
+# Click on the left screen box containing a DVD disc labeled "Install from disc or image", 
+#   and next click on the "Continue" button in the LRHC of the "Create a Virtual Machine" 
+#   window ...
+
+# Within the "New Virtual Machine" "Create a New Virtual Machine" window, click on the 
+#   "Use another disc or image .." button in the bottom center of the screen ...
+
+# And within the "Choose a disc or disc image." window, go to the directory containing 
+#   the .iso image just downloaded ... In my case the .iso is located in  
+#       "/Users/peterkreyjr/Desktop/Linux ISO's/Ubuntu ISO's/"
+
+# ubuntu-12.04.5-desktop-amd64.iso
+
+# So select "ubuntu-12.04.5-desktop-amd64.iso" from where you have downloaded, and click on 
+#   the "Open" button in the LRHC of the "Choose a disc or disc image." window ...
+
+# Next in the "New Virtual Machine" "Create a New Virtual Machine" window, the 
+#   "ubuntu-12.04.5-desktop-amd64.iso" file previously selected should be now highlighted 
+#   in blue ... so click on the "Continue" button in the LRHC of the "Create a Virtual 
+#   Machine" window ...
+
+# Next in the "New Virtual Machine" "Linux Easy Install" window, remove the check mark on
+#   the "Use Easy Install" box by clicking on the "Use Easy Install" box, and click on the 
+#   "Continue" button in the LRHC of the "New Virtual Machine" window ...
+
+# Next in the "New Virtual Machine" "Finish" window, click on the "Customize Settings" 
+#   button in the middle bottom of the screen ...
+
+
+#############################################################################################
+# 
+#  ... Guest OS VM Parameters Config & Initial Settings 
+#
+#############################################################################################
+
+# Next in the pop-up window ...
+#   in the "Save As:" box, enter "Cassandra-Ubuntu 12.04.x 64-bit.vmwarevm" 
+#   within the "Where:" box, leave "Virtual Machines" in the "Where:" box
+#   and click on the "Save" button int the LRHC of the pop-up window 
+
+# Two new screens will next pop up together ...
+
+# First will be the "Cassandra-Ubuntu 12.04.x 64-bit" virtual machine instance screen, and 
+#   the Second will be the "Merck-New-Ubuntu-12.04-DT-i386: Settings" screen ...
+
+
+# Within the "Cassandra-Ubuntu 12.04.x 64-bit: Settings" screen "System Settings" section, 
+#   click on the "Processors & Memory" icon.  
+
+# Next within the "Cassandra-Ubuntu 12.04.x 64-bit: "Processors & Memory" screen, click on 
+#   the Processors pull down, and select 2 processors.   And within the Memory setting white 
+#   box enter 2048 ...
+
+# Last, in the ULHC of the "Cassandra-Ubuntu 12.04.x 64-bit: "Processors & Memory" screen,
+#   click on the left arrow in the ULHC of the window to return back to the main Settings 
+#   screen. 
+
+# Next within the "Removeable Devices" section, click on the "Hard Disc (SCSI)" icon ...
+
+# Within the "Disk size" setting, enter 30.00 within the GB white box, click on the 
+#   "Apply" box in the LRHC of the window. 
+
+# In the ULHC of the "Cassandra-Ubuntu 12.04.x 64-bit: Hard Disc (SCSI)" window click on 
+#   the left arrow to return back to the main settings screen.
+
+# And within the "Would you like ti apply your changes before closing the hard disk 
+#   settings?", click on the "Apply" button in the LRHC of the window. 
+
+# In the ULHC of the "Cassandra-Ubuntu 12.04.x 64-bit: Settings" window, click ont the red
+#   circular button to close the window ...
+
+# Last, the remaining "Cassandra-Ubuntu 12.04.x 64-bit" guest OS VM image window will still 
+#   be displayed, now having all of the above settings available.
+
+
+#############################################################################################
+#
+#  Activiating & Installing Ubuntu 12.04.x 64-bit Desktop
+#
+#############################################################################################
+
+# Next from the "Cassandra-Ubuntu 12.04.x 64-bit" guest OS VM image window, click on the 
+#   large white arrow in the center of the screen to startup the initial Ubuntu 12.04 Linux
+#   Desktop image ...
+
+# After the image starts, the "Install" "Welcome" screen will next appear ...
+
+# Within the LHS of the "Install" "Welcome" screen column click on "English", and next on 
+#  the RHS center of the screen, click on the "Install Ubuntu" button ...
+
+# Next the "Install" "Preparing to install Ubuntu" screen will appear.  Leave all the 
+#  default settings, and click on the "Continue" button on the LRHC of the screen ...
+
+# Next the "Install" "Installation Type" screen will appear.  Confirm that the "Erase disk
+#   and install Ubuntu" button is on, and click on the "Continue" button on the LRHC of the 
+#   screen ...
+
+# Next the "Install" "Erase disk and install Ubuntu" screen will appear.  Click on the 
+#   "Install Now " button on the LRHC of the screen ...
+
+# The Ubuntu Linux OS install will now begin ...
+
+# Next the "Install" "Where are you?" screen will appear.  Confirm the screen has identified
+#   your correct geographic location.  (In my case "New York")
+
+# Next the "Install" "Keyboard Layout" screen will appear.  By default "English US" will be 
+#   highlighted in both screen boxes.   Click on the "Continue" button on the LRHC of the 
+#   screen ...
+
+# Next the "Install" "Who are you?" screen will appear.  
+
+# In the "Your name:" box, I entered "Peter Krey, Jr.", in the "Your computer's name:" box 
+#   enter "Ubuntu1204-64-DT", in the "Pick a username:" box I entered "peterkreyjr", in the 
+#   "Choose a password:" box enter "cassandra", in the "Confirm your password:" box enter 
+#   "cassandra".   
+
+# Last  Confirm that the "Require my password to log in" button is on, and click on the 
+#   "Continue" button on the LRHC of the screen ...
+
+# Next the "Choose a picture" screen will appear.  Within the "Or choose an existing picture"
+#   image box on RHS of window, select an image ... I selected astronaut !  Click on the 
+#   "Continue" button on the LRHC of the screen ...
+
+# Next the "Install" "Welcome to Ubuntu 12.04 LTS" screen will appear, and the Ubuntu
+#   Linux OS will continue to download & install app. 60+ files ... should finish in a app. 
+#   10+ minutes. 
+
+# Finally the "Installation Complete" screen will appear !   So click on the "Restart Now" 
+#   button on the LRHC of the screen ...
+
+# When the "Please remove installation media and hit return" prompt appears, hit the return
+#   key ... 
+
+
+#############################################################################################
+#
+#  Enable GNOME Classic Desktop 
+#
+#############################################################################################
+
+# When the Ubuntu 12.04.x Desktop guest OS image restarts, it will display the standard login
+#   GUI screen ...
+
+# The userid of "Peter Krey" should be displayed, so enter the password "cassandra", and hit 
+#   return.
+
+# Ubuntu's new Unity desktop will now display, but we need to re-implement the traditional
+#   GNOME desktop ... 
+
+# In order to enable & install the GNOME classic desktop, within the default Ubuntu Unity
+#   desktop interface, press "Ctrl + Alt + T" to open a Bash command shell, and enter in the 
+#   Bash shell command line ...
+
+#   "sudo apt-get install gnome-panel" 
+
+# After Ubuntu 12.04.x completes "Reading package lists ...", at the bottom of the packages
+#   listed, reply "Y" to "Do you want to continue [Y/n]? " 
+
+# After installing, in the URHC of the desktop menu bar, click on the gear icon, click on 
+#   "Logout", and within the "Log Out" pop-up screen, click on the "Log Out" button in the
+#   LRHC of the pop-up screen ...
+
+# The login GUI sceeen should re-appear.  Click on the username "Peter Krey", and next 
+#   double-click on the options button next to the "Peter Krey" label.  When he options list 
+#   appears, select / double-click on the "GNOME Classic (No Effects)" option ...
+
+# Next within the "Log In" GUI prompt, enter the password "cassandra", and hit return. 
+
+# The traditional GNOME Classic desktop will now be displayed & useable.
+
+
+#############################################################################################
+#
+#  Update Ubuntu 12.04.x Applications & Linux OS  
+#
+#############################################################################################
+
+# Next step is for us to update the Ubuntu 12.04.x software packages & operating system.
+
+# So on the menu bar at the top of the desktop, click on "Applications" --> "Accessories" 
+#   --> Terminal 
+
+# Within a Bash shell ...
+
+# (1) Update the apt package source list ...
+#   sudo apt-get update
+
+# (2) Update all installed packages ... (NOTE: depending on network connectivity & 
+#                                        bandwidth, this step can take 5-10 mins ...)
+#   sudo apt-get upgrade
+
+# (3) Update Linux kernel modeules & related items ... 
+#   sudo apt-get dist-upgrade
+
+# (4) Reboot & restart Ubuntu 12.04 ...
+#   sudo shutdown -r now
+
+
+#############################################################################################
+#
+#  Install openssh-server 
+#
+#############################################################################################
+
+# Next, install openssh-server to enable ssh remote logins outside the guest OS VM, from the
+#   OSX laptop hosting VMWare Fusion ...
+
+# So from the Ubuntu 12.04.x guest OS VM, open a Bash shell from the menu bar at the top of 
+#   the desktop ... click on "Applications" --> "Accessories" --> Terminal 
+
+peterkreyjr@Ubuntu1204-64-DT:~$ sudo apt-get install openssh-server
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+The following extra packages will be installed:
+  ssh-import-id
+Suggested packages:
+  rssh molly-guard openssh-blacklist openssh-blacklist-extra monkeysphere
+The following NEW packages will be installed:
+  openssh-server ssh-import-id
+0 upgraded, 2 newly installed, 0 to remove and 0 not upgraded.
+Need to get 346 kB of archives.
+After this operation, 881 kB of additional disk space will be used.
+Do you want to continue [Y/n]? Y
+Get:1 http://us.archive.ubuntu.com/ubuntu/ precise-updates/main openssh-server amd64 1:5.9p1-5ubuntu1.4 [339 kB]
+Get:2 http://us.archive.ubuntu.com/ubuntu/ precise/main ssh-import-id all 2.10-0ubuntu1 [6,598 B]
+Fetched 346 kB in 0s (2,829 kB/s)
+Preconfiguring packages ...
+Selecting previously unselected package openssh-server.
+(Reading database ... 177103 files and directories currently installed.)
+Unpacking openssh-server (from .../openssh-server_1%3a5.9p1-5ubuntu1.4_amd64.deb) ...
+Selecting previously unselected package ssh-import-id.
+Unpacking ssh-import-id (from .../ssh-import-id_2.10-0ubuntu1_all.deb) ...
+Processing triggers for ureadahead ...
+Processing triggers for ufw ...
+Processing triggers for man-db ...
+Setting up openssh-server (1:5.9p1-5ubuntu1.4) ...
+Creating SSH2 RSA key; this may take some time ...
+Creating SSH2 DSA key; this may take some time ...
+Creating SSH2 ECDSA key; this may take some time ...
+ssh start/running, process 3416
+Setting up ssh-import-id (2.10-0ubuntu1) ...
+peterkreyjr@Ubuntu1204-64-DT:~$
+
+
+# Test & confirm openssh-server install ...
+
+peterkreyjr@Ubuntu1204-64-DT:~$ ssh peterkreyjr@127.0.0.1
+The authenticity of host '127.0.0.1 (127.0.0.1)' can't be established.
+ECDSA key fingerprint is 5d:4b:cd:cb:c4:45:cc:8b:ac:a5:bc:57:e8:04:21:8c.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '127.0.0.1' (ECDSA) to the list of known hosts.
+peterkreyjr@127.0.0.1's password:
+Welcome to Ubuntu 12.04.5 LTS (GNU/Linux 3.13.0-48-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com/
+
+New release '14.04.2 LTS' available.
+Run 'do-release-upgrade' to upgrade to it.
+
+
+Your Hardware Enablement Stack (HWE) is supported until April 2017.
+
+
+The programs included with the Ubuntu system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted by
+applicable law.
+
+peterkreyjr@Ubuntu1204-64-DT:~$ exit
+logout
+Connection to 127.0.0.1 closed.
+peterkreyjr@Ubuntu1204-64-DT:~$
+
+
+# From my pkjr-Retina1 MacBook Retina laptop, using an OSX iTerm or Bash shell confirm 
+#   remote ssh login ... in this example, the IP address of the merck Ubuntu 12.04 Desktop 
+#   guest OS VM is ping 192.168.12.170 
+
+pkjr-retina1:~ peterkreyjr$ ping 192.168.12.170
+PING 192.168.12.170 (192.168.12.170): 56 data bytes
+64 bytes from 192.168.12.170: icmp_seq=0 ttl=64 time=0.305 ms
+64 bytes from 192.168.12.170: icmp_seq=1 ttl=64 time=0.315 ms
+^C
+--- 192.168.12.170 ping statistics ---
+2 packets transmitted, 2 packets received, 0.0% packet loss
+round-trip min/avg/max/stddev = 0.305/0.310/0.315/0.005 ms
+
+pkjr-retina1:~ peterkreyjr$ ssh peterkreyjr@192.168.12.170
+The authenticity of host '192.168.12.170 (192.168.12.170)' can't be established.
+RSA key fingerprint is 11:78:af:f0:93:35:4c:18:e2:ec:35:de:73:6e:ae:6e.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '192.168.12.170' (RSA) to the list of known hosts.
+peterkreyjr@192.168.12.170's password:
+Welcome to Ubuntu 12.04.5 LTS (GNU/Linux 3.13.0-48-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com/
+
+New release '14.04.2 LTS' available.
+Run 'do-release-upgrade' to upgrade to it.
+
+
+Your Hardware Enablement Stack (HWE) is supported until April 2017.
+
+Last login: Mon Mar 30 12:17:15 2015 from localhost
+peterkreyjr@Ubuntu1204-64-DT:~$ exit
+logout
+Connection to 192.168.12.170 closed.
+pkjr-retina1:~ peterkreyjr$
+
+
+#############################################################################################
+#
+#  Install VMWare Tools Within Ubuntu 12.04.x Guest OS VM  
+#
+#############################################################################################
+
+# Next step is to install VMWare Tools within the Ubuntu 12.04.x guest OS VM.  This toolset 
+#   includes a "desktop video driver" that will enable expand/shrink the size of the Ubuntu 
+#   desktop whenever you expand/shrink the size the VMWare guest OS screen size, copy paste
+#   to & from Ubuntu 12.04.x Desktop and OSX Desktop, and other features.
+
+# Within the VMWare Fusion top of desktop screen menu bar, click on "Virtual Machine", 
+#   "Install VMWare Tools" ...
+
+# The pop-up screen "Click Install to Connect the VMWare Tools installer CD to this virtual
+#   machine" will next appear.  Click on the "Install" button in the LRHC of the window.
+
+# A file browser screen will next appear.  Copy / Paste the VMWareTools....tar.gz file
+ 
+#  (in this example VMwareTools-9.9.2-2496486.tar.gz) from the file browser onto the Ubuntu
+#  guest OS desktop.  In the ULHC of the file browser, click the "x" or close button.
+
+# Next double-click on the tar.gz file ... A file browser screen will again appear.  
+
+# Drag & drop the "vmware-tools-distrib" directory entry onto the desktop.  The tar.gz 
+#   file will be expanded into a "vmware-tools-distrib" directory.   In the ULHC of the 
+#   file browser, click the "x" or close button.
+
+# Next, open a Bash shell from the menu bar at the top of the desktop ... click on 
+#   "Applications" --> "Accessories" --> Terminal 
+
+# From a within the Bash shell:  
+
+#   cd ~/Desktop
+#   cd vmware-tools-distrib
+
+# And as su execute the vmware-install Perl script ... 
+#   sudo ./vmware-install.pl
+
+# NOTE: see "Ubuntu 12.04.x 64-bit Desktop VMWare Fusion GuestOS Install VMWare Tools V#1-0" 
+#   separate How-To document the for remote ssh login and detailed vmware-install.pl 
+#   script execution output ...
+
+# Last, From a within a Bash command line shell, reboot & restart Ubuntu 12.04 ...
+
+#    sudo shutdown -r now
+
+# The Ubuntu 12.04.x Desktop GUI will now dynamically expand & contract the desktop GUI 
+#   space, copy paste to & from Ubuntu 12.04.x Desktop and OSX Desktop, and support a series 
+#   of other VMWare Tools capabilities.   
+
+#############################################################################################
+#
+# This should complete the creation & installation of the Ubuntu 12.04.x 64-bit Desktop 
+#   guest OS VM, and provide a Ubuntu Linux instance for installing & testing the initial 
+#   Cassandra database within the Ubuntu 12.04.x 64-bit Desktop VMWare Fusion guest OS VM
+#
+#############################################################################################
+
+
+

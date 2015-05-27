@@ -1,0 +1,332 @@
+#############################################################################################
+#
+#  Oracle Java SE Development Kit 7 Download + Install On Ubuntu 12.04.x  
+#
+#  2015-03-30, 
+#  2015-04-02 - V#1.0
+#
+#
+#  IMPORTANT NOTE:
+#
+#    End of Public Updates for Oracle JDK 7 as of Apr / 2015 ...
+#
+#    The April 2015 CPU release will be the last Oracle JDK 7 publicly available update. 
+#    For more information, and details on how to receive longer term support for 
+#    Oracle JDK 7, see the Oracle Java SE Support Roadmap.
+#
+# 
+#  Reference URLs: 
+#
+#   Java SE Development Kit 7 Downloads
+#     http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html
+# 
+#   jdk-7u75-linux-x64.tar.gz
+#     http://download.oracle.com/otn-pub/java/jdk/7u75-b13/jdk-7u75-linux-x64.tar.gz
+#
+#   Java SE Binaries Checksum - Checksum for Java SE 7u75 binaries 
+#     https://www.oracle.com/webfolder/s/digest/7u75checksum.html 
+#
+#   NOTE: per above URL, the md5 checksum for the jdk-7u75-linux-x64.tar.gz download is
+#            6f1f81030a34f7a9c987f8b68a24d139 
+#
+#   How can I install Sun/Oracle's proprietary Java JDK 6/7/8 or JRE?
+#     http://askubuntu.com/questions/56104/how-can-i-install-sun-oracles-proprietary-java-jdk-6-7-8-or-jre
+# 
+#   Ubuntu Java
+#     https://help.ubuntu.com/community/Java 
+#
+#
+#   DataStax Technical Reference + Guidance 
+#
+#     Sebastián Estévez, Solutions Architect, sebastian.estevez@datastax.com 
+#
+# 
+#############################################################################################
+
+#############################################################################################
+#
+# DOWNLOAD SCENARIO #1
+#
+#   From a web browser on the MacBook Pro Retina OSX laptop "pkjr-retina1", access & open 
+#   the following from the above listed "Java SE Development Kit 7 Downloads" web URL ...
+#
+#   Scroll down to the middle of the above URL web page to the 
+#     "Java SE Development Kit 7u75" section ...
+#
+#   Next click within the circle next to "Accept License Agreement" ...
+#
+#   Next within one of the top 4 "Linux x86" rows, to download click on the x86_64 64 bit 
+#     Java SE dev kit .tar file "jdk-7u75-linux-x64.tar.gz" 
+#
+#   Next, since the "VMWare Fusion GuestOS Install VMWare Tools" were previously installed, 
+#     copy / paste the "jdk-7u75-linux-x64.tar.gz" from the MacBook Pro Retina OSX laptop 
+#     desktop to the "Cassandra-Ubuntu 12.04.x 64-bit" VMWare virtual machine desktop ...
+#
+#############################################################################################
+
+#############################################################################################
+#
+# DOWNLOAD SCENARIO #2
+#
+#   From with the "Cassandra-Ubuntu 12.04.x 64-bit" VMWare virtual machine desktop, open a 
+#     Bash shell and download the "jdk-7u75-linux-x64.tar.gz" using wget with the following
+#     parameters per Sebastian Estevez / DataStax ...
+#
+#############################################################################################
+
+peterkreyjr@Ubuntu1204-64-DT:~/Desktop$ wget --no-cookies \
+> --no-check-certificate \
+> --header "Cookie: oraclelicense=accept-securebackup-cookie" \
+> "http://download.oracle.com/otn-pub/java/jdk/7u75-b13/jdk-7u75-linux-x64.tar.gz" \
+> -O jdk-7-linux-x64.tar.gz 
+--2015-03-30 17:47:36--  http://download.oracle.com/otn-pub/java/jdk/7u75-b13/jdk-7u75-linux-x64.tar.gz
+Resolving download.oracle.com (download.oracle.com)... 23.61.195.96, 23.61.195.67
+Connecting to download.oracle.com (download.oracle.com)|23.61.195.96|:80... connected.
+HTTP request sent, awaiting response... 302 Moved Temporarily
+Location: https://edelivery.oracle.com/otn-pub/java/jdk/7u75-b13/jdk-7u75-linux-x64.tar.gz [following]
+--2015-03-30 17:47:36--  https://edelivery.oracle.com/otn-pub/java/jdk/7u75-b13/jdk-7u75-linux-x64.tar.gz
+Resolving edelivery.oracle.com (edelivery.oracle.com)... 23.66.214.140
+Connecting to edelivery.oracle.com (edelivery.oracle.com)|23.66.214.140|:443... connected.
+HTTP request sent, awaiting response... 302 Moved Temporarily
+Location: http://download.oracle.com/otn-pub/java/jdk/7u75-b13/jdk-7u75-linux-x64.tar.gz?AuthParam=1427752177_3d5573ec6c7b1ac58a15901cc174b8e2 [following]
+--2015-03-30 17:47:37--  http://download.oracle.com/otn-pub/java/jdk/7u75-b13/jdk-7u75-linux-x64.tar.gz?AuthParam=1427752177_3d5573ec6c7b1ac58a15901cc174b8e2
+Connecting to download.oracle.com (download.oracle.com)|23.61.195.96|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 142245547 (136M) [application/x-gzip]
+Saving to: `jdk-7-linux-x64.tar.gz'
+
+100%[====================================================================================>] 142,245,547 4.11M/s   in 34s     
+
+2015-03-30 17:48:11 (4.00 MB/s) - `jdk-7-linux-x64.tar.gz' saved [142245547/142245547]
+
+peterkreyjr@Ubuntu1204-64-DT:~/Desktop$ ls -la jdk-7-linux-x64.tar.gz 
+-rw-rw-r-- 1 peterkreyjr peterkreyjr 142245547 Dec 19 13:11 jdk-7-linux-x64.tar.gz
+
+
+#############################################################################################
+# 
+# Java 7 JDK Install 
+#
+#  Now validate md5 checksum for the downloaded jdk-7-linux-x64.tar.gz ... per above 
+#    "Java SE Binaries Checksum - Checksum for Java SE 7u75 binaries" URL the correct md5
+#    checksum for the jdk-7u75-linux-x64.tar.gz download is 6f1f81030a34f7a9c987f8b68a24d139 
+#
+#############################################################################################
+
+peterkreyjr@Ubuntu1204-64-DT:~/Desktop$ md5sum jdk-7-linux-x64.tar.gz 
+6f1f81030a34f7a9c987f8b68a24d139  jdk-7-linux-x64.tar.gz
+
+# Per the above, the md5sum values match ...
+
+
+# Next create the target directory for the Java 7 JDK using "sudo mkdir /opt/jdk" 
+
+peterkreyjr@Ubuntu1204-64-DT:~/Desktop$ sudo mkdir /opt/jdk
+[sudo] password for peterkreyjr: 
+
+peterkreyjr@Ubuntu1204-64-DT:~/Desktop$ ls -la /opt/jdk
+total 8
+drwxr-xr-x 2 root root 4096 Mar 30 18:11 .
+drwxr-xr-x 3 root root 4096 Mar 30 18:11 ..
+
+
+# Next "UnTar" a.k.a expand the downloaded jdk-7-linux-x64.tar.gz into the above created 
+#  "/opt/jdk" directory using "sudo tar -zxf jdk-7-linux-x64.tar.gz -C /opt/jdk" 
+
+peterkreyjr@Ubuntu1204-64-DT:~/Desktop$ sudo tar -zxf jdk-7-linux-x64.tar.gz -C /opt/jdk
+
+
+# Examine & Confirm the .tar file expansion ...
+
+peterkreyjr@Ubuntu1204-64-DT:~/Desktop$ ls -la /opt/jdk/jdk1.7.0_75/
+total 19780
+drwxr-xr-x 8 uucp  143     4096 Dec 18 20:04 .
+drwxr-xr-x 3 root root     4096 Mar 30 18:14 ..
+drwxr-xr-x 2 uucp  143     4096 Dec 18 20:02 bin
+-r--r--r-- 1 uucp  143     3339 Dec 18 20:00 COPYRIGHT
+drwxr-xr-x 4 uucp  143     4096 Dec 18 20:00 db
+drwxr-xr-x 3 uucp  143     4096 Dec 18 20:00 include
+drwxr-xr-x 5 uucp  143     4096 Dec 18 20:01 jre
+drwxr-xr-x 5 uucp  143     4096 Dec 18 20:04 lib
+-r--r--r-- 1 uucp  143       40 Dec 18 20:00 LICENSE
+drwxr-xr-x 4 uucp  143     4096 Dec 18 20:00 man
+-r--r--r-- 1 uucp  143      114 Dec 18 20:00 README.html
+-rw-r--r-- 1 uucp  143      499 Dec 18 20:00 release
+-rw-r--r-- 1 uucp  143 19914804 Dec 18 20:00 src.zip
+-rw-r--r-- 1 uucp  143   110114 Dec 17 17:42 THIRDPARTYLICENSEREADME-JAVAFX.txt
+-r--r--r-- 1 uucp  143   173559 Dec 18 20:00 THIRDPARTYLICENSEREADME.txt
+
+
+# Before attempting to configure Java Ubuntu 12.04.x alternatives, validate / confirm 
+#   existance of java, javac, and javaws
+
+peterkreyjr@Ubuntu1204-64-DT:~/Desktop$ ls -l /opt/jdk/jdk1.7.0_75/bin/java
+-rwxr-xr-x 1 uucp 143 7718 Dec 18 20:00 /opt/jdk/jdk1.7.0_75/bin/java
+
+peterkreyjr@Ubuntu1204-64-DT:~/Desktop$ ls -l /opt/jdk/jdk1.7.0_75/bin/javac
+-rwxr-xr-x 1 uucp 143 7925 Dec 18 20:00 /opt/jdk/jdk1.7.0_75/bin/javac
+
+peterkreyjr@Ubuntu1204-64-DT:~/Desktop$ ls -l /opt/jdk/jdk1.7.0_75/bin/javaws
+-rwxr-xr-x 1 uucp 143 132986 Dec 18 20:01 /opt/jdk/jdk1.7.0_75/bin/javaws
+
+
+# Per above, configure Ubuntu 12.04.x alternatives ...
+#
+# sudo update-alternatives --install "/usr/bin/java" "java" "/opt/jdk/jdk1.7.0_75/bin/java" 1 
+
+peterkreyjr@Ubuntu1204-64-DT:~/Desktop$ sudo update-alternatives --install "/usr/bin/java" "java" "/opt/jdk/jdk1.7.0_75/bin/java" 1
+update-alternatives: using /opt/jdk/jdk1.7.0_75/bin/java to provide /usr/bin/java (java) in auto mode.
+
+# sudo update-alternatives --install "/usr/bin/javac" "javac" "/opt/jdk/jdk1.7.0_75/bin/javac" 1 
+
+peterkreyjr@Ubuntu1204-64-DT:~/Desktop$ sudo update-alternatives --install "/usr/bin/javac" "javac" "/opt/jdk/jdk1.7.0_75/bin/javac" 1
+update-alternatives: using /opt/jdk/jdk1
+
+# sudo update-alternatives --install "/usr/bin/javaws" "javaws" "/opt/jdk/jdk1.7.0_75/bin/javaws" 1 
+ 
+peterkreyjr@Ubuntu1204-64-DT:~/Desktop$ sudo update-alternatives --install "/usr/bin/javaws" "javaws" "/opt/jdk/jdk1.7.0_75/bin/javaws" 1
+update-alternatives: using /opt/jdk/jdk1.7.0_75/bin/javaws to provide /usr/bin/javaws (javaws) in auto mode.
+
+
+# Next confirm that Java is now correctly linked & located ...
+
+peterkreyjr@Ubuntu1204-64-DT:~/Desktop$ which java
+/usr/bin/java
+
+peterkreyjr@Ubuntu1204-64-DT:~/Desktop$ ls -la /usr/bin/java
+lrwxrwxrwx 1 root root 22 Mar 30 18:46 /usr/bin/java -> /etc/alternatives/java
+
+peterkreyjr@Ubuntu1204-64-DT:~/Desktop$ ls -la /etc/alternatives/java
+lrwxrwxrwx 1 root root 29 Mar 30 18:46 /etc/alternatives/java -> /opt/jdk/jdk1.7.0_75/bin/java
+
+
+# Next confirm the Java versions above linked to /usr/bin/ are accessible via $PATH 
+
+peterkreyjr@Ubuntu1204-64-DT:~/Desktop$ java -version
+java version "1.7.0_75"
+Java(TM) SE Runtime Environment (build 1.7.0_75-b13)
+Java HotSpot(TM) 64-Bit Server VM (build 24.75-b04, mixed mode)
+
+peterkreyjr@Ubuntu1204-64-DT:~/Desktop$ which javac
+/usr/bin/javac
+
+peterkreyjr@Ubuntu1204-64-DT:~/Desktop$ javac -version
+javac 1.7.0_75
+
+
+# Next confirm alternatives via "update-alternatives --display java"
+
+peterkreyjr@Ubuntu1204-64-DT:~/Desktop$ update-alternatives --display java
+java - auto mode
+  link currently points to /opt/jdk/jdk1.7.0_75/bin/java
+/opt/jdk/jdk1.7.0_75/bin/java - priority 1
+Current 'best' version is '/opt/jdk/jdk1.7.0_75/bin/java'.
+
+# And finally setup / configure the Java environment variable "JAVA_HOME" ...
+
+peterkreyjr@Ubuntu1204-64-DT:~/Desktop$ export JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:bin/javac::") 
+
+peterkreyjr@Ubuntu1204-64-DT:~/Desktop$ echo $JAVA_HOME
+/opt/jdk/jdk1.7.0_75/
+
+
+#############################################################################################
+#
+#  IMPORTANT NOTE
+#
+#   ADD above JAVA_HOME setting command
+# 
+#      "export JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:bin/javac::") "
+#
+#    to end of ~/.profile 
+#
+#############################################################################################
+
+# Per header lines comments in ~/.profile confirm ~/.bash_profile and ~/.bash_login do not 
+#  exists
+
+peterkreyjr@Ubuntu1204-64-DT:~$ ls -l ~/.bash_profile
+ls: cannot access /home/peterkreyjr/.bash_profile: No such file or directory
+
+peterkreyjr@Ubuntu1204-64-DT:~$ ls -l ~/.bash_login
+ls: cannot access /home/peterkreyjr/.bash_login: No such file or directory
+
+# So per above, add "export JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:bin/javac::") "
+#  to end of ~/.profile 
+
+# Prior to modifying ~/.profile make a backup copy using $NOW Bash Env Variable  
+#    $NOW=$(date "+%Y-%m-%d-%H:%M:%S")
+
+peterkreyjr@Ubuntu1204-64-DT:~$ NOW=$(date "+%Y-%m-%d-%H:%M:%S")
+
+peterkreyjr@Ubuntu1204-64-DT:~$ echo $NOW
+2015-04-02-16:26:59
+
+peterkreyjr@Ubuntu1204-64-DT:~$ cp ~/.profile ~/.profile.$NOW
+
+peterkreyjr@Ubuntu1204-64-DT:~$ ls -l ~/.profile.$NOW*
+-rw-r--r-- 1 peterkreyjr peterkreyjr 675 Apr  2 16:27 /home/peterkreyjr/.profile.2015-04-02-16:26:59
+
+# Next add the following 2 lines to the end of ~/.profile
+#
+# 2015-04-02 -  Add JAVA_HOME Bash env variable setting ...
+#  export JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:bin/javac::") 
+ 
+#############################################################################################
+# Next confirm added lines within ~/.profile ... check out last 8 lines 
+#############################################################################################
+
+peterkreyjr@Ubuntu1204-64-DT:~$ tail -8 ~/.profile
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/bin" ] ; then
+    PATH="$HOME/bin:$PATH"
+fi
+
+# 2015-04-02 -  Add JAVA_HOME Bash env variable setting ...
+export JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:bin/javac::") 
+
+
+# Finally, log-out and re-login to Ubuntu 12.04.5, and open Bash shell ... $JAVA_HOME
+#  should now be an environment variable setting in all Bash shells.   
+
+peterkreyjr@Ubuntu1204-64-DT:~$ echo $JAVA_HOME
+/opt/jdk/jdk1.7.0_75/
+
+peterkreyjr@Ubuntu1204-64-DT:~$ java -version
+java version "1.7.0_75"
+Java(TM) SE Runtime Environment (build 1.7.0_75-b13)
+Java HotSpot(TM) 64-Bit Server VM (build 24.75-b04, mixed mode)
+ 
+peterkreyjr@Ubuntu1204-64-DT:~$ javac -version
+javac 1.7.0_75
+
+
+# Last, confirm $PATH setting within ~/.profile also works when remotely ssh'ing into
+#    "Ubuntu1204-64-DT" VMWare Fusion virtual machine image.  The following is a
+#  remote ssh from my "pkjr-retina1" MacBook Pro laptop ...
+
+pkjr-retina1:~ peterkreyjr$ ssh peterkreyjr@192.168.12.170
+peterkreyjr@192.168.12.170's password:
+Welcome to Ubuntu 12.04.5 LTS (GNU/Linux 3.13.0-48-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com/
+
+0 packages can be updated.
+0 updates are security updates.
+
+New release '14.04.2 LTS' available.
+Run 'do-release-upgrade' to upgrade to it.
+
+
+Your Hardware Enablement Stack (HWE) is supported until April 2017.
+
+Last login: Wed Apr  1 15:25:01 2015 from pkjr-retina1.local
+
+peterkreyjr@Ubuntu1204-64-DT:~$ echo $JAVA_HOME
+/opt/jdk/jdk1.7.0_75/
+
+# Per the above, the $PATH setting within ~/.profile also works via remote ssh access.
+
+# Java 7 install is now validated, config'd, and ready for usage by Cassandra !
+
+

@@ -1,0 +1,452 @@
+#############################################################################################
+#
+#  DataStax Cassandra Community V#2.0.13 Install On Ubuntu+Debian Linux Distros   
+#
+# 
+#  2015-03-30,
+#  2015-03-31,
+#  2014-04-01 - V#1.0 - The following is for installation of latest version 
+#                       Cassandra 2.0.13 within Ubuntu 12.04.5 64-bit DT VM running on 
+#                       VMwre Fusion 7.1.1 on MacBook Pro Retina, OSX 10.8.5  
+# 
+#  Reference URLs: 
+#
+#  Installing DataStax Community on Debian-based systems
+#    http://www.datastax.com/documentation/cassandra/2.0/cassandra/install/installDeb_t.html
+#
+#  Download DataStax Community Edition - Apache Cassandra 
+#    - What is DataStax Community Edition Apache Cassandra ?
+#    - DataStax Community Edition Consists of Several Components
+#
+#    http://planetcassandra.org/cassandra/?dlink=http://www.datastax.com/documentation/cassandra/2.0/cassandra/install/installDeb_t.html
+#
+#
+#  DataStax Technical Reference + Guidance 
+#
+#    Sebastián Estévez, Solutions Architect, sebastian.estevez@datastax.com 
+#
+#############################################################################################
+#
+# PK MacBook Retina laptop info: 
+#   - 2012 MacBook Pro Retina, OSX 10.8.5, 2.7GHz Intel Core i7, 16GB 1600MHz DDR3, 
+#     750GB SSD storage
+#   - VMWare Fusion Professional Version 7.1.1   
+#
+#############################################################################################
+
+# Confirm latest Ubuntu 12.04.x version is installed & runnning ...
+
+peterkreyjr@Ubuntu1204-64-DT:~$ lsb_release -a
+No LSB modules are available.
+Distributor ID:	Ubuntu
+Description:	Ubuntu 12.04.5 LTS
+Release:	12.04
+Codename:	precise
+
+#############################################################################################
+#  Step 1 - confirm latest Java 7 version is installed & running 
+#############################################################################################
+
+peterkreyjr@Ubuntu1204-64-DT:~$ java -version
+java version "1.7.0_75"
+Java(TM) SE Runtime Environment (build 1.7.0_75-b13)
+Java HotSpot(TM) 64-Bit Server VM (build 24.75-b04, mixed mode)
+
+
+#############################################################################################
+#  Step 2 - Add the DataStax Community repository to the 
+#   /etc/apt/sources.list.d/cassandra.sources.list with the following Bash shell command:
+#
+#      echo "deb http://debian.datastax.com/community stable main" | \
+#         sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list
+#############################################################################################
+
+peterkreyjr@Ubuntu1204-64-DT:~$ echo "deb http://debian.datastax.com/community stable main" | \
+>  sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list
+[sudo] password for peterkreyjr: 
+deb http://debian.datastax.com/community stable main
+
+
+#############################################################################################
+#  SKIP STEP 3 ... not needed in our case since Oracle Java 7 was previously installed ...
+# 
+# "For Debian Systems Only ..." 
+# 
+#   Next in /etc/apt/sources.list, find the line that describes your source repository for 
+#     Debian, and add 'contrib non-free' to the end of the line. For example:
+#
+#       deb http://some.debian.mirror/debian/ $distro main contrib non-free
+#
+# This allows installation of the Oracle JVM instead of the OpenJDK JVM.   Save and close 
+#   the file when you are done adding/editing your sources.
+#############################################################################################
+
+
+#############################################################################################
+#  Step 4 - Add the DataStax repository key to your aptitude trusted keys ...
+#
+#     curl -L http://debian.datastax.com/debian/repo_key | sudo apt-key add -
+#
+#############################################################################################
+
+# First confirm curl is installed ...
+
+peterkreyjr@Ubuntu1204-64-DT:~$ which curl 
+peterkreyjr@Ubuntu1204-64-DT:~$ 
+
+# Per above, curl needs to be installed ...
+
+peterkreyjr@Ubuntu1204-64-DT:~$ sudo apt-get install curl
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+The following NEW packages will be installed:
+  curl
+0 upgraded, 1 newly installed, 0 to remove and 4 not upgraded.
+Need to get 138 kB of archives.
+After this operation, 353 kB of additional disk space will be used.
+Get:1 http://us.archive.ubuntu.com/ubuntu/ precise-updates/main curl amd64 7.22.0-3ubuntu4.12 [138 kB]
+Fetched 138 kB in 0s (1,376 kB/s)
+Selecting previously unselected package curl.
+(Reading database ... 177127 files and directories currently installed.)
+Unpacking curl (from .../curl_7.22.0-3ubuntu4.12_amd64.deb) ...
+Processing triggers for man-db ...
+Setting up curl (7.22.0-3ubuntu4.12) ...
+
+peterkreyjr@Ubuntu1204-64-DT:~$ which curl
+/usr/bin/curl
+
+# With curl now installed, next run:  
+#    "curl -L http://debian.datastax.com/debian/repo_key | sudo apt-key add - "
+
+peterkreyjr@Ubuntu1204-64-DT:~$ curl -L http://debian.datastax.com/debian/repo_key | sudo apt-key add - 
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  2922  100  2922    0     0  10119      0 --:--:-- --:--:-- --:--:-- 23190
+OK
+
+
+#############################################################################################
+#  Step 5 - Install the DataStax Cassandra Community Edition package.  
+#
+#  Per the above "Download DataStax Community Edition - Apache Cassandra" URL, on this date 
+#   the latest DataStax Community Edition Apache Cassandra version is listed as 2.0.13 
+#
+#  So verify the above updated DataStax Ubuntu apt repository contains this version for both
+#   cassandra and dsc.  
+#
+#  Important to note an asterisk was added to each of the following 
+#   ( cassandra=2.0.13*  dsc20=2.0.13* ) to make sure "apt-cache show" displays the correct 
+#   full package version info ...
+#############################################################################################
+
+peterkreyjr@Ubuntu1204-64-DT:~$ sudo apt-cache show cassandra=2.0.13*
+Package: cassandra
+Priority: extra
+Section: misc
+Installed-Size: 16108
+Maintainer: Eric Evans <eevans@apache.org>
+Architecture: all
+Version: 2.0.13
+Replaces: apache-cassandra1
+Depends: adduser, libjna-java, python (>= 2.5), python-support (>= 0.90.0)
+Recommends: ntp | time-daemon
+Conflicts: apache-cassandra1
+Filename: pool/cassandra_2.0.13_all.deb
+Size: 14519190
+MD5sum: 10b00513880c5c66c2666d1e7558916d
+SHA1: 358c0bddd9b4c5a44818e399accba609547b00a5
+SHA256: 55a8c6c990cb13ad6fdc2fff0664a7043728e11647af7bff2bdf237a3e4bcd50
+Description: distributed storage system for structured data
+ Cassandra is a distributed (peer-to-peer) system for the management
+ and storage of structured data.
+Homepage: http://cassandra.apache.org
+
+peterkreyjr@Ubuntu1204-64-DT:~$ sudo apt-cache show dsc20=2.0.13*
+Package: dsc20
+Priority: extra
+Section: misc
+Installed-Size: 40
+Maintainer: DataStax Team <info@datastax.com>
+Architecture: all
+Source: dsc
+Version: 2.0.13-1
+Depends: cassandra (= 2.0.13), python (>= 2.5), python-support (>= 0.90.0)
+Filename: pool/dsc20_2.0.13-1_all.deb
+Size: 1304
+MD5sum: 22b316623453a3dbf212e44d01d5d21e
+SHA1: 72b5966e0cfb71daff2678d872430b90e5cf33a3
+SHA256: 7e40a5f6663e6b26e5d559dcc111cef66c2eb946cceb45a324f0ba18856f814a
+Description: DataStax Community Edition is a free packaged distribution of the
+ Apache Cassandra database.
+ .
+ This package depends on the other components of DSC.
+Homepage: http://www.datastax.com/products/community
+
+# So per above, the following apt-get commands have been updated for version 2.0.13
+#  install the latest dsc20 & cassandra versions:
+#
+#      sudo apt-get update
+#      sudo apt-get install dsc20=2.0.13-1 cassandra=2.0.13 
+#
+
+peterkreyjr@Ubuntu1204-64-DT:~$ sudo apt-get install dsc20=2.0.13-1 cassandra=2.0.13 
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+The following extra packages will be installed:
+  libjna-java libopts25 ntp python-support
+Suggested packages:
+  libjna-java-doc ntp-doc
+The following NEW packages will be installed:
+  cassandra dsc20 libjna-java libopts25 ntp python-support
+0 upgraded, 6 newly installed, 0 to remove and 4 not upgraded.
+Need to get 15.6 MB of archives.
+After this operation, 19.0 MB of additional disk space will be used.
+Do you want to continue [Y/n]? Y
+Get:1 http://us.archive.ubuntu.com/ubuntu/ precise/main libopts25 amd64 1:5.12-0.1ubuntu1 [59.9 kB]
+Get:2 http://debian.datastax.com/community/ stable/main cassandra all 2.0.13 [14.5 MB]
+Get:3 http://us.archive.ubuntu.com/ubuntu/ precise-updates/main ntp amd64 1:4.2.6.p3+dfsg-1ubuntu3.3 [614 kB]
+Get:4 http://us.archive.ubuntu.com/ubuntu/ precise/universe libjna-java amd64 3.2.7-4 [416 kB]
+Get:5 http://us.archive.ubuntu.com/ubuntu/ precise/universe python-support all 1.0.14ubuntu2 [26.1 kB]
+Get:6 http://debian.datastax.com/community/ stable/main dsc20 all 2.0.13-1 [1,304 B]
+Fetched 15.6 MB in 3s (4,297 kB/s)
+Selecting previously unselected package libopts25.
+(Reading database ... 177143 files and directories currently installed.)
+Unpacking libopts25 (from .../libopts25_1%3a5.12-0.1ubuntu1_amd64.deb) ...
+Selecting previously unselected package ntp.
+Unpacking ntp (from .../ntp_1%3a4.2.6.p3+dfsg-1ubuntu3.3_amd64.deb) ...
+Selecting previously unselected package libjna-java.
+Unpacking libjna-java (from .../libjna-java_3.2.7-4_amd64.deb) ...
+Selecting previously unselected package python-support.
+Unpacking python-support (from .../python-support_1.0.14ubuntu2_all.deb) ...
+Selecting previously unselected package cassandra.
+Unpacking cassandra (from .../cassandra_2.0.13_all.deb) ...
+Selecting previously unselected package dsc20.
+Unpacking dsc20 (from .../dsc20_2.0.13-1_all.deb) ...
+Processing triggers for man-db ...
+Processing triggers for ureadahead ...
+Setting up libopts25 (1:5.12-0.1ubuntu1) ...
+Setting up ntp (1:4.2.6.p3+dfsg-1ubuntu3.3) ...
+ * Starting NTP server ntpd                                                                                                                                                     [ OK ] 
+Setting up libjna-java (3.2.7-4) ...
+Setting up python-support (1.0.14ubuntu2) ...
+Setting up cassandra (2.0.13) ...
+Adding group `cassandra' (GID 126) ...
+Done.
+vm.max_map_count = 1048575
+Setting up dsc20 (2.0.13-1) ...
+Processing triggers for libc-bin ...
+ldconfig deferred processing now taking place
+Processing triggers for python-support ...
+
+
+#############################################################################################
+# Step 6 - Because the Debian packages start the Cassandra service automatically, you must 
+#   next stop the server and clear the data: Doing this removes the default cluster_name 
+#   (Test Cluster) from the system table. All nodes must use the same cluster name.
+#
+#       sudo service cassandra stop
+#       sudo rm -rf /var/lib/cassandra/data/system/*
+#############################################################################################
+
+peterkreyjr@Ubuntu1204-64-DT:~$ sudo service cassandra stop
+
+peterkreyjr@Ubuntu1204-64-DT:~$ sudo service cassandra status
+ * Cassandra is not running
+
+# Prior to attempting to remove everything in "/var/lib/cassandra/data/system/*" let's 
+#  first list out the directory contents ... 
+
+peterkreyjr@Ubuntu1204-64-DT:~$ ls -l /var/lib/cassandra/data/system/*
+/var/lib/cassandra/data/system/batchlog:
+total 0
+
+/var/lib/cassandra/data/system/compaction_history:
+total 0
+
+/var/lib/cassandra/data/system/compactions_in_progress:
+total 0
+
+/var/lib/cassandra/data/system/hints:
+total 0
+
+/var/lib/cassandra/data/system/IndexInfo:
+total 0
+
+/var/lib/cassandra/data/system/local:
+total 36
+-rw-r--r-- 1 cassandra cassandra   43 Mar 31 18:10 system-local-jb-5-CompressionInfo.db
+-rw-r--r-- 1 cassandra cassandra 5693 Mar 31 18:10 system-local-jb-5-Data.db
+  
+    < ... snip ...>
+
+/var/lib/cassandra/data/system/NodeIdInfo:
+total 0
+
+/var/lib/cassandra/data/system/paxos:
+total 0
+
+/var/lib/cassandra/data/system/peer_events:
+total 0
+
+/var/lib/cassandra/data/system/peers:
+total 0
+
+/var/lib/cassandra/data/system/range_xfers:
+total 0
+
+/var/lib/cassandra/data/system/schema_columnfamilies:
+total 36
+-rw-r--r-- 1 cassandra cassandra   43 Mar 31 18:10 system-schema_columnfamilies-jb-1-CompressionInfo.db
+-rw-r--r-- 1 cassandra cassandra 5938 Mar 31 18:10 system-schema_columnfamilies-jb-1-Data.db
+
+    < ... snip ...>
+
+/var/lib/cassandra/data/system/schema_columns:
+total 40
+-rw-r--r-- 1 cassandra cassandra    43 Mar 31 18:10 system-schema_columns-jb-1-CompressionInfo.db
+-rw-r--r-- 1 cassandra cassandra 10260 Mar 31 18:10 system-schema_columns-jb-1-Data.db
+
+    < ... snip ...>
+
+/var/lib/cassandra/data/system/schema_keyspaces:
+total 32
+-rw-r--r-- 1 cassandra cassandra   43 Mar 31 18:10 system-schema_keyspaces-jb-1-CompressionInfo.db
+-rw-r--r-- 1 cassandra cassandra  216 Mar 31 18:10 system-schema_keyspaces-jb-1-Data.db
+
+    < ... snip ...>
+
+/var/lib/cassandra/data/system/schema_triggers:
+total 32
+-rw-r--r-- 1 cassandra cassandra   43 Mar 31 18:10 system-schema_triggers-jb-1-CompressionInfo.db
+-rw-r--r-- 1 cassandra cassandra   32 Mar 31 18:10 system-schema_triggers-jb-1-Data.db
+
+    < ... snip ...>
+
+/var/lib/cassandra/data/system/sstable_activity:
+total 0
+
+# Per above, there's lots that needs to be removed from /var/lib/cassandra/data/system/*
+#   So next use "sudo rm -rf /var/lib/cassandra/data/system/*"
+
+peterkreyjr@Ubuntu1204-64-DT:~$ sudo rm -rf /var/lib/cassandra/data/system/* 
+
+peterkreyjr@Ubuntu1204-64-DT:~$ ls -l /var/lib/cassandra/data/system
+total 0
+
+# Per above, /var/lib/cassandra/data/system is now cleaned out ...
+
+
+#############################################################################################
+#
+# Additional recommended final steps from Sebastián Estévez of DataStax and PK ... 
+#
+#############################################################################################
+
+# Next look at /etc/cassandra/cassandra.yaml
+
+peterkreyjr@Ubuntu1204-64-DT:~$ ls -l /etc/cassandra/cassandra.yaml
+-rw-r--r-- 1 root root 33039 Mar 16 20:08 /etc/cassandra/cassandra.yaml
+
+peterkreyjr@Ubuntu1204-64-DT:~$ ls -l /etc/cassandra/
+total 76
+-rw-r--r-- 1 root root 10345 Mar 16 20:08 cassandra-env.sh
+-rw-r--r-- 1 root root  1199 Mar 16 20:08 cassandra-rackdc.properties
+-rw-r--r-- 1 root root  1358 Mar 16 20:08 cassandra-topology.properties
+-rw-r--r-- 1 root root   916 Mar 16 20:08 cassandra-topology.yaml
+-rw-r--r-- 1 root root 33039 Mar 16 20:08 cassandra.yaml
+-rw-r--r-- 1 root root  2374 Mar 16 20:08 commitlog_archiving.properties
+-rw-r--r-- 1 root root  1850 Mar 16 20:08 log4j-server.properties
+-rw-r--r-- 1 root root  1228 Mar 16 20:08 log4j-tools.properties
+drwxr-xr-x 2 root root  4096 Mar 31 18:10 triggers
+
+
+# Prior to restarting Cassandra single node, within /etc/cassandra/cassandra.yaml change 
+#  the setting for "cluster_name: 'Test Cluster'" to 
+#                  "cluster_name: 'Test-VM-Image' 
+
+# First make a backup copy using $NOW Bash Env Variable $NOW=$(date "+%Y-%m-%d-%H:%M:%S")
+
+peterkreyjr@Ubuntu1204-64-DT:~$ NOW=$(date "+%Y-%m-%d-%H:%M:%S")
+
+peterkreyjr@Ubuntu1204-64-DT:~$ echo $NOW
+2015-04-01-16:05:39
+
+peterkreyjr@Ubuntu1204-64-DT:~$ ls -la /etc/cassandra/cassandra.yaml*
+-rw-r--r-- 1 root root 33039 Mar 16 20:08 /etc/cassandra/cassandra.yaml
+-rw-r--r-- 1 root root 33039 Apr  1 16:06 /etc/cassandra/cassandra.yaml.2015-04-01-16:05:39
+
+# Next use the Ubuntu GUI gedit text editor to change cluster_name setting to 
+#  'Test-VM-Sngl-Img' 
+
+# The following is a copy / paste of the cluster_name setting lines changed within 
+#  cassandra.yaml 
+
+# The name of the cluster. This is mainly used to prevent machines in
+# one logical cluster from joining another.
+# 2015-04-01 - changed cluster_name: setting to 'Test-VM-Sngl-Img'
+# cluster_name: 'Test Cluster'
+cluster_name: 'Test-VM-Sngl-Img' 
+
+# Next restart Cassandra ...
+
+peterkreyjr@Ubuntu1204-64-DT:~$ sudo service cassandra status
+ * Cassandra is not running
+
+peterkreyjr@Ubuntu1204-64-DT:~$ sudo service cassandra start
+
+peterkreyjr@Ubuntu1204-64-DT:~$ sudo service cassandra status
+ * Cassandra is running
+
+
+# Last, confirm new / revised Cassandra "cluster_name:" change, by running 
+#   "CQL - the Cassandra Query Language" ...
+
+peterkreyjr@Ubuntu1204-64-DT:~$ which cqlsh
+/usr/bin/cqlsh
+
+peterkreyjr@Ubuntu1204-64-DT:~$ cqlsh --version
+cqlsh 4.1.1
+
+peterkreyjr@Ubuntu1204-64-DT:~$ cqlsh
+Connected to Test-VM-Sngl-Img at localhost:9160.
+[cqlsh 4.1.1 | Cassandra 2.0.13 | CQL spec 3.1.1 | Thrift protocol 19.39.0]
+Use HELP for help.
+cqlsh> 
+cqlsh> help
+
+Documented shell commands:
+===========================
+CAPTURE      COPY  DESCRIBE  EXPAND  SHOW    TRACING
+CONSISTENCY  DESC  EXIT      HELP    SOURCE
+
+CQL help topics:
+================
+ALTER                        CREATE_TABLE_OPTIONS  SELECT             
+ALTER_ADD                    CREATE_TABLE_TYPES    SELECT_COLUMNFAMILY
+ALTER_ALTER                  CREATE_USER           SELECT_EXPR        
+ALTER_DROP                   DELETE                SELECT_LIMIT       
+ALTER_RENAME                 DELETE_COLUMNS        SELECT_TABLE       
+ALTER_USER                   DELETE_USING          SELECT_WHERE       
+ALTER_WITH                   DELETE_WHERE          TEXT_OUTPUT        
+APPLY                        DROP                  TIMESTAMP_INPUT    
+ASCII_OUTPUT                 DROP_COLUMNFAMILY     TIMESTAMP_OUTPUT   
+BEGIN                        DROP_INDEX            TRUNCATE           
+BLOB_INPUT                   DROP_KEYSPACE         TYPES              
+BOOLEAN_INPUT                DROP_TABLE            UPDATE             
+COMPOUND_PRIMARY_KEYS        DROP_USER             UPDATE_COUNTERS    
+CREATE                       GRANT                 UPDATE_SET         
+CREATE_COLUMNFAMILY          INSERT                UPDATE_USING       
+CREATE_COLUMNFAMILY_OPTIONS  LIST                  UPDATE_WHERE       
+CREATE_COLUMNFAMILY_TYPES    LIST_PERMISSIONS      USE                
+CREATE_INDEX                 LIST_USERS            UUID_INPUT         
+CREATE_KEYSPACE              PERMISSIONS         
+CREATE_TABLE                 REVOKE              
+
+cqlsh> exit
+peterkreyjr@Ubuntu1204-64-DT:~$ 
+
+# So per above, Cassandra build is ready to be used ...
+
+
