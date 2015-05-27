@@ -1,0 +1,6 @@
+
+This is a test README overview text file ...
+
+To test creating a separate README.MD file for each How-To directory, added this line 
+  to the README text file before renaming to 'README.MD' ...
+
