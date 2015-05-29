@@ -1,0 +1,155 @@
+#############################################################################################
+#
+#  Ubuntu 12.04.5 gparted Erase + Reformat USB Flash Drive Sticks V#1-0 
+#
+#  2015-02-15 - V#1.0 - Prior to using USB flash drive sticks as Linux OS bootable devices,
+#                       erase & re-format using gparted. 
+#  2015-02-25 - V#1-1 - Revisions & corrections ...
+#
+#############################################################################################
+
+# On Ubuntu 12.04.x desktop confirm gparted is installed ...
+
+peterkreyjr@CoreSvces1:~$  which gparted
+/usr/sbin/gparted
+
+# Insert the USB stick to be erased & reformatted, and take a look at dmesg to confirm the 
+#  USB flash drive stick has been detected and mounted.  In this test case a SanDisk Cruzer
+#  Edge 8GB USB stick is being used ...
+
+peterkreyjr@CoreSvces1:~$ dmesg | tail -10
+[515125.264116] usb 1-1: new high-speed USB device number 16 using ehci_hcd
+[515125.398722] scsi18 : usb-storage 1-1:1.0
+[515126.398156] scsi 18:0:0:0: Direct-Access     SanDisk  Cruzer Edge      1.26 PQ: 0 ANSI: 6
+[515126.400365] sd 18:0:0:0: Attached scsi generic sg7 type 0
+[515126.401886] sd 18:0:0:0: [sdg] 15633408 512-byte logical blocks: (8.00 GB/7.45 GiB)
+[515126.403274] sd 18:0:0:0: [sdg] Write Protect is off
+[515126.403286] sd 18:0:0:0: [sdg] Mode Sense: 43 00 00 00
+[515126.404149] sd 18:0:0:0: [sdg] Write cache: disabled, read cache: enabled, doesn't support DPO or FUA
+[515126.425021]  sdg: sdg1
+[515126.428758] sd 18:0:0:0: [sdg] Attached SCSI disk
+
+# So per the above, the SanDisk Cruzer Edge 8GB USB stick Flash Drive Stick has been detected
+#  and mounted as sdg: sdg1 ...
+
+# In order to use gparted to re-format the drive, see what partitions were mounted.  
+
+# Note: Following done on Ubuntu 12.04.5 ... will not always be mounted as /dev/sdg ... 
+# Can also be others such as /dev/sdc, /dev/sdh, ..., etc, or other device mounts will be 
+#  created by other Linux distros ...
+ 
+peterkreyjr@CoreSvces1:~$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       910G   24G  840G   3% /
+udev            3.9G  4.0K  3.9G   1% /dev
+tmpfs           783M  900K  782M   1% /run
+none            5.0M     0  5.0M   0% /run/lock
+none            3.9G  200K  3.9G   1% /run/shm
+/dev/sdg1       7.5G  900K  7.5G   1% /media/FE02-AC15
+
+
+# From within Bash terminal shell, launch the gparted GUI application 
+
+peterkreyjr@CoreSvces1:~$ sudo gparted
+======================
+libparted : 2.3
+======================
+
+# Within gparted GUI:
+
+# In URHC of screen, left-click on drive list button, and select the  
+#  bottom drive ... per above 'df -h' select /dev/sdg
+
+# Within the upper screen green box displaying /dev/sdg1 right-click
+#   on "/dev/sdg1", and left-click on "Unmount" 
+
+# Within the middle of the screen within the Partition column, right-click
+#   on "/dev/sdg1", and left-click on "Delete" 
+
+# Again within the middle of the screen within the Partition column, 
+#   right-click on "unallocated", left-click on "New", and in the middle of
+#   "Create new Partition" screen, on the right hand side left-click on the 
+#   "File System" ? and select "ext4" ...
+#
+# And confirm the "Create as" is set to "Primary Partition", and leave all 
+#   other parameters set to default values incl:
+#
+#      Free space proceding (MiB): 1
+#      New size  (MiB):            7633
+#      Align to:                   MiB
+#      Create as:                  Primary Partition
+
+# NOTE: the "New size  (MiB):" value will change depending on the size of 
+#  the USB stick being formatted ...
+
+# Next from the bottom LRHC of the screen, left-click on the "Add" button ...
+
+# Last, within the top-of-screen menu bar, left-click on green check mark 
+#   graphic "Apply All Operations" ...
+
+# In response to the "Apply operations to device" pop-up screen 
+#  "Are you sure you want to apply the pending operations? " in LRHC of 
+#  screen left click on the "Apply" button ...
+
+# The "Applying pending operations" screen will next pop-up ...
+#  Takes appx. 10-15 seconds to create & format the USB stick with the ext4 
+#  partition.
+
+# Within the "Applying pending operations" screen, in LRHC left-click on the 
+#  "Close" button ...
+
+# At this point, exit the GParted GUI app.  In ULHC of screen gparted menu 
+#  bar, left-click on the 'GParted' entry and left-click on 'Quit' to exit
+#  gparted GUI application. 
+
+
+# Re-mount the USB Flash Drive Stick and re-confirm the partition and 
+#  formatting info ...
+ 
+peterkreyjr@CoreSvces1:~$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       910G   24G  840G   3% /
+udev            3.9G  4.0K  3.9G   1% /dev
+tmpfs           783M  900K  782M   1% /run
+none            5.0M     0  5.0M   0% /run/lock
+none            3.9G  200K  3.9G   1% /run/shm
+/dev/sdg1       7.4G  145M  6.9G   3% /media/f69ba211-2b4f-474a-a8ef-c4a5a4602f0a
+
+
+peterkreyjr@CoreSvces1:~$ sudo fdisk -l /media/f69ba211-2b4f-474a-a8ef-c4a5a4602f0a/
+last_lba(): I don't know how to handle files with mode 40755
+peterkreyjr@CoreSvces1:~$ sudo fdisk -l /dev/sdg
+
+Disk /dev/sdg: 8004 MB, 8004304896 bytes
+19 heads, 5 sectors/track, 164562 cylinders, total 15633408 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0x0003bd5d
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdg1            2048    15632383     7815168   83  Linux
+
+ 
+peterkreyjr@CoreSvces1:~$  dmesg | tail -15
+[516481.324266] sd 21:0:0:0: [sdg] Write cache: disabled, read cache: enabled, doesn't support DPO or FUA
+[516481.345533]  sdg: sdg1
+[516481.349278] sd 21:0:0:0: [sdg] Attached SCSI disk
+[517255.705855] usb 1-1: USB disconnect, device number 19
+[517314.156117] usb 1-1: new high-speed USB device number 20 using ehci_hcd
+[517314.291527] scsi22 : usb-storage 1-1:1.0
+[517315.289470] scsi 22:0:0:0: Direct-Access     SanDisk  Cruzer Edge      1.26 PQ: 0 ANSI: 6
+[517315.291453] sd 22:0:0:0: Attached scsi generic sg7 type 0
+[517315.293179] sd 22:0:0:0: [sdg] 15633408 512-byte logical blocks: (8.00 GB/7.45 GiB)
+[517315.294568] sd 22:0:0:0: [sdg] Write Protect is off
+[517315.294581] sd 22:0:0:0: [sdg] Mode Sense: 43 00 00 00
+[517315.295439] sd 22:0:0:0: [sdg] Write cache: disabled, read cache: enabled, doesn't support DPO or FUA
+[517315.315953]  sdg: sdg1
+[517315.319690] sd 22:0:0:0: [sdg] Attached SCSI disk
+[517315.577642] EXT4-fs (sdg1): mounted filesystem with ordered data mode. Opts: (null)
+
+
+# Per the above, the USB flash drive stick (SanDisk Cruzer Edge 8GB ) has been correctly 
+#  partitoned and ext4 formatted ...
+
+

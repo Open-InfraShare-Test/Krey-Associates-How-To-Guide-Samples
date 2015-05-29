@@ -1,0 +1,170 @@
+#############################################################################################
+#
+#  Ubuntu 14.04.x LTS + 12.04.x LTS Bootable USB Creation w/usb-creator-kde
+#
+#  2015-02-07 - V#1-0 - Ubuntu 12.04.x USB creation
+#  2015-02-15 - V#1-1 - Ubuntu 14.04.x USB creation 
+#  2015-02-25 - V#1-2 - Revisions & corrections ...
+# 
+#  Reference URLs:
+#
+#    How to create a bootable USB stick on Ubuntu 
+#      http://www.ubuntu.com/download/desktop/create-a-usb-stick-on-ubuntu 
+#
+#    Installation/FromUSBStick (usb-creator-kde)
+#      https://help.ubuntu.com/community/Installation/FromUSBStick
+# 
+#    Ubuntu Releases
+#      http://releases.ubuntu.com/
+#
+#    Ubuntu 12.04.x .iso Images and SHA1SUMS 
+#      http://releases.ubuntu.com/precise
+#      http://releases.ubuntu.com/precise/SHA1SUMS
+#
+#    Ubuntu 14.04.x .iso Images
+#      http://releases.ubuntu.com/trusty/
+#      http://releases.ubuntu.com/trusty/SHA1SUMS
+#
+#    Installation/FromUSBStick
+#      https://help.ubuntu.com/community/Installation/FromUSBStick
+#
+#    Reference How-To Doc for USB Erasing + Reformatting
+#      "Ubuntu 12.04 gparted Erase + Reformat USB Flash Drive Sticks V#1-0"
+#
+#############################################################################################
+
+# First, download Ubuntu 12.04.5 64-bit Desktop .iso using wget and validate / confirm 
+#  download quality using sha1sum ...
+
+peterkreyjr@CoreSvces1:~$ cd ./Downloads/
+peterkreyjr@CoreSvces1:~/Downloads$ 
+
+peterkreyjr@CoreSvces1:~/Downloads$ wget http://releases.ubuntu.com/precise/ubuntu-12.04.5-desktop-amd64.iso 
+--2015-02-07 17:06:43--  http://releases.ubuntu.com/precise/ubuntu-12.04.5-desktop-amd64.iso
+Resolving releases.ubuntu.com (releases.ubuntu.com)... 91.189.88.148, 91.189.92.163, 91.189.92.151, ...
+Connecting to releases.ubuntu.com (releases.ubuntu.com)|91.189.88.148|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 794820608 (758M) [application/x-iso9660-image]
+Saving to: `ubuntu-12.04.5-desktop-amd64.iso'
+
+100%[=================================================================================>] 794,820,608 4.22M/s   in 3m 20s  
+
+2015-02-07 17:10:03 (3.79 MB/s) - `ubuntu-12.04.5-desktop-amd64.iso' saved [794820608/794820608]
+
+peterkreyjr@CoreSvces1:~/Downloads$ sha1sum ubuntu-12.04.5-desktop-amd64.iso 
+aa2802735c552d36e222e09fb64971d558142713  ubuntu-12.04.5-desktop-amd64.iso
+
+# Per http://releases.ubuntu.com/precise/SHA1SUMS URL, correct SHA1SUM
+#   is aa2802735c552d36e222e09fb64971d558142713 for ubuntu-12.04.5-desktop-amd64.iso
+#   so download is correct ...
+
+# Next download 14.04.1 64-bit Desktop .iso using wget and validate / confirm download 
+#  quality using sha1sum ...
+
+peterkreyjr@CoreSvces1:~/Downloads$ wget http://releases.ubuntu.com/trusty/ubuntu-14.04.1-desktop-amd64.iso 
+--2015-02-07 17:18:49--  http://releases.ubuntu.com/trusty/ubuntu-14.04.1-desktop-amd64.iso
+Resolving releases.ubuntu.com (releases.ubuntu.com)... 91.189.92.163, 91.189.88.148, 91.189.92.151, ...
+Connecting to releases.ubuntu.com (releases.ubuntu.com)|91.189.92.163|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 1028653056 (981M) [application/x-iso9660-image]
+Saving to: `ubuntu-14.04.1-desktop-amd64.iso'
+
+100%[===============================================================================>] 1,028,653,056 2.61M/s   in 4m 22s  
+
+2015-02-07 17:23:11 (3.75 MB/s) - `ubuntu-14.04.1-desktop-amd64.iso' saved [1028653056/1028653056]
+
+peterkreyjr@CoreSvces1:~/Downloads$ sha1sum ubuntu-14.04.1-desktop-amd64.iso 
+096dba6ee83d784009eddec7f28287ab66091f66  ubuntu-14.04.1-desktop-amd64.iso
+
+# Per http://releases.ubuntu.com/trusty/SHA1SUMS URL, correct SHA1SUM
+#   is 096dba6ee83d784009eddec7f28287ab66091f66 for ubuntu-14.04.1-desktop-amd64.iso
+#   so download is correct ...
+
+
+#############################################################################################
+#  2015-02-07 - V#1-0 - Create Ubuntu 12.04.x OS Bootable USB 
+#############################################################################################
+
+# Because of completion issues when erasing the USB stick using 'Startup Disk Creator', 
+#  first use gparted to reformat and clean out the USB stick prior to utilizing 
+#  'Startup Disk Creator'.  
+
+# If needed see "Ubuntu 12.04 gparted Erase + Reformat USB Flash Drive Sticks V#1-0" How-To 
+#  document for erasing and re-formatting USB stick prior to using gparted 
+
+# In the following a SanDisk Cruzer Edge 8GB USB stick was used 
+
+# Next from upper left hand corner of Ubuntu desktop, left click on Ubnutu icon, 
+#  left click on 'System Tools', and left click on 'Startup Disk Creator' 
+
+# When 'Make Startup Disk' window opens, within the mid-screen 'Disk to use' 
+#  section, expand the 'Device' listing to show how + where the USB stick is
+#  mounted ...
+
+# Select the USB stick listing that displays the amount of Free Space on the 
+#  USB device ... in this case was '/dev/sdg1'
+
+# Next left-click on the 'Other' button in upper RHS of screen.  Within the
+#  'Open - Startup Disk Creator' screen, in the upper LHS of the screen single 
+#  left click on the 'Home' directory, and double left click on the 'Downloads'
+#  directory, and single left-click on / select 'ubuntu-12.04.5-desktop-amd64.iso', 
+#  and click on the 'Open' button in the lower RHC of the screen.
+
+# Next left-click on the 'Make Startup Disk' button in the lower RHC of the screen.
+
+# The 'Installing' screen will next appear, displaying the percent completion of
+#  installing files to the USB stick ... about half way through respond to root
+#  password request ... takes several minutes to complete 
+
+# When the install completes, an installation complete screen pops up ... 
+#  Left click on the 'OK' button in the lower RHC of the screen.
+
+# Re-insert the USB stick, and take a look at what's now stored on it ..
+
+
+#############################################################################################
+#  2015-02-14 - V#1-1 - Create Ubuntu 14.04.1 OS Bootable USB 
+#############################################################################################
+
+# Per above, because of completion issues when erasing the USB stick using 
+#  'Startup Disk Creator', use gparted instead to reformat and clean out the USB stick prior 
+#  to utilizing 'Startup Disk Creator'.  Once again, in the following a SanDisk Cruzer Edge 
+#  8GB USB stick was used ...
+
+# Follow the above 'Startup Disk Creator' instructions, EXCEPT select the 
+#  ubuntu-14.04.1-desktop-amd64.iso image from within your '/home/username/Downloads/' 
+#  directory.  In my case '/home/peterkreyjr/Downloads/' 
+
+# Re-insert the USB stick, and take a look at what's now stored on it ...
+
+peterkreyjr@CoreSvces1:~$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       910G   24G  840G   3% /
+udev            3.9G  4.0K  3.9G   1% /dev
+tmpfs           783M  896K  782M   1% /run
+none            5.0M     0  5.0M   0% /run/lock
+none            3.9G   17M  3.9G   1% /run/shm
+/dev/sdg1       7.5G  2.0G  5.5G  27% /media/7E53-4659
+
+peterkreyjr@CoreSvces1:~$ ls -l /media/7E53-4659/
+total 1051176
+-rw-r--r-- 1 peterkreyjr peterkreyjr        134 Feb 15 14:50 autorun.inf
+drwx------ 3 peterkreyjr peterkreyjr       4096 Feb 15 14:50 boot
+drwx------ 2 peterkreyjr peterkreyjr       4096 Feb 15 14:54 casper
+-rw-r--r-- 1 peterkreyjr peterkreyjr 1073741824 Feb 15 14:59 casper-rw
+drwx------ 3 peterkreyjr peterkreyjr       4096 Feb 15 14:54 dists
+drwx------ 3 peterkreyjr peterkreyjr       4096 Feb 15 14:54 EFI
+drwx------ 2 peterkreyjr peterkreyjr       4096 Feb 15 14:54 install
+-r--r--r-- 1 peterkreyjr peterkreyjr      32256 Feb 15 14:54 ldlinux.sys
+-rw-r--r-- 1 peterkreyjr peterkreyjr      21426 Feb 15 14:50 md5sum.txt
+drwx------ 2 peterkreyjr peterkreyjr       4096 Feb 15 14:54 pics
+drwx------ 4 peterkreyjr peterkreyjr       4096 Feb 15 14:54 pool
+drwx------ 2 peterkreyjr peterkreyjr       4096 Feb 15 14:54 preseed
+-rw-r--r-- 1 peterkreyjr peterkreyjr        231 Feb 15 14:50 README.diskdefines
+drwx------ 2 peterkreyjr peterkreyjr      12288 Feb 15 14:54 syslinux
+-rwxr-xr-x 1 peterkreyjr peterkreyjr    2551408 Feb 15 14:50 wubi.exe
+
+# Per the above, looks like the 14.04.1 64-bit Desktop .iso contents are installed ...
+
+
+

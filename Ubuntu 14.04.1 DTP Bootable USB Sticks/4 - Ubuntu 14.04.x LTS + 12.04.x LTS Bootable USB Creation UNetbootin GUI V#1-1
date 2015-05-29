@@ -1,0 +1,101 @@
+#############################################################################################
+#
+#  Ubuntu 14.04.x LTS + 12.04.x LTS Bootable USB Creation w/UNetbootin GUI
+#
+#  2015-02-07 - V#1-0 - Ubuntu 12.04.x USB creation
+#  2015-02-15 - V#1-1 - Ubuntu 14.04.x USB creation
+# 
+#  Reference URLs:
+#
+#    UNetbootin - Homepage and Downloads 
+#      http://unetbootin.sourceforge.net/ 
+#  
+#############################################################################################
+
+# NOTE: On my Ubuntu 12.04.5 Desktop, unetbootin was already installed ... see: 
+
+peterkreyjr@CoreSvces1:~$ which unetbootin 
+/usr/bin/unetbootin
+
+# The following assumes Ubuntu 12.04.5 64-bit Desktop and 14.04.1 64-bit Desktop .iso 
+#  images are already downloaded into ~/Downloads ...
+
+# In the following a SanDisk Cruzer Edge 8GB USB stick was used 
+
+# NOTE: in the following UNetbootin GUI examples, Ubuntu 14.04.1 LTS 64-bit + 12.04.5 LTS
+#  64-bit have already been downloaded into ~/Downloads and can be used in the following
+#  UNetbootin GUI examples ... see:
+
+peterkreyjr@CoreSvces1:~$ ls -l ~/Downloads/ubuntu-*amd64.iso
+-rw-rw-r-- 1 peterkreyjr peterkreyjr  794820608 Aug  7  2014 /home/peterkreyjr/Downloads/ubuntu-12.04.5-desktop-amd64.iso
+-rw-rw-r-- 1 peterkreyjr peterkreyjr 1028653056 Jul 22  2014 /home/peterkreyjr/Downloads/ubuntu-14.04.1-desktop-amd64.iso
+
+
+# Next from upper left hand corner of Ubuntu desktop, left click on Ubnutu icon, 
+#  left click on 'System Tools', and left click on 'unetbootin' 
+
+# Prior to UNetbootin GUI opening, enter root password in response to 
+#  "Enter your password to perform administrative tasks" prompt, and in the LRHC of the
+#  left-click on the "OK" button
+
+# Next the UNetbootin GUI will appear.  Skip down to LLHC of GUI, and left-click on 
+#  'Diskimage' button, select 'ISO' within the ISO / Floppy pull-down, left-click on
+#  the '    ...    ' button on the far RHS. 
+
+# Within the 'Open Disk Image File' GUI, on top of GUI
+
+# Within the 'Look in' pull down, left-click on the down arrow, select / left-click 
+#   on the '~/Downloads' directory, select / left-click the 
+#   'ubuntu-14.04.1-desktop-amd64.iso' .iso file, and in the LRHC of the GUI 
+#   select / left-click on the 'Open' button.
+
+# Back in the UNetbootin main GUI screen, in the LLHC left-click within 'Type' 
+#  left-click select 'USB Drive'.  In the middle 'Drive' the USB's filesystem mount
+#  point will be displayed ... in my case is '/dev/sdg1' 
+
+# Finally, in the LRHC of the GUI screen left-click on the 'OK' button ...
+
+# If the USB does already contain a distro created by UNetbootin, the 
+#  '.../ubnkern exists, overwrite?' screen will appear.  In the bottom center
+#  of the screen left-click on the 'Yes to All' button.
+
+# If the USB does not already contain a distro created by UNetbootin, the 
+#  "Extracting files, please wait..." status + progress screen will apprear. 
+
+# In the next several minutes, 450+ files will be extracted + copied onto the 
+#  mounted USB stick ...
+
+# When completed, in the LRHC of the GUI left-click on the 'Exit' button.   
+
+# Before removing the USB stick, enter a series of 3 'sync' commands to ensure
+#  all the contents have been physically copied to the USB stick.
+
+
+# Remove the USB stick and re-insert.  From a Bash shell, see the following:
+ 
+peterkreyjr@CoreSvces1:~$ dmesg | tail -10
+[88565.138820] scsi18 : usb-storage 1-2:1.0
+[88566.138243] scsi 18:0:0:0: Direct-Access     SanDisk  Cruzer Edge      1.26 PQ: 0 ANSI: 6
+[88566.140575] sd 18:0:0:0: Attached scsi generic sg7 type 0
+[88566.142117] sd 18:0:0:0: [sdg] 15633408 512-byte logical blocks: (8.00 GB/7.45 GiB)
+[88566.143484] sd 18:0:0:0: [sdg] Write Protect is off
+[88566.143496] sd 18:0:0:0: [sdg] Mode Sense: 43 00 00 00
+[88566.144472] sd 18:0:0:0: [sdg] Write cache: disabled, read cache: enabled, doesn't support DPO or FUA
+[88566.163727]  sdg: sdg1
+[88566.167718] sd 18:0:0:0: [sdg] Attached SCSI disk
+[88566.418901] EXT4-fs (sdg1): mounted filesystem with ordered data mode. Opts: (null)
+
+peterkreyjr@CoreSvces1:~$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       910G   24G  840G   3% /
+udev            3.9G   12K  3.9G   1% /dev
+tmpfs           783M  896K  782M   1% /run
+none            5.0M     0  5.0M   0% /run/lock
+none            3.9G   30M  3.8G   1% /run/shm
+/dev/sdg1       7.4G  1.2G  5.9G  17% /media/Ubuntu 14.04.1 LTS amd64
+
+# Per the above, the 'Ubuntu 14.04.1 LTS amd64' .iso image USB stick has been
+#  created.
+
+
+

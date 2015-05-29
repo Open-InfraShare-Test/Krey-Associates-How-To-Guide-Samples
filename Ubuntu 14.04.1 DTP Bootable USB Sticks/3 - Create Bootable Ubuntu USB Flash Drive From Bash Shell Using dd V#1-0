@@ -1,0 +1,92 @@
+#############################################################################################
+#
+#  Create Bootable Ubuntu USB Flash Drive From Bash Shell Using dd 
+#
+#  2015-02-15 - V#1-0
+# 
+#  Reference URLs:
+#
+#   How to create a bootable Ubuntu USB flash drive from terminal?
+#     http://askubuntu.com/questions/372607/how-to-create-a-bootable-ubuntu-usb-flash-drive-from-terminal
+#
+# NOTE: important to use minimum of 2GB / 4GB USB sticks for copying .iso images ...
+#
+#############################################################################################
+
+# Insert USB stick for bootable .iso image creation, and then see where mounted ...
+
+peterkreyjr@CoreSvces1:~$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       910G   24G  840G   3% /
+udev            3.9G  4.0K  3.9G   1% /dev
+tmpfs           783M  900K  782M   1% /run
+none            5.0M     0  5.0M   0% /run/lock
+none            3.9G   16M  3.9G   1% /run/shm
+/dev/sdg1       7.4G  145M  6.9G   3% /media/f69ba211-2b4f-474a-a8ef-c4a5a4602f0a
+
+# Per above the USB stick is mounted on /dev/sdg1, so now unmount ...
+
+peterkreyjr@CoreSvces1:~$ sudo umount /dev/sdg1
+
+# Next confirm location of downloaded .iso image ...
+
+peterkreyjr@CoreSvces1:~$ ls -la /home/peterkreyjr/Downloads/ubuntu-14.04.1-desktop-amd64.iso
+-rw-rw-r-- 1 peterkreyjr peterkreyjr 1028653056 Jul 22  2014 /home/peterkreyjr/Downloads/ubuntu-14.04.1-desktop-amd64.iso
+
+# Next use dd to copy .iso image to the USB stick ... 
+
+peterkreyjr@CoreSvces1:~$ sudo dd if=/home/peterkreyjr/Downloads/ubuntu-14.04.1-desktop-amd64.iso \
+>    of=/dev/sdg bs=1M ; echo "dd return code:" $? 
+981+0 records in
+981+0 records out
+1028653056 bytes (1.0 GB) copied, 80.1729 s, 12.8 MB/s
+dd return code: 0
+
+# Make sure to do series of sync to ensure everything is physically copied to 
+#  the USB stick 
+
+peterkreyjr@CoreSvces1:~$ sync; sync; sync
+
+# Next remove USB stick, re-insert, and explore its contents 
+
+peterkreyjr@CoreSvces1:~$ dmesg | tail -10
+[525450.498216] scsi 25:0:0:0: Direct-Access     SanDisk  Cruzer Edge      1.26 PQ: 0 ANSI: 6
+[525450.500467] sd 25:0:0:0: Attached scsi generic sg7 type 0
+[525450.502207] sd 25:0:0:0: [sdg] 15633408 512-byte logical blocks: (8.00 GB/7.45 GiB)
+[525450.503561] sd 25:0:0:0: [sdg] Write Protect is off
+[525450.503573] sd 25:0:0:0: [sdg] Mode Sense: 43 00 00 00
+[525450.504542] sd 25:0:0:0: [sdg] Write cache: disabled, read cache: enabled, doesn't support DPO or FUA
+[525450.525079]  sdg: sdg1 sdg2
+[525450.528937] sd 25:0:0:0: [sdg] Attached SCSI disk
+[525450.810989] ISO 9660 Extensions: Microsoft Joliet Level 3
+[525450.812361] ISO 9660 Extensions: RRIP_1991A
+
+peterkreyjr@CoreSvces1:~$ mount -l
+/dev/sda1 on / type ext4 (rw,errors=remount-ro)
+   < ... snip ...>
+/dev/sdg1 on /media/Ubuntu 14.04.1 LTS amd64 type iso9660 (ro,nosuid,nodev,uid=1000,gid=1000,iocharset=utf8,mode=0400,dmode=0500,uhelper=udisks) [Ubuntu 14.04.1 LTS amd64]
+
+# Per above, the USB stick should now be a bootable .iso type iso9660 image ...
+
+# Next check out the contents of the USB stick 
+ 
+peterkreyjr@CoreSvces1:~$ ls -l /media/Ubuntu\ 14.04.1\ LTS\ amd64/
+total 2548
+-r--r--r-- 1 peterkreyjr peterkreyjr     134 Jul 22  2014 autorun.inf
+dr-xr-xr-x 1 peterkreyjr peterkreyjr    2048 Jul 22  2014 boot
+dr-xr-xr-x 1 peterkreyjr peterkreyjr    2048 Jul 22  2014 casper
+dr-xr-xr-x 1 peterkreyjr peterkreyjr    2048 Jul 22  2014 dists
+dr-xr-xr-x 1 peterkreyjr peterkreyjr    2048 Jul 22  2014 EFI
+dr-xr-xr-x 1 peterkreyjr peterkreyjr    2048 Jul 22  2014 install
+dr-xr-xr-x 1 peterkreyjr peterkreyjr   18432 Jul 22  2014 isolinux
+-r--r--r-- 1 peterkreyjr peterkreyjr   21426 Jul 22  2014 md5sum.txt
+dr-xr-xr-x 1 peterkreyjr peterkreyjr    2048 Jul 22  2014 pics
+dr-xr-xr-x 1 peterkreyjr peterkreyjr    2048 Jul 22  2014 pool
+dr-xr-xr-x 1 peterkreyjr peterkreyjr    2048 Jul 22  2014 preseed
+-r--r--r-- 1 peterkreyjr peterkreyjr     231 Jul 22  2014 README.diskdefines
+lr-xr-xr-x 1 peterkreyjr peterkreyjr       1 Jul 22  2014 ubuntu -> .
+-r--r--r-- 1 peterkreyjr peterkreyjr 2551408 Apr 14  2014 wubi.exe
+
+# Once again, the USB stick should now be a bootable .iso image ...
+
+
