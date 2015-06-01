@@ -1,0 +1,665 @@
+#############################################################################################
+#
+# Group 2 - Part3 - RP-B + Toshiba Canvio 1TB USB SATA Drive Tests Via hdparm+dd+diff+bonnie 
+#
+# 2014-02-17 - V#1-0
+#            - Second series of command line based testing using hdparm & dd random generated
+#              data, diff, single & multiple concurrent bonnie++, and bash_tst4.sh script
+#
+#            - Using previously formatted Toshiba 1TB SATA drive directly connected to 
+#              RaspberryPi-B USB port, and Debian Linux based command line tools
+#           
+#            - The following uses the Toshiba Canvio USB SATA Drive partition previously
+#              created using the RaspberryPi-B based Debian Linux command "parted -a optimal"
+#              and mkfs.ext4 command line tools, NOT the gparted GUI version. 
+#
+# 2014-02-20 - V#1-1 
+#            - Use dd to generate output files, make a copy of the outputfile, and then use 
+#              diff to confirm the copied file is correct
+#
+# 2014-02-20 - V#1-2 
+#            - Install & use bonnie++ 
+#            - formatting & corrections ...
+#
+# 2014-03-11 - V#1-3
+#            _ Added bonnie++ triple process parallel testing from 1st version of Bash
+#              shell script bash_tst4.sh   
+#
+# 2015-05-19,
+# 2015-05-30 - V#1-4
+#            - formatting & corrections ...
+# 
+#############################################################################################
+#
+# Reference URLs:
+#
+# "Increase USB Flash Drive Write Speed" 
+#    http://linux-howto-guide.blogspot.com/2009/10/increase-usb-flash-drive-write-speed.html
+# 
+# "Benchmark disk IO with DD and Bonnie++"
+#    http://www.jamescoyle.net/how-to/599-benchmark-disk-io-with-dd-and-bonnie
+#
+#############################################################################################
+#
+# IMPORTANT NOTE: all of the following tests ARE NOT done with the external USB SATA drive 
+#  connected to a separately powered USB hub ... the USB SATA drive is connected directly
+#  to one of the two the Raspberrypi USB ports for all of the following tests ... 
+#
+#############################################################################################
+
+# Using some of the sample commands from the above URL ...
+
+# First check out how the USB SATA drive is actually mounted ...
+
+pi@rasp-srvr1 ~ $ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+rootfs          7.2G  2.3G  4.7G  33% /
+/dev/root       7.2G  2.3G  4.7G  33% /
+devtmpfs        211M     0  211M   0% /dev
+tmpfs            44M  216K   44M   1% /run
+tmpfs           5.0M     0  5.0M   0% /run/lock
+tmpfs            88M     0   88M   0% /run/shm
+/dev/mmcblk0p1   56M   19M   38M  34% /boot
+/dev/sda1       945M  1.3M  879M   1% /media/USB-HDD1
+
+# So per the above, the device "/dev/sda1" is mounted as "/media/USB-HDD1" ... 
+
+
+#############################################################################################
+#
+# Part 1 - Test the Toshiba Canvio USB SATA drive with hdparm, and then a series of
+#           dd commands to utilize large percentages of the 1TB storage capacity ...
+#
+# Objective here is to see if either the Raspberrypi and/or the external Toshiba Canvio USB 
+#   SATA drive fails ... 
+#
+#############################################################################################
+
+# Do first test with hdparm ... 
+
+pi@rasp-srvr1 ~ $ sudo hdparm -tT /dev/sda
+
+/dev/sda:
+ Timing cached reads:   302 MB in  2.01 seconds = 150.24 MB/sec
+ Timing buffered disk reads:  80 MB in  3.08 seconds =  26.01 MB/sec
+
+# Next use a series of dd to copy a bunch of randomly generated data onto the USB SATA 
+#   drive ...
+
+# First is count=100 bs=1M ...
+
+pi@rasp-srvr1 ~ $  time dd count=100 bs=1M if=/dev/urandom of=/media/USB-HDD1/test1
+100+0 records in
+100+0 records out
+104857600 bytes (105 MB) copied, 102.905 s, 1.0 MB/s
+
+real	1m42.925s
+user	0m0.010s
+sys	1m30.920s
+
+pi@rasp-srvr1 ~ $ ls -l /media/USB-HDD1/test1
+-rw-r--r-- 1 pi pi 104857600 Feb 17 19:12 /media/USB-HDD1/test1
+
+pi@rasp-srvr1 ~ $ rm /media/USB-HDD1/test1
+
+# Next is count=200 bs=1M 
+
+pi@rasp-srvr1 ~ $ time dd count=200 bs=1M if=/dev/urandom of=/media/USB-HDD1/test1
+200+0 records in
+200+0 records out
+209715200 bytes (210 MB) copied, 210.655 s, 996 kB/s
+
+real	3m30.676s
+user	0m0.000s
+sys	3m1.730s
+
+pi@rasp-srvr1 ~ $ ls -l /media/USB-HDD1/test1
+-rw-r--r-- 1 pi pi 209715200 Feb 17 19:17 /media/USB-HDD1/test1
+
+pi@rasp-srvr1 ~ $ rm /media/USB-HDD1/test1
+
+# Next is count=300 bs=1M 
+
+pi@rasp-srvr1 ~ $ time dd count=300 bs=1M if=/dev/urandom of=/media/USB-HDD1/test1
+300+0 records in
+300+0 records out
+314572800 bytes (315 MB) copied, 326.557 s, 963 kB/s
+
+real	5m26.577s
+user	0m0.000s
+sys	4m32.450s
+
+pi@rasp-srvr1 ~ $ ls -l /media/USB-HDD1/test1
+-rw-r--r-- 1 pi pi 314572800 Feb 17 19:33 /media/USB-HDD1/test1
+
+pi@rasp-srvr1 ~ $ rm /media/USB-HDD1/test1
+
+# Next is count=400 bs=1M 
+
+pi@rasp-srvr1 ~ $ time dd count=400 bs=1M if=/dev/urandom of=/media/USB-HDD1/test1
+400+0 records in
+400+0 records out
+419430400 bytes (419 MB) copied, 425.795 s, 985 kB/s
+
+real	7m5.814s
+user	0m0.000s
+sys	6m3.410s
+
+pi@rasp-srvr1 ~ $ ls -l /media/USB-HDD1/test1
+-rw-r--r-- 1 pi pi 419430400 Feb 17 20:02 /media/USB-HDD1/test1
+
+pi@rasp-srvr1 ~ $ rm /media/USB-HDD1/test1
+
+# Next is count=100 bs=2M 
+
+pi@rasp-srvr1 ~ $ time dd count=100 bs=2M if=/dev/urandom of=/media/USB-HDD1/test1
+100+0 records in
+100+0 records out
+209715200 bytes (210 MB) copied, 209.56 s, 1.0 MB/s
+
+real	3m29.581s
+user	0m0.030s
+sys	3m1.770s
+
+pi@rasp-srvr1 ~ $ ls -l /media/USB-HDD1/test1
+-rw-r--r-- 1 pi pi 209715200 Feb 17 20:29 /media/USB-HDD1/test1
+
+pi@rasp-srvr1 ~ $ rm /media/USB-HDD1/test1
+
+# Next is count=200 bs=2M 
+
+pi@rasp-srvr1 ~ $ time dd count=200 bs=2M if=/dev/urandom of=/media/USB-HDD1/test1
+200+0 records in
+200+0 records out
+419430400 bytes (419 MB) copied, 429.276 s, 977 kB/s
+
+real	7m9.296s
+user	0m0.030s
+sys	6m3.470s 
+
+pi@rasp-srvr1 ~ $ ls -l /media/USB-HDD1/test1
+-rw-r--r-- 1 pi pi 419430400 Feb 17 20:49 /media/USB-HDD1/test1
+
+pi@rasp-srvr1 ~ $ rm /media/USB-HDD1/test1
+
+# Next is count=300 bs=2M 
+
+pi@rasp-srvr1 ~ $ time dd count=300 bs=2M if=/dev/urandom of=/media/USB-HDD1/test1
+300+0 records in
+300+0 records out
+629145600 bytes (629 MB) copied, 650.106 s, 968 kB/s
+
+real	10m50.128s
+user	0m0.010s
+sys	9m5.510s
+
+pi@rasp-srvr1 ~ $ ls -l /media/USB-HDD1/test1
+-rw-r--r-- 1 pi pi 629145600 Feb 17 21:04 /media/USB-HDD1/test1
+
+pi@rasp-srvr1 ~ $ rm /media/USB-HDD1/test1
+
+
+#############################################################################################
+# 
+#  Part 2 - Use dd to create test output file, make a copy, and then use diff to validate 
+#    the consistency of both files ...
+# 
+#############################################################################################
+
+# First remove all previous test files ...
+
+pi@rasp-srvr1 ~ $ rm /media/USB-HDD1/test1*
+
+pi@rasp-srvr1 ~ $ df -h /media/USB-HDD1/
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       945M  1.2M  879M   1% /media/USB-HDD1
+
+# Next create the base output file test1 using dd count=100 bs=1M ...
+
+pi@rasp-srvr1 ~ $ time dd count=100 bs=1M if=/dev/urandom of=/media/USB-HDD1/test1
+100+0 records in
+100+0 records out
+104857600 bytes (105 MB) copied, 106.653 s, 983 kB/s
+
+real	1m46.674s
+user	0m0.020s
+sys	1m30.870s
+
+pi@rasp-srvr1 ~ $ sync; sync; sync
+
+# Create a copy of test1 called test1_copy
+
+pi@rasp-srvr1 ~ $ cp /media/USB-HDD1/test1 /media/USB-HDD1/test1_copy
+
+pi@rasp-srvr1 ~ $ sync; sync; sync
+
+# Use diff to confirm & validate both files match ...
+
+pi@rasp-srvr1 ~ $ diff -s /media/USB-HDD1/test1 /media/USB-HDD1/test1_copy
+Files /media/USB-HDD1/test1 and /media/USB-HDD1/test1_copy are identical
+
+# Re-run the above test sequence, creating a dd output file test1 using count=200 bs=1M ...
+
+pi@rasp-srvr1 ~ $ rm /media/USB-HDD1/test1*
+
+pi@rasp-srvr1 ~ $ df -h /media/USB-HDD1/
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       945M  1.2M  879M   1% /media/USB-HDD1
+
+pi@rasp-srvr1 ~ $ time dd count=200 bs=1M if=/dev/urandom of=/media/USB-HDD1/test1
+200+0 records in
+200+0 records out
+209715200 bytes (210 MB) copied, 220.282 s, 952 kB/s
+
+real	3m40.302s
+user	0m0.000s
+sys	3m1.770s
+
+pi@rasp-srvr1 ~ $ sync; sync; sync
+
+pi@rasp-srvr1 ~ $ cp /media/USB-HDD1/test1 /media/USB-HDD1/test1_copy
+
+pi@rasp-srvr1 ~ $ sync; sync; sync
+
+pi@rasp-srvr1 ~ $ diff -s /media/USB-HDD1/test1 /media/USB-HDD1/test1_copy
+Files /media/USB-HDD1/test1 and /media/USB-HDD1/test1_copy are identical
+
+
+# Re-run the above test sequence, creating a dd output file test1 using count=300 bs=1M ...
+
+pi@rasp-srvr1 ~ $ rm /media/USB-HDD1/test1*
+
+pi@rasp-srvr1 ~ $ df -h /media/USB-HDD1/
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       945M  1.2M  879M   1% /media/USB-HDD1
+
+pi@rasp-srvr1 ~ $ time dd count=300 bs=1M if=/dev/urandom of=/media/USB-HDD1/test1
+300+0 records in
+300+0 records out
+314572800 bytes (315 MB) copied, 332.277 s, 947 kB/s
+
+real	5m32.304s
+user	0m0.000s
+sys	4m32.590s
+
+pi@rasp-srvr1 ~ $ sync; sync; sync
+
+pi@rasp-srvr1 ~ $ cp /media/USB-HDD1/test1 /media/USB-HDD1/test1_copy
+
+pi@rasp-srvr1 ~ $ sync; sync; sync
+
+pi@rasp-srvr1 ~ $ diff -s /media/USB-HDD1/test1 /media/USB-HDD1/test1_copy
+Files /media/USB-HDD1/test1 and /media/USB-HDD1/test1_copy are identical
+
+
+# Re-run the above test sequence, creating a dd output file test1 using count=400 bs=1M ...
+
+pi@rasp-srvr1 ~ $ rm /media/USB-HDD1/test1*
+
+pi@rasp-srvr1 ~ $ df -h /media/USB-HDD1/
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       945M  1.2M  879M   1% /media/USB-HDD1
+
+pi@rasp-srvr1 ~ $ time dd count=400 bs=1M if=/dev/urandom of=/media/USB-HDD1/test1
+400+0 records in
+400+0 records out
+419430400 bytes (419 MB) copied, 455.356 s, 921 kB/s
+
+real	7m35.381s
+user	0m0.030s
+sys	6m3.250s
+
+pi@rasp-srvr1 ~ $ sync; sync; sync
+
+pi@rasp-srvr1 ~ $ cp /media/USB-HDD1/test1 /media/USB-HDD1/test1_copy
+
+pi@rasp-srvr1 ~ $ sync; sync; sync
+
+pi@rasp-srvr1 ~ $ diff -s /media/USB-HDD1/test1 /media/USB-HDD1/test1_copy
+Files /media/USB-HDD1/test1 and /media/USB-HDD1/test1_copy are identical
+
+pi@rasp-srvr1 ~ $ df -h /media/USB-HDD1/
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       945M  802M   79M  92% /media/USB-HDD1
+
+
+#############################################################################################
+# 
+#  Part 3 - Test the external USB SATA drive using bonnie++ 
+# 
+#############################################################################################
+
+# See if bonnie++ is already installed ...
+
+pi@rasp-srvr1 ~ $ which bonnie++
+/usr/sbin/bonnie++
+
+# If already installed per above, skip ahead to "bonnie++ Simple Testing & Benchmarking Runs"
+
+# Otherwise, install bonnie++ via apt-get ...
+
+pi@rasp-srvr1 ~ $ sudo apt-get update
+Hit http://repository.wolfram.com stable Release.gpg
+Hit http://repository.wolfram.com stable Release
+Get:1 http://raspberrypi.collabora.com wheezy Release.gpg [836 B]
+Get:2 http://mirrordirector.raspbian.org wheezy Release.gpg [490 B]
+Get:3 http://raspberrypi.collabora.com wheezy Release [5,009 B]
+
+   < ... snip ... >
+
+Ign http://mirrordirector.raspbian.org wheezy/rpi Translation-en_US
+Ign http://mirrordirector.raspbian.org wheezy/rpi Translation-en
+Fetched 7,445 kB in 46s (160 kB/s)
+Reading package lists... Done
+
+pi@rasp-srvr1 ~ $ sudo apt-cache search bonnie++
+bonnie++ - Hard drive benchmark suite.
+
+pi@rasp-srvr1 ~ $ sudo apt-get install bonnie++
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+The following NEW packages will be installed:
+  bonnie++
+0 upgraded, 1 newly installed, 0 to remove and 2 not upgraded.
+Need to get 68.1 kB of archives.
+After this operation, 171 kB of additional disk space will be used.
+Get:1 http://mirrordirector.raspbian.org/raspbian/ wheezy/main bonnie++ armhf 1.96 [68.1 kB]
+Fetched 68.1 kB in 0s (99.2 kB/s)
+Selecting previously unselected package bonnie++.
+(Reading database ... 70321 files and directories currently installed.)
+Unpacking bonnie++ (from .../bonnie++_1.96_armhf.deb) ...
+Processing triggers for man-db ...
+Setting up bonnie++ (1.96) ...
+
+pi@rasp-srvr1 ~ $ which bonnie++
+/usr/sbin/bonnie++
+
+#
+# bonnie++ Simple Testing & Benchmarking Runs
+# 
+
+# Per reference URLs section, do the first bonnie++ simple benchmarking run ...
+# 
+# First clean-up the external USB SATA drive, and then do the first bonnie++ test ... 
+
+pi@rasp-srvr1 ~ $  df -h /media/USB-HDD1/
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       945M  802M   79M  92% /media/USB-HDD1
+
+pi@rasp-srvr1 ~ $  ls -l /media/USB-HDD1/
+total 819216
+drwx------ 2 root root     16384 Feb 14 11:16 lost+found
+-rw-r--r-- 1 pi   pi   419430400 Feb 20 20:30 test1
+-rw-r--r-- 1 pi   pi   419430400 Feb 20 20:37 test1_copy
+
+pi@rasp-srvr1 ~ $  rm  /media/USB-HDD1/test*
+
+pi@rasp-srvr1 ~ $  ls -l /media/USB-HDD1/
+total 16
+drwx------ 2 root root 16384 Feb 14 11:16 lost+found
+
+pi@rasp-srvr1 ~ $  df -h /media/USB-HDD1/
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       945M  1.2M  879M   1% /media/USB-HDD1
+
+# VERY IMPORTANT to run bonnie++ with the correct run-time parameters ... 
+
+# So first run with the target file size @ 250MB and DO NOT specify anything
+#   about amount of Raspberrypi RAM .... 
+
+pi@rasp-srvr1 ~ $  time bonnie++ -d /media/USB-HDD1/ -u pi -b -s 250
+Using uid:1000, gid:1000.
+File size should be double RAM for good results, RAM is 436M.
+usage:
+bonnie++ [-d scratch-dir] [-c concurrency] [-s size(MiB)[:chunk-size(b)]]
+      [-n number-to-stat[:max-size[:min-size][:num-directories[:chunk-size]]]]
+      [-m machine-name] [-r ram-size-in-MiB]
+      [-x number-of-tests] [-u uid-to-use:gid-to-use] [-g gid-to-use]
+      [-q] [-f] [-b] [-p processes | -y] [-z seed | -Z random-file]
+      [-D]
+
+Version: 1.96
+
+real	0m0.032s
+user	0m0.010s
+sys	0m0.010s
+
+# So per above, amount of free RAM is 436M, and the file size should be 
+#   436MB x 2 = 872MB
+
+pi@rasp-srvr1 ~ $  time bonnie++ -d /media/USB-HDD1/ -u pi -r 436 -b -s 872 
+Using uid:1000, gid:1000.
+Writing a byte at a time...done
+Writing intelligently...done
+Rewriting...done
+Reading a byte at a time...done
+Reading intelligently...done
+start 'em...done...done...done...done...done...
+Create files in sequential order...done.
+Stat files in sequential order...done.
+Delete files in sequential order...done.
+Create files in random order...done.
+Stat files in random order...done.
+Delete files in random order...done.
+Version  1.96       ------Sequential Output------ --Sequential Input- --Random-
+Concurrency   1     -Per Chr- --Block-- -Rewrite- -Per Chr- --Block-- --Seeks--
+Machine        Size K/sec %CP K/sec %CP K/sec %CP K/sec %CP K/sec %CP  /sec %CP
+rasp-srvr1     872M    40  87  1981   3  1949   4    77  22 31864  36  23.9   3
+Latency              2313ms   11920ms   10775ms   30513ms   61666us   31428ms
+Version  1.96       ------Sequential Create------ --------Random Create--------
+rasp-srvr1          -Create-- --Read--- -Delete-- -Create-- --Read--- -Delete--
+              files  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
+                 16     7   0 +++++ +++     5   0     5   0 +++++ +++     8   0
+Latency              3420ms    4369us    6979ms    9334ms     369us    3605ms
+1.96,1.96,rasp-srvr1,1,1393088436,872M,,40,87,1981,3,1949,4,77,22,31864,36,23.9,3,16,,,,,7,0,+++++,+++,5,0,5,0,+++++,+++,8,0,2313ms,11920ms,10775ms,30513ms,61666us,31428ms,3420ms,4369us,6979ms,9334ms,369us,3605ms
+
+real	189m38.246s
+user	0m6.380s
+sys	2m29.300s
+
+# Good news is the above bonnie++ test run successfully completed ... 
+
+# Interesting / bad news is it took 189 mins to complete ... 
+
+
+#############################################################################################
+# 
+#  Part 4 - Test the external USB SATA drive using the bash_tst4.sh triple process parallel 
+#   testing bonnie++  
+# 
+#############################################################################################
+
+# bonnie++ triple process parallel testing from 1st version of Bash shell script 
+#   bash_tst4.sh ... first section is copy/paste of bash_tst4.sh and the
+#   second section is copy / paste of the Bash script output ...
+
+
+#############################################################################################
+#
+# text display of bash_tst4.sh script
+#
+#############################################################################################
+ 
+pi@rasp-srvr1 ~ $ more ./bash_tst4.sh
+#!/bin/bash
+
+################################################################
+#  Confirm command line args count
+################################################################
+
+if [ $# -ne 1 ]
+then
+    echo "MUST specify Output-Filename as first arg ..."
+    exit 1
+fi
+
+################################################################
+#  echo out the first command line arg ...
+################################################################
+
+echo -e "\nFirst command line arg for output filename: "$1 "\n"
+
+################################################################
+#  Set $NOW for bonnie++ output files suffix ...
+################################################################
+
+NOW=$(date +"%Y-%m-%d-%H:%M:%S")
+
+################################################################
+#  Create multi-process semaphore for 3 bonnie++ concurrent
+#    processes ...
+################################################################
+
+echo -e " ... bonnie -p3 \n"
+
+bonnie++ -p3
+
+################################################################
+#  Setup the output filenames ...
+################################################################
+
+fname1=$1"_multi_out"1.$NOW
+fname2=$1"_multi_out"2.$NOW
+fname3=$1"_multi_out"3.$NOW
+
+echo $fname1
+echo $fname2
+echo $fname3
+echo -e " "
+
+################################################################
+#  Initiate 3 concurrent bonnie++ processes ...
+#   In this version not using loops ...
+################################################################
+
+bcmd1="bonnie++ -d /media/USB-HDD1/ -u pi -r 436 -b -s 872 -y s"
+echo "bonnie++ cmd txt =" $bcmd1
+
+T1="$(date +%s)" && $bcmd1 && T2="$(($(date +%s)-T1))" && echo -e "\n*** Run1 Secs: "$T2 &
+
+T3="$(date +%s)" && $bcmd1 && T4="$(($(date +%s)-T3))" && echo -e "\n*** Run2 Secs: "$T4 &
+
+T5="$(date +%s)" && $bcmd1 && T6="$(($(date +%s)-T5))" && echo -e "\n*** Run3 Secs: "$T6 &
+
+# time bonnie++ -d /media/USB-HDD1/ -u pi -r 436 -b -s 872 -y s > $fname1 &
+# time bonnie++ -d /media/USB-HDD1/ -u pi -r 436 -b -s 872 -y s > $fname2 &
+# time bonnie++ -d /media/USB-HDD1/ -u pi -r 436 -b -s 872 -y s > $fname3 &
+
+echo -e "\n ... end of bash_tst3.sh ... \n"
+
+
+
+#############################################################################################
+#
+#  Beginning of bash_tst4.sh Bash script output ...
+#
+#############################################################################################
+
+pi@rasp-srvr1 ~ $ ./bash_tst4.sh Toshiba-Canvio-1TB
+
+First command line arg for output filename: Toshiba-Canvio-1TB
+
+ ... bonnie -p3
+
+Creating semaphore for 3 procs.
+Toshiba-Canvio-1TB_multi_out1.2014-03-10-20:37:17
+Toshiba-Canvio-1TB_multi_out2.2014-03-10-20:37:17
+Toshiba-Canvio-1TB_multi_out3.2014-03-10-20:37:17
+
+bonnie++ cmd txt = bonnie++ -d /media/USB-HDD1/ -u pi -r 436 -b -s 872 -y s
+
+ ... end of bash_tst3.sh ...
+
+pi@rasp-srvr1 ~ $ Using uid:1000, gid:1000.
+Using uid:1000, gid:1000.
+Using uid:1000, gid:1000.
+Writing a byte at a time...Writing a byte at a time...Writing a byte at a time...done
+done
+done
+Writing intelligently...Writing intelligently...Writing intelligently...done
+done
+done
+Rewriting...Rewriting...Rewriting...done
+done
+done
+Reading a byte at a time...Reading a byte at a time...Reading a byte at a time...done
+done
+done
+Reading intelligently...Reading intelligently...Reading intelligently...done
+done
+done
+start 'em...start 'em...start 'em...done...done...done...done...done...done...done...done...done...
+done...
+done...done...done...done...done...
+Create files in sequential order...Create files in sequential order...Create files in sequential order...done.
+Stat files in sequential order...done.
+Stat files in sequential order...done.
+Stat files in sequential order...done.
+Delete files in sequential order...done.
+Delete files in sequential order...done.
+Delete files in sequential order...done.
+done.
+done.
+Create files in random order...Create files in random order...Create files in random order...done.
+Stat files in random order...done.
+Stat files in random order...done.
+Stat files in random order...done.
+Delete files in random order...done.
+Delete files in random order...done.
+Delete files in random order...done.
+Version  1.96       ------Sequential Output------ --Sequential Input- --Random-
+Concurrency   1     -Per Chr- --Block-- -Rewrite- -Per Chr- --Block-- --Seeks--
+Machine        Size K/sec %CP K/sec %CP K/sec %CP K/sec %CP K/sec %CP  /sec %CP
+rasp-srvr1     872M    15  33   945   1   788   2   135  33  5507   7  13.9   2
+Latency               661ms    9755ms   33818ms   84399us   30769ms   32927ms
+Version  1.96       ------Sequential Create------ --------Random Create--------
+rasp-srvr1          -Create-- --Read--- -Delete-- -Create-- --Read--- -Delete--
+              files  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
+                 16     1   0 21390  33     3   0     2   0 29882  32     3   0
+Latency              7312ms   24567us    8479ms    6467ms   20164us    8447ms
+1.96,1.96,rasp-srvr1,1,1394496019,872M,,15,33,945,1,788,2,135,33,5507,7,13.9,2,16,,,,,1,0,21390,33,3,0,2,0,29882,32,3,0,661ms,9755ms,33818ms,84399us,30769ms,32927ms,7312ms,24567us,8479ms,6467ms,20164us,8447ms
+
+*** Run1 Secs: 27997
+done.
+Version  1.96       ------Sequential Output------ --Sequential Input- --Random-
+Concurrency   1     -Per Chr- --Block-- -Rewrite- -Per Chr- --Block-- --Seeks--
+Machine        Size K/sec %CP K/sec %CP K/sec %CP K/sec %CP K/sec %CP  /sec %CP
+rasp-srvr1     872M    14  34   988   1   781   2   118  36  5538   7  13.7   2
+Latency               685ms   10186ms   33813ms     125ms   30800ms   33443ms
+Version  1.96       ------Sequential Create------ --------Random Create--------
+rasp-srvr1          -Create-- --Read--- -Delete-- -Create-- --Read--- -Delete--
+              files  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
+                 16     1   0 20327  34     3   0     2   0 28848  33     3   0
+Latency              7056ms   30130us    8480ms    6523ms   30138us    8490ms
+1.96,1.96,rasp-srvr1,1,1394496018,872M,,14,34,988,1,781,2,118,36,5538,7,13.7,2,16,,,,,1,0,20327,34,3,0,2,0,28848,33,3,0,685ms,10186ms,33813ms,125ms,30800ms,33443ms,7056ms,30130us,8480ms,6523ms,30138us,8490ms
+
+*** Run3 Secs: 27998
+done.
+Version  1.96       ------Sequential Output------ --Sequential Input- --Random-
+Concurrency   1     -Per Chr- --Block-- -Rewrite- -Per Chr- --Block-- --Seeks--
+Machine        Size K/sec %CP K/sec %CP K/sec %CP K/sec %CP K/sec %CP  /sec %CP
+rasp-srvr1     872M    15  33  1000   1   786   2   122  34  5508   7  13.9   2
+Latency               667ms    8457ms   33807ms     109ms   30818ms   33816ms
+Version  1.96       ------Sequential Create------ --------Random Create--------
+rasp-srvr1          -Create-- --Read--- -Delete-- -Create-- --Read--- -Delete--
+              files  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
+                 16     1   0 20576  35     3   0     2   0 28569  34     3   0
+Latency              6958ms   24610us    8450ms    5734ms   30134us    8326ms
+1.96,1.96,rasp-srvr1,1,1394496013,872M,,15,33,1000,1,786,2,122,34,5508,7,13.9,2,16,,,,,1,0,20576,35,3,0,2,0,28569,34,3,0,667ms,8457ms,33807ms,109ms,30818ms,33816ms,6958ms,24610us,8450ms,5734ms,30134us,8326ms
+
+*** Run2 Secs: 27999
+pi@rasp-srvr1 ~ $
+
+#############################################################################################
+#
+# ... end of bash_tst4.sh Bash script output ... 
+#
+# Each of the 3 concurrent bonnie++ runs took 27997, 27998, and 27999 seconds or app. 
+#  466.65 mins, or app. 7.78 hours to complete ...
+#
+# Per the above, 3 parallel/concurrent bonnie++ instances successfully ran on USB externally
+#  mounted Toshiba Canvio 1TB USB SATA Drive ...
+#
+#############################################################################################
+

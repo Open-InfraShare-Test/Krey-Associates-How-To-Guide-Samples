@@ -1,0 +1,375 @@
+#############################################################################################
+#
+# Group 4 - Part 7 - RP-B + lighttpd Web Server Install + Config + Initial Tests 
+#
+# 2013-02-24 - V#1-0
+#
+#            - Installation of lighttpd web server on RaspberryPi-B, local command command 
+#              line curl + wget testing from RaspberryPi-B and remote curl & wget testing 
+#              from OSX MacBook Pro Retina laptop ...
+#
+#            - lighttpd web server testing in preparation of supporting ONIE based Open 
+#              Networking "White Box" switch Bare Metal provisioning 
+#
+#            - lighttpd is a fast webserver with minimal memory footprint
+#
+#            - The following uses the Toshiba Canvio 1TB USB SATA Drive partition created 
+#              using gparted GUI version on Ubuntu 12.04.4 Linux, NOT "parted -a optimal" 
+#              and mkfs.ext4 command line tools.
+#
+#            - lighttpd server testing is done from both local & remote Bash shell sessions
+#              using both curl and wget ...
+#
+# 2015-01-02,
+# 2015-05-20,
+# 2015-05-30 - V#1-1 - Formatting & corrections ...
+#
+#############################################################################################
+#
+# Reference URLs:
+#
+#  Lighttpd by Andre Bogus, Packt Publishing
+#  http://www.amazon.com/exec/obidos/ASIN/1847192106/raspberrypispy-20
+#
+#  How To Setup A Web Server On Your Raspberry Pi
+#  http://www.raspberrypi-spy.co.uk/2013/06/how-to-setup-a-web-server-on-your-raspberry-pi/
+#
+#  15 Practical Linux cURL Command Examples (cURL Download Examples)
+#  http://www.thegeekstuff.com/2012/04/curl-examples/
+#
+#  The Ultimate Wget Download Guide With 15 Awesome Examples
+#  http://www.thegeekstuff.com/2009/09/the-ultimate-wget-download-guide-with-15-awesome-examples/
+#
+#############################################################################################
+#
+# IMPORTANT NOTE: all of the following tests ARE NOT done with the external USB SATA drive 
+#  connected to a separately powered USB hub ... the USB SATA drive is connected directly
+#  to one of the two the Raspberrypi USB ports for all of the following tests ... 
+#
+#############################################################################################
+
+# Update / refresh the apt-get package lists from repos, and update them for info on the 
+#   newest versions of packages and their dependencies ...
+
+pi@rasp-srvr1 ~ $ sudo apt-get update
+Hit http://repository.wolfram.com stable Release.gpg
+Hit http://repository.wolfram.com stable Release
+Hit http://repository.wolfram.com stable/non-free armhf Packages
+Ign http://repository.wolfram.com stable/non-free Translation-en_US
+Ign http://repository.wolfram.com stable/non-free Translation-en
+Hit http://raspberrypi.collabora.com wheezy Release.gpg
+Get:1 http://mirrordirector.raspbian.org wheezy Release.gpg [490 B]
+Hit http://archive.raspberrypi.org wheezy Release.gpg
+Hit http://raspberrypi.collabora.com wheezy Release
+Get:2 http://mirrordirector.raspbian.org wheezy Release [14.4 kB]
+Hit http://archive.raspberrypi.org wheezy Release
+Hit http://raspberrypi.collabora.com wheezy/rpi armhf Packages
+Hit http://archive.raspberrypi.org wheezy/main armhf Packages
+Get:3 http://mirrordirector.raspbian.org wheezy/main armhf Packages [7,425 kB]
+Ign http://raspberrypi.collabora.com wheezy/rpi Translation-en_US
+Ign http://raspberrypi.collabora.com wheezy/rpi Translation-en
+Ign http://archive.raspberrypi.org wheezy/main Translation-en_US
+Ign http://archive.raspberrypi.org wheezy/main Translation-en
+Hit http://mirrordirector.raspbian.org wheezy/contrib armhf Packages
+Hit http://mirrordirector.raspbian.org wheezy/non-free armhf Packages
+Hit http://mirrordirector.raspbian.org wheezy/rpi armhf Packages
+Ign http://mirrordirector.raspbian.org wheezy/contrib Translation-en_US
+Ign http://mirrordirector.raspbian.org wheezy/contrib Translation-en
+Ign http://mirrordirector.raspbian.org wheezy/main Translation-en_US
+Ign http://mirrordirector.raspbian.org wheezy/main Translation-en
+Ign http://mirrordirector.raspbian.org wheezy/non-free Translation-en_US
+Ign http://mirrordirector.raspbian.org wheezy/non-free Translation-en
+Ign http://mirrordirector.raspbian.org wheezy/rpi Translation-en_US
+Ign http://mirrordirector.raspbian.org wheezy/rpi Translation-en
+Fetched 7,440 kB in 51s (144 kB/s)
+Reading package lists... Done
+
+# Confirm lighttpd can be found and is installable ...
+
+pi@rasp-srvr1 ~ $ sudo apt-cache search lighttpd
+collectd-core - statistics collection and monitoring daemon (core system)
+libpion-common-4.0 - lightweight HTTP interface library - common runtime files
+libpion-common-4.0-dbg - lightweight HTTP interface library - common debug files
+libpion-common-dev - lightweight HTTP interface library - common development files
+libpion-net-4.0 - lightweight HTTP interface library - runtime files
+libpion-net-4.0-dbg - lightweight HTTP interface library - debug files
+libpion-net-dev - lightweight HTTP interface library - development files
+libpion-net-plugins - lightweight HTTP interface library - plugins
+libpion-net-plugins-dbg - lightweight HTTP interface library - plugins debug files
+lighttpd - fast webserver with minimal memory footprint
+lighttpd-doc - documentation for lighttpd
+lighttpd-mod-cml - cache meta language module for lighttpd
+lighttpd-mod-magnet - control the request handling module for lighttpd
+lighttpd-mod-mysql-vhost - MySQL-based virtual host configuration for lighttpd
+lighttpd-mod-trigger-b4-dl - anti-deep-linking module for lighttpd
+lighttpd-mod-webdav - WebDAV module for lighttpd
+mono-fastcgi-server - ASP.NET backend for FastCGI webservers - default version
+mono-fastcgi-server2 - ASP.NET 2.0 backend for FastCGI webservers
+mono-fastcgi-server4 - ASP.NET 4.0 backend for FastCGI webservers
+
+# Install lighttpd ...
+
+pi@rasp-srvr1 ~ $ sudo apt-get install lighttpd
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+The following extra packages will be installed:
+  libfam0 libterm-readkey-perl libterm-readline-perl-perl spawn-fcgi
+Suggested packages:
+  fam rrdtool apache2-utils
+The following NEW packages will be installed:
+  libfam0 libterm-readkey-perl libterm-readline-perl-perl lighttpd spawn-fcgi
+0 upgraded, 5 newly installed, 0 to remove and 3 not upgraded.
+Need to get 408 kB of archives.
+After this operation, 1,170 kB of additional disk space will be used.
+Do you want to continue [Y/n]? Y
+Get:1 http://mirrordirector.raspbian.org/raspbian/ wheezy/main libfam0 armhf 2.7.0-17 [27.8 kB]
+Get:2 http://mirrordirector.raspbian.org/raspbian/ wheezy/main libterm-readkey-perl armhf 2.30-4 [30.0 kB]
+Get:3 http://mirrordirector.raspbian.org/raspbian/ wheezy/main libterm-readline-perl-perl all 1.0303-1 [51.9 kB]
+Get:4 http://mirrordirector.raspbian.org/raspbian/ wheezy/main lighttpd armhf 1.4.31-4+deb7u2 [285 kB]
+Get:5 http://mirrordirector.raspbian.org/raspbian/ wheezy/main spawn-fcgi armhf 1.6.3-1 [13.6 kB]
+Fetched 408 kB in 1s (328 kB/s)
+Selecting previously unselected package libfam0.
+(Reading database ... 70340 files and directories currently installed.)
+Unpacking libfam0 (from .../libfam0_2.7.0-17_armhf.deb) ...
+Selecting previously unselected package libterm-readkey-perl.
+Unpacking libterm-readkey-perl (from .../libterm-readkey-perl_2.30-4_armhf.deb) ...
+Selecting previously unselected package libterm-readline-perl-perl.
+Unpacking libterm-readline-perl-perl (from .../libterm-readline-perl-perl_1.0303-1_all.deb) ...
+Selecting previously unselected package lighttpd.
+Unpacking lighttpd (from .../lighttpd_1.4.31-4+deb7u2_armhf.deb) ...
+Selecting previously unselected package spawn-fcgi.
+Unpacking spawn-fcgi (from .../spawn-fcgi_1.6.3-1_armhf.deb) ...
+Processing triggers for man-db ...
+Setting up libfam0 (2.7.0-17) ...
+Setting up libterm-readkey-perl (2.30-4) ...
+Setting up libterm-readline-perl-perl (1.0303-1) ...
+Setting up lighttpd (1.4.31-4+deb7u2) ...
+insserv: warning: script 'mathkernel' missing LSB tags and overrides
+[ ok ] Starting web server: lighttpd.
+Setting up spawn-fcgi (1.6.3-1) ...
+update-alternatives: using /usr/bin/spawn-fcgi.standalone to provide /usr/bin/spawn-fcgi (spawn-fcgi) in auto mode
+update-alternatives: warning: not replacing /usr/share/man/man1/spawn-fcgi.1.gz with a link
+
+# Per the above, lighttpd was sucessfully installed and automatically started up ...
+
+
+# Next let's stop lighttpd, and create a simpler /etc/lighttpd/lighttpd.conf that serves 
+#   things from the Toshiba Canvio 1TB USB SATA drive mounted at /media/USB-HDD1 ...
+
+# Stop / shutdown lighttpd.  First confirm where the lighttpd script is installed, and 
+#   then shut it down ...
+
+pi@rasp-srvr1 ~ $  ls -l /etc/init.d/lighttpd
+-rwxr-xr-x 1 root root 2887 Mar 15  2013 /etc/init.d/lighttpd
+
+pi@rasp-srvr1 ~ $  sudo /etc/init.d/lighttpd stop
+[ ok ] Stopping web server: lighttpd.
+
+# IMPORTANT NOTE: As of 2014-02-24, for some reason invoking "sudo /etc/init.d/lighttpd stop"
+#   or "sudo /etc/init.d/lighttpd restart" do not fully stop the lighttpd process, so for 
+#   now as temp workaround we must also kill the lighttpd process as sudo ...
+
+pi@rasp-srvr1 ~ $ ps aux | grep lighttpd
+root      4828  0.0  0.2   5812  1236 ?        S    14:01   0:00 /usr/sbin/lighttpd -f /etc/lighttpd/lighttpd.conf
+pi        4846  0.0  0.1   3544   812 pts/0    S+   14:03   0:00 grep --color=auto lighttpd
+
+# In the above lighttpd is running as process id 4828 ... so as sudo kill this process ...
+
+pi@rasp-srvr1 ~ $ sudo kill 4828
+
+pi@rasp-srvr1 ~ $ ps aux | grep lighttpd
+pi        4880  0.0  0.1   3544   812 pts/0    S+   14:07   0:00 grep --color=auto lighttpd
+
+# Per the above the lighttpd background process was stopped ... 
+
+# Next create + confirm the lighttpd storage directory in /media/USB-HDD1
+
+pi@rasp-srvr1 ~ $  mkdir /media/USB-HDD1/lighttpd
+
+
+# Next make a backup copy of lighttpd's original config file /etc/lighttpd/lighttpd.conf 
+#   using NOW=$(date +"%Y-%m-%d-%H:%M:%S") as suffix for the original config file version ...
+
+pi@rasp-srvr1 ~ $  NOW=$(date +"%Y-%m-%d-%H:%M:%S")
+
+pi@rasp-srvr1 ~ $  echo $NOW
+2014-02-24-12:17:43
+
+pi@rasp-srvr1 ~ $  ls -l /etc/lighttpd/
+total 12
+drwxr-xr-x 2 root root 4096 Feb 24 12:00 conf-available
+drwxr-xr-x 2 root root 4096 Nov 17 00:19 conf-enabled
+-rw-r--r-- 1 root root 1039 Mar 15  2013 lighttpd.conf
+
+pi@rasp-srvr1 ~ $  sudo cp /etc/lighttpd/lighttpd.conf  /etc/lighttpd/lighttpd.conf.$NOW
+
+pi@rasp-srvr1 ~ $  ls -l /etc/lighttpd/
+total 16
+drwxr-xr-x 2 root root 4096 Feb 24 12:00 conf-available
+drwxr-xr-x 2 root root 4096 Nov 17 00:19 conf-enabled
+-rw-r--r-- 1 root root 1039 Mar 15  2013 lighttpd.conf
+-rw-r--r-- 1 root root 1039 Feb 24 12:20 lighttpd.conf.2014-02-24-12:17:43
+
+
+# Edit + revise /etc/lighttpd/lighttpd.conf to only contain the following 4 config lines:
+
+pi@rasp-srvr1 ~ $ sudo vim /etc/lighttpd/lighttpd.conf
+
+# 2014-02-24 - created for lighttpd to serve ONIE + other config files ...
+
+server.document-root        = "/media/USB-HDD1/lighttpd"
+server.dir-listing          = "enable"
+mimetype.assign             = ("" => "text/html")
+server.port                 = 8081
+
+# NOTE: in the above I've picked 8081 as the lighttpd server port ...
+
+# Create a simple test text file with the following lines in /media/USB-HDD1/lighttpd ...
+
+pi@rasp-srvr1 ~ $ vim /media/USB-HDD1/lighttpd/test1
+
+this is the first line of lighttpd test file in /media/USB-HDD1/lighttpd/test1
+this is the second line of lighttpd test file in /media/USB-HDD1/lighttpd/test1
+
+pi@rasp-srvr1 ~ $ more /media/USB-HDD1/lighttpd/test1
+
+this is the first line of lighttpd test file in /media/USB-HDD1/lighttpd/test1
+this is the second line of lighttpd test file in /media/USB-HDD1/lighttpd/test1
+
+pi@rasp-srvr1 ~ $
+
+# Next restart the lighttpd server ... will be using the new lighttpd.conf file
+
+pi@rasp-srvr1 ~ $  sudo /etc/init.d/lighttpd start
+[....] Starting web server: lighttpd2014-02-24 14:43:32: (log.c.166) server started
+. ok
+
+# Take a look at the background process ...
+
+pi@rasp-srvr1 ~ $ ps aux | grep lighttpd
+root      4904  0.0  0.1   5680   756 ?        S    14:43   0:00 /usr/sbin/lighttpd -f /etc/lighttpd/lighttpd.conf
+pi        4922  0.0  0.1   3544   812 pts/0    S+   14:44   0:00 grep --color=auto lighttpd
+
+
+# Last, via curl, confirm that the test1 text file contents will be returned.  First test
+#   using the Raspberrypi's localhost address 127.0.0.1:8081, and then with its current IP
+#   address 192.168.1.22:8081 
+
+pi@rasp-srvr1 ~ $ curl http://127.0.0.1:8081/test1
+
+this is the first line of lighttpd test file in /media/USB-HDD1/lighttpd/test1
+this is the second line of lighttpd test file in /media/USB-HDD1/lighttpd/test1
+
+pi@rasp-srvr1 ~ $
+
+pi@rasp-srvr1 ~ $ curl http://192.168.1.22:8081/test1
+
+this is the first line of lighttpd test file in /media/USB-HDD1/lighttpd/test1
+this is the second line of lighttpd test file in /media/USB-HDD1/lighttpd/test1
+
+pi@rasp-srvr1 ~ $
+
+
+# Also test from a remote machine.  The following is Bash shell copy / paste from my  
+#   MacBook Pro laptop "pkjr-Retina1" with IP address 192.168.1.17 
+
+pkjr-Retina1:~ peterkreyjr$ ifconfig en0
+en0: flags=8863<UP,BROADCAST,SMART,RUNNING,SIMPLEX,MULTICAST> mtu 1500
+	ether 14:10:9f:dd:60:33
+	inet6 fe80::1610:9fff:fedd:6033%en0 prefixlen 64 scopeid 0x4
+	inet 192.168.1.17 netmask 0xffffff00 broadcast 192.168.1.255
+	media: autoselect
+	status: active
+
+pkjr-Retina1:~ peterkreyjr$ curl http://192.168.1.22:8081/test1
+
+this is the first line of lighttpd test file in /media/USB-HDD1/lighttpd/test1
+this is the second line of lighttpd test file in /media/USB-HDD1/lighttpd/test1
+
+pkjr-Retina1:~ peterkreyjr$
+
+
+#############################################################################################
+#
+# Group of examples of storing the output of curl to a local file.  First from localhost, 
+#   second from the local machines IP address 192.168.1.22 ...
+#
+#############################################################################################
+
+pi@rasp-srvr1 ~ $ curl -o ./test1  http://127.0.0.1:8081/test1
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   161  100   161    0     0   4063      0 --:--:-- --:--:-- --:--:--  6708
+
+pi@rasp-srvr1 ~ $ ls -l test1
+-rw-r--r-- 1 pi pi 161 Feb 24 15:00 test1
+
+pi@rasp-srvr1 ~ $ curl -o ./test1  http://192.168.1.22:8081/test1
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   161  100   161    0     0   3561      0 --:--:-- --:--:-- --:--:--  5551
+
+pi@rasp-srvr1 ~ $ ls -l test1
+-rw-r--r-- 1 pi pi 161 Feb 24 15:04 test1
+
+pi@rasp-srvr1 ~ $ more test1
+
+this is the first line of lighttpd test file in /media/USB-HDD1/lighttpd/test1
+this is the second line of lighttpd test file in /media/USB-HDD1/lighttpd/test1
+
+pi@rasp-srvr1 ~ $
+
+
+#############################################################################################
+#
+# And from my remote MacBook Pro laptop "pkjr-Retina1" with IP address 192.168.1.17 
+#
+#############################################################################################
+  
+pkjr-Retina1:~ peterkreyjr$ curl -o ./test1  http://192.168.1.22:8081/test1
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   161  100   161    0     0  20944      0 --:--:-- --:--:-- --:--:-- 80500
+
+pkjr-Retina1:~ peterkreyjr$ ls -l test1
+-rw-r--r--  1 peterkreyjr  peterkreyjr  161 Feb 24 15:05 test1
+
+pkjr-Retina1:~ peterkreyjr$ more test1
+
+this is the first line of lighttpd test file in /media/USB-HDD1/lighttpd/test1
+this is the second line of lighttpd test file in /media/USB-HDD1/lighttpd/test1
+
+pkjr-Retina1:~ peterkreyjr$
+
+
+#############################################################################################
+#
+# And last, let's make sure wget also works ... -v means verbose output, and -O argument is 
+#   the target output file ...
+#
+#############################################################################################
+
+pi@rasp-srvr1 ~ $  wget http://192.168.1.22:8081/test1 -O ./wget_test1 -v
+--2014-02-24 15:44:09--  http://192.168.1.22:8081/test1
+Connecting to 192.168.1.22:8081... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 161 [text/html]
+Saving to: `./wget_test1'
+
+100%[===================================================================================================================>] 161         --.-K/s   in 0s
+
+2014-02-24 15:44:09 (2.02 MB/s) - `./wget_test1' saved [161/161]
+
+pi@rasp-srvr1 ~ $ more ./wget_test1
+
+this is the first line of lighttpd test file in /media/USB-HDD1/lighttpd/test1
+this is the second line of lighttpd test file in /media/USB-HDD1/lighttpd/test1
+
+pi@rasp-srvr1 ~ $
+
+# So per the above, lighttpd on Raspberryi's Debian Linux distro works with the 
+#   /media/USB-HDD1/ directory entry on the Toshiba Canvio 1TB USB SATA external drive 
+#   partition & ext4 filesystem created using gparted GUI version on Ubuntu 12.04.4 Linux ...
+
+

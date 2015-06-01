@@ -1,0 +1,236 @@
+
+#############################################################################################
+#
+# Group 8 - Part 13 - Multiple Linux Image Downloads + sha1 hash check + wget tests 
+#
+#  2013-03-18 - v#1-0 
+#
+#    - Prior to this test version, was not confirming & validating sha1 hash values after 
+#      downloads ... assumed directly connected Toshiba Canvio 1TB USB SATA Drives were
+#      correctly storing downloads 
+#
+#    - Once starting the sha1 value checks after .iso downloads & other file transfers, 
+#      discovered the sha1 values did not match & were invalid, despite lack of any other
+#      command line run-time errors 
+#
+#    - Were detected during downloads of various Linux OS .iso images such as RaspberryPi 
+#      Debian CentOS, Ubuntu, and others after lighttpd server testing 
+#
+#    - The below was run after discovering need for externally powered USB Hub for devices 
+#      such as the Toshiba Canvio 1TB USB SATA Drive
+#
+#    - Added RaspberryPi B tested & approved 'Staples 4 Port Slim USB 2.0 Hub' w/2.5A external
+#      power supply ... see:
+#
+#            http://www.staples.com/Staples-4-Port-Slim-USB-2-0-Hub/product_645441
+#
+#      and all .iso .zip file downloads + sha1 validations were now correct 
+#
+#    - rasp-srvr1 connected to network via 10/100 ethernet
+#
+#    - First test is downloading wheezy raspian debian linux onto micro center 128GB usb 
+#        stick as target storage ...
+#
+#    - Second test is downloading wheezy raspian debian linux onto Toshiba Canvio 1TB USB 
+#        SATA Drive as target storage ...  
+#
+#    - Third test is downloading ubuntu-12.04.4-server-i386.iso onto Toshiba Canvio 1TB USB 
+#        SATA Drive as target storage ... 
+#
+#    - All 3 download sha1 checks were correct & successful 
+#
+# 2015-05-31 - V#1-1  - Formatting & corrections ... 
+# 
+#############################################################################################
+
+
+#############################################################################################
+#
+# remotely ssh onto raspberrypi server rasp-srvr1, and cd to /media/usb-hdd1/
+#
+#############################################################################################
+
+pkjr-retina1:~ peterkreyjr$ ssh 192.168.1.22
+peterkreyjr@192.168.1.22's password:
+
+pkjr-retina1:~ peterkreyjr$ ssh pi@192.168.1.22
+pi@192.168.1.22's password:
+linux rasp-srvr1 3.10.30+ #640 preempt fri feb 14 19:09:14 gmt 2014 armv6l
+
+the programs included with the debian gnu/linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Mon Mar 17 18:22:27 2014 from 192.168.1.12
+pi@rasp-srvr1 ~ $
+
+pi@rasp-srvr1 ~ $ cd /media/USB-HDD1/lighttpd/
+pi@rasp-srvr1 /media/USB-HDD1/lighttpd $
+
+pi@rasp-srvr1 /media/USB-HDD1/lighttpd $ pwd
+/media/USB-HDD1/lighttpd 
+
+
+#############################################################################################
+#
+# Test #1 -Download wheezy-raspbian distro from http://www.raspberrypi.org/downloads onto 
+#          Micro Center 128GB USB Stick external storage device ... 
+#
+#   MUST DO triple sync to make sure all of downloaded file has been completely written
+#     to the targeted external storage device ... 
+#
+#############################################################################################
+
+pi@rasp-srvr1 /media/USB-HDD1/lighttpd $ wget http://downloads.raspberrypi.org/raspbian_latest -O ./2014-01-07-wheezy-raspbian.zip
+--2014-03-18 13:42:15--  http://downloads.raspberrypi.org/raspbian_latest
+Resolving downloads.raspberrypi.org (downloads.raspberrypi.org)... 93.93.130.214, 93.93.128.211, 93.93.128.230, ...
+Connecting to downloads.raspberrypi.org (downloads.raspberrypi.org)|93.93.130.214|:80... connected.
+HTTP request sent, awaiting response... 302 Found
+Location: http://downloads.raspberrypi.org/raspbian/images/raspbian-2014-01-09/2014-01-07-wheezy-raspbian.zip [following]
+--2014-03-18 13:42:15--  http://downloads.raspberrypi.org/raspbian/images/raspbian-2014-01-09/2014-01-07-wheezy-raspbian.zip
+Reusing existing connection to downloads.raspberrypi.org:80.
+HTTP request sent, awaiting response... 302 Found
+Location: http://director.downloads.raspberrypi.org/raspbian/images/raspbian-2014-01-09/2014-01-07-wheezy-raspbian.zip [following]
+--2014-03-18 13:42:15--  http://director.downloads.raspberrypi.org/raspbian/images/raspbian-2014-01-09/2014-01-07-wheezy-raspbian.zip
+Resolving director.downloads.raspberrypi.org (director.downloads.raspberrypi.org)... 93.93.128.211, 93.93.128.230, 93.93.130.39, ...
+Reusing existing connection to downloads.raspberrypi.org:80.
+HTTP request sent, awaiting response... 302 Moved temporarily
+Location: http://files.velocix.com/c1410/newdownloads/raspbian/images/raspbian-2014-01-09/2014-01-07-wheezy-raspbian.zip [following]
+--2014-03-18 13:42:16--  http://files.velocix.com/c1410/newdownloads/raspbian/images/raspbian-2014-01-09/2014-01-07-wheezy-raspbian.zip
+Resolving files.velocix.com (files.velocix.com)... 212.187.212.226
+Connecting to files.velocix.com (files.velocix.com)|212.187.212.226|:80... connected.
+HTTP request sent, awaiting response... 302 Found
+Location: http://212.187.212.151/bt/fed394df53483a20bb44f549cce7e8cf7c4b2058/data/2014-01-07-wheezy-raspbian.zip [following]
+--2014-03-18 13:42:16--  http://212.187.212.151/bt/fed394df53483a20bb44f549cce7e8cf7c4b2058/data/2014-01-07-wheezy-raspbian.zip
+Connecting to 212.187.212.151:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 817931404 (780M) [application/zip]
+Saving to: `./2014-01-07-wheezy-raspbian.zip'
+
+100%[=====================================================================================================================================>] 817,931,404 1.22M/s   in 11m 30s
+
+2014-03-18 13:53:46 (1.13 MB/s) - `./2014-01-07-wheezy-raspbian.zip' saved [817931404/817931404]
+
+pi@rasp-srvr1 /media/USB-HDD1/lighttpd $
+
+pi@rasp-srvr1 /media/USB-HDD1/lighttpd $ sync; sync; sync
+
+#############################################################################################
+#
+#  Verify SHA-1 checksum against http://www.raspberrypi.org/downloads 
+#            9d0afbf932ec22e3c29d793693f58b0406bcab86 
+# 
+#############################################################################################
+
+pi@rasp-srvr1 /media/USB-HDD1/lighttpd $ sha1sum ./2014-01-07-wheezy-raspbian.zip
+9d0afbf932ec22e3c29d793693f58b0406bcab86  ./2014-01-07-wheezy-raspbian.zip
+
+#############################################################################################
+#  Per the above, the downloaded http://downloads.raspberrypi.org/raspbian_latest is valid
+#############################################################################################
+
+
+#############################################################################################
+#
+# Test #2 -Download wheezy-raspbian distro from http://www.raspberrypi.org/downloads onto 
+#          Toshiba Canvio 1TB USB SATA Drive external storage device ... 
+#
+#   MUST DO triple sync to make sure all of downloaded file has been completely written
+#     to the targeted external storage device ... 
+#
+#############################################################################################
+
+pi@rasp-srvr1 /media/USB-HDD1/lighttpd $ wget http://downloads.raspberrypi.org/raspbian_latest -O ./2014-01-07-wheezy-raspbian.zip
+--2014-03-18 14:04:56--  http://downloads.raspberrypi.org/raspbian_latest
+Resolving downloads.raspberrypi.org (downloads.raspberrypi.org)... 93.93.128.211, 93.93.128.230, 93.93.130.39, ...
+Connecting to downloads.raspberrypi.org (downloads.raspberrypi.org)|93.93.128.211|:80... connected.
+HTTP request sent, awaiting response... 302 Found
+Location: http://downloads.raspberrypi.org/raspbian/images/raspbian-2014-01-09/2014-01-07-wheezy-raspbian.zip [following]
+--2014-03-18 14:04:56--  http://downloads.raspberrypi.org/raspbian/images/raspbian-2014-01-09/2014-01-07-wheezy-raspbian.zip
+Reusing existing connection to downloads.raspberrypi.org:80.
+HTTP request sent, awaiting response... 302 Found
+Location: http://director.downloads.raspberrypi.org/raspbian/images/raspbian-2014-01-09/2014-01-07-wheezy-raspbian.zip [following]
+--2014-03-18 14:04:56--  http://director.downloads.raspberrypi.org/raspbian/images/raspbian-2014-01-09/2014-01-07-wheezy-raspbian.zip
+Resolving director.downloads.raspberrypi.org (director.downloads.raspberrypi.org)... 93.93.128.211, 93.93.128.230, 93.93.130.39, ...
+Reusing existing connection to downloads.raspberrypi.org:80.
+HTTP request sent, awaiting response... 302 Moved temporarily
+Location: http://files.velocix.com/c1410/newdownloads/raspbian/images/raspbian-2014-01-09/2014-01-07-wheezy-raspbian.zip [following]
+--2014-03-18 14:04:57--  http://files.velocix.com/c1410/newdownloads/raspbian/images/raspbian-2014-01-09/2014-01-07-wheezy-raspbian.zip
+Resolving files.velocix.com (files.velocix.com)... 212.187.212.226
+Connecting to files.velocix.com (files.velocix.com)|212.187.212.226|:80... connected.
+HTTP request sent, awaiting response... 302 Found
+Location: http://212.187.212.148/bt/fed394df53483a20bb44f549cce7e8cf7c4b2058/data/2014-01-07-wheezy-raspbian.zip [following]
+--2014-03-18 14:04:57--  http://212.187.212.148/bt/fed394df53483a20bb44f549cce7e8cf7c4b2058/data/2014-01-07-wheezy-raspbian.zip
+Connecting to 212.187.212.148:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 817931404 (780M) [application/zip]
+Saving to: `./2014-01-07-wheezy-raspbian.zip'
+
+100%[=====================================================================================================================================>] 817,931,404  659K/s   in 11m 32s
+
+2014-03-18 14:16:29 (1.13 MB/s) - `./2014-01-07-wheezy-raspbian.zip' saved [817931404/817931404]
+
+pi@rasp-srvr1 /media/USB-HDD1/lighttpd $
+
+pi@rasp-srvr1 /media/USB-HDD1/lighttpd $ sync; sync; sync
+
+#############################################################################################
+#
+#  Verify SHA-1 checksum against http://www.raspberrypi.org/downloads 
+#            9d0afbf932ec22e3c29d793693f58b0406bcab86 
+# 
+#############################################################################################
+
+pi@rasp-srvr1 /media/USB-HDD1/lighttpd $ sha1sum ./2014-01-07-wheezy-raspbian.zip
+9d0afbf932ec22e3c29d793693f58b0406bcab86  ./2014-01-07-wheezy-raspbian.zip
+
+#############################################################################################
+#  Per the above, the downloaded http://downloads.raspberrypi.org/raspbian_latest is valid
+#############################################################################################
+
+
+#############################################################################################
+#
+# Test #3 - ubuntu-12.04.4-server-i386.iso from 
+#              http://releases.ubuntu.com/12.04/ubuntu-12.04.4-server-i386.iso 
+#   onto Toshiba Canvio 1TB USB SATA Drive external storage device ... 
+#
+#  NOTE: in the following I waited 5 to 10+ mins for the IO status / activity LED on the 
+#    Toshiba ... external storage device to stop blinking & shhowing any activity ...
+#    Idea here was to wait for all I/O's to complete & "everything" was written onto the
+#    Toshiba ... external storage device ...
+#
+#############################################################################################
+
+pi@rasp-srvr1 /media/USB-HDD1/lighttpd $ time curl -O http://releases.ubuntu.com/12.04/ubuntu-12.04.4-server-i386.iso
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  661M  100  661M    0     0  1936k      0  0:05:49  0:05:49 --:--:-- 1856k
+
+real	5m49.947s
+user	0m3.920s
+sys	1m4.690s
+
+#############################################################################################
+#
+#  After waiting 5 to 10+ mins for the Toshiba ... external storage device to stop blinking
+#     & showing any activity ...
+# 
+#  Verify ubuntu-12.04.4-server-i386.iso SHA-1 checksum against 
+#     http://releases.ubuntu.com/12.04/SHA1SUMS           
+# 
+#     3bae12e315c89d42d7bf571e4e35efce585c7624 *ubuntu-12.04.4-server-i386.iso      
+# 
+#############################################################################################
+
+pi@rasp-srvr1 /media/USB-HDD1/lighttpd $ sha1sum ubuntu-12.04.4-server-i386.iso
+3bae12e315c89d42d7bf571e4e35efce585c7624  ubuntu-12.04.4-server-i386.iso
+
+#############################################################################################
+#  Per the above, the downloaded ubuntu-12.04.4-server-i386.iso is valid
+#############################################################################################
+
+
+

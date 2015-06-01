@@ -1,0 +1,86 @@
+#############################################################################################
+#
+# Group 1 - Part 1A - RaspberryPi-B Debian Linux Download + SD Card Creation On OSX 
+#
+# 2012-07-20 - V#1-0 - Download & creation of Debian Linux SD on MacBook Pro OSX Laptop
+#                         PKJR-Core2-1 for RaspberryPi-B 
+# 2015-01-02, 
+# 2015-05-19 - V#1-1 - Formatting + typo corrections ...
+#
+#############################################################################################
+#
+# Reference URLs
+#
+# Download 2012-07-15-wheezy-raspbian.zip from
+#  http://downloads.raspberrypi.org/download.php?file=/images/raspbian/2012-07-15-wheezy-raspbian/2012-07-15-wheezy-raspbian.zip
+#
+#############################################################################################
+
+# From browser download above 2012-07-15-wheezy-raspbian.zip into ~/Downloads 
+
+# Validate SHA-1 checksum using shasum 
+
+PKJR-Core2-1:Downloads peterkreyjr$ shasum ./2012-07-15-wheezy-raspbian.zip 
+3947412babbf63f9f022f1b0b22ea6a308bb630c  ./2012-07-15-wheezy-raspbian.zip
+
+# Can also check SHA-1 checksum using "/usr/bin/openssl sha1" 
+
+PKJR-Core2-1:Downloads peterkreyjr$ /usr/bin/openssl sha1 ./2012-07-15-wheezy-raspbian.zip 
+SHA1(./2012-07-15-wheezy-raspbian.zip)= 3947412babbf63f9f022f1b0b22ea6a308bb630c
+
+# Extract the image from .zip file
+
+PKJR-Core2-1:Downloads peterkreyjr$ unzip 2012-07-15-wheezy-raspbian.zip 
+Archive:  2012-07-15-wheezy-raspbian.zip
+  inflating: 2012-07-15-wheezy-raspbian.img
+
+PKJR-Core2-1:Downloads peterkreyjr$ ls -la 2012-07-15-wheezy-raspbian.*
+-rw-r--r--@ 1 peterkreyjr  staff  1939865600 Jul 15 15:45 2012-07-15-wheezy-raspbian.img
+-rw-r--r--@ 1 peterkreyjr  staff   461001289 Jul 20 12:13 2012-07-15-wheezy-raspbian.zip
+PKJR-Core2-1:Downloads peterkreyjr$
+
+# Before connecting SD card reader or inserting SD card, run "df -h" to see what's aleady 
+#   mounted
+
+PKJR-Core2-1:Downloads peterkreyjr$ df -h
+Filesystem      Size   Used  Avail Capacity  Mounted on
+/dev/disk0s2   233Gi   44Gi  188Gi    19%    /
+devfs          109Ki  109Ki    0Bi   100%    /dev
+map -hosts       0Bi    0Bi    0Bi   100%    /net
+map auto_home    0Bi    0Bi    0Bi   100%    /home
+PKJR-Core2-1:Downloads peterkreyjr$
+
+# Now connect SD card reader or insert SD card, and run "df -h" to see how SD card is mounted
+
+PKJR-Core2-1:Downloads peterkreyjr$ df -h
+Filesystem      Size   Used  Avail Capacity  Mounted on
+/dev/disk0s2   233Gi   44Gi  188Gi    19%    /
+devfs          111Ki  111Ki    0Bi   100%    /dev
+map -hosts       0Bi    0Bi    0Bi   100%    /net
+map auto_home    0Bi    0Bi    0Bi   100%    /home
+/dev/disk2s1   3.6Gi  1.7Mi  3.6Gi     1%    /Volumes/NO NAME
+
+# So per above, the SD card was mounted as /dev/disk2s1 device=disk2 partition=s1 
+
+# Unmount the partition in order to overwrite entire disk
+
+PKJR-Core2-1:Downloads peterkreyjr$ diskutil unmount /dev/disk2s1
+Volume NO NAME on disk2s1 unmounted
+
+# In order to use dd to write the image to the SD, there's a bit of device renaming required.
+
+#  Use the device name of the partition above "disk2" for the entire disk, omitting the 
+#  partition name "s1", and and replace "disk" with "rdisk"   
+#       "/dev/disk2s1"  =>  "/dev/rdisk2"
+
+PKJR-Core2-1:Downloads peterkreyjr$ sudo dd bs=1m if=~/Downloads/2012-07-15-wheezy-raspbian.img of=/dev/rdisk2
+Password:
+1850+0 records in
+1850+0 records out
+1939865600 bytes transferred in 323.075361 secs (6004375 bytes/sec)
+
+# When dd command finishes, eject the card using diskutil
+
+PKJR-Core2-1:Downloads peterkreyjr$ diskutil eject /dev/rdisk2
+Disk /dev/rdisk2 ejected
+

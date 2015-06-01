@@ -1,0 +1,567 @@
+#############################################################################################
+#
+# Group 5 - Part 10 - RP-B + Micro Center 128GB USB 3.0 Flash Drive Stick Tests Via 
+#                     hdparm+dd+diff+bonnie 
+#
+# 2013-02-26 - V#1-0
+#
+#            - The following uses the Micro Center 128GB USB 3.0 Flash Drive Stick partition
+#              created using the gparted GUI version on Ubuntu 12.04.4. Linux, NOT the
+#              "parted -a optimal" and mkfs.ext4 command line tools  
+#
+#            - dd to generate output files, make a copy of the outputfile, and then use diff 
+#              to confirm the copied file is correct
+#
+#            - bonnie++ Testing & Benchmarking Runs
+#
+# 2013-02-28 - V#1.01 - continued testing ...
+#
+# 2015-01-02 - V#1.02 - Formatting & corrections ... 
+#
+# 2015-05-20 - V#1-1  - Formatting & corrections ... 
+#
+#############################################################################################
+#
+# Reference URLs:
+#
+# "Increase USB Flash Drive Write Speed" 
+#    http://linux-howto-guide.blogspot.com/2009/10/increase-usb-flash-drive-write-speed.html
+# 
+# "Benchmark disk IO with DD and Bonnie++"
+#    http://www.jamescoyle.net/how-to/599-benchmark-disk-io-with-dd-and-bonnie
+#
+#############################################################################################
+#
+# IMPORTANT NOTE: all of the following tests ARE NOT done with the external Micro Center 
+#  128GB USB 3.0 Flash Drive Stick connected to a separately powered USB hub ... the Micro 
+#  Center 128GB USB 3.0 Flash Drive Stick is directly connected to one of the two the 
+#  RaspberryPi-B USB ports for all of the following tests  
+#
+#############################################################################################
+
+# Using some of the sample commands from the above URL ...
+
+# First check out how the USB Flash drive stick is actually mounted ...
+
+pi@rasp-srvr1 ~ $ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+rootfs          7.2G  2.3G  4.7G  33% /
+/dev/root       7.2G  2.3G  4.7G  33% /
+devtmpfs        211M     0  211M   0% /dev
+tmpfs            44M  216K   44M   1% /run
+tmpfs           5.0M     0  5.0M   0% /run/lock
+tmpfs            88M     0   88M   0% /run/shm
+/dev/mmcblk0p1   56M   19M   38M  34% /boot
+/dev/sda1       114G   60M  108G   1% /media/USB-HDD1
+
+# So per the above, the Micro Center 128GB USB 3.0 Flash Drive Stick device "/dev/sda1" is 
+#  mounted as "/media/USB-HDD1" ... 
+
+#############################################################################################
+#
+# Part 1 - Test the Micro Center 128GB USB 3.0 Flash Drive Stick with hdparm, and then a 
+#           series of dd commands to utilize large percentages of the 128GB  storage 
+#           capacity ...
+#
+# Objective here is to see if either the Raspberrypi and/or the external Micro Center 128GB 
+#  USB 3.0 Flash Drive Stick fails ... 
+#
+#############################################################################################
+
+# Do first test with hdparm ... 
+
+pi@rasp-srvr1 ~ $ sudo hdparm -tT /dev/sda
+
+/dev/sda:
+ Timing cached reads:   322 MB in  2.00 seconds = 160.76 MB/sec
+ Timing buffered disk reads:  80 MB in  3.08 seconds =  26.01 MB/sec
+
+
+# Before running tests, make sure the Micro Center 128GB Flash Drive Stick is cleaned up ...
+
+pi@rasp-srvr1 ~ $ ls -l /media/USB-HDD1/
+total 28
+drwxr-xr-x 2 pi   pi    4096 Jan  7 17:09 Desktop
+drwx------ 2 root root 16384 Feb 26 18:58 lost+found
+-rw-r--r-- 1 pi   pi    5781 Feb 26 20:58 ocr_pi.png
+
+pi@rasp-srvr1 ~ $ rm -rf /media/USB-HDD1/Desktop/
+
+pi@rasp-srvr1 ~ $ rm /media/USB-HDD1/ocr_pi.png
+
+pi@rasp-srvr1 ~ $ ls -l /media/USB-HDD1/
+total 16
+drwx------ 2 root root 16384 Feb 26 18:58 lost+found
+
+pi@rasp-srvr1 ~ $ df -h /media/USB-HDD1/
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       114G   60M  108G   1% /media/USB-HDD1 
+
+# Next use a series of dd to copy a bunch of randomly generated data onto the 
+#   Micro Center 128GB Flash Drive Stick ...
+
+# First is count=100 bs=1M ... (NOTE: parted based ext4 test ran real 1m42.925s )
+
+pi@rasp-srvr1 ~ $ time dd count=100 bs=1M if=/dev/urandom of=/media/USB-HDD1/test1
+100+0 records in
+100+0 records out
+104857600 bytes (105 MB) copied, 97.3076 s, 1.1 MB/s
+
+real	1m37.328s
+user	0m0.000s
+sys	1m31.020s
+
+i@rasp-srvr1 ~ $ ls -l /media/USB-HDD1/test1
+-rw-r--r-- 1 pi pi 104857600 Feb 26 21:08 /media/USB-HDD1/test1
+
+pi@rasp-srvr1 ~ $ rm /media/USB-HDD1/test1
+
+#################################################################################
+#    2014-02-26 @ 9:14PM ... stopped here ...
+#    2014-02-28 @ 10:45AM .. restarted here ...
+#################################################################################
+
+# Next is count=200 bs=1M ... (NOTE: parted based ext4 test ran real 3m30.676s )
+
+pi@rasp-srvr1 ~ $ time dd count=200 bs=1M if=/dev/urandom of=/media/USB-HDD1/test1
+200+0 records in
+200+0 records out
+209715200 bytes (210 MB) copied, 194.949 s, 1.1 MB/s
+
+real	3m14.971s
+user	0m0.000s
+sys	3m2.100s
+
+pi@rasp-srvr1 ~ $ ls -l /media/USB-HDD1/test1
+-rw-r--r-- 1 pi pi 209715200 Feb 28 10:52 /media/USB-HDD1/test1
+
+pi@rasp-srvr1 ~ $ rm /media/USB-HDD1/test1
+
+# Next is count=300 bs=1M ... (NOTE: parted based ext4 test ran real 5m26.577s ) 
+
+pi@rasp-srvr1 ~ $ time dd count=300 bs=1M if=/dev/urandom of=/media/USB-HDD1/test1
+300+0 records in
+300+0 records out
+314572800 bytes (315 MB) copied, 294.517 s, 1.1 MB/s
+
+real	4m54.536s
+user	0m0.010s
+sys	4m33.050s 
+
+pi@rasp-srvr1 ~ $ ls -l /media/USB-HDD1/test1
+-rw-r--r-- 1 pi pi 314572800 Feb 28 11:45 /media/USB-HDD1/test1
+
+pi@rasp-srvr1 ~ $ rm /media/USB-HDD1/test1
+
+# Next is count=400 bs=1M ... 
+
+pi@rasp-srvr1 ~ $ time dd count=400 bs=1M if=/dev/urandom of=/media/USB-HDD1/test1
+
+400+0 records in
+400+0 records out
+419430400 bytes (419 MB) copied, 391.739 s, 1.1 MB/s
+
+real	6m31.758s
+user	0m0.030s
+sys	6m4.240s
+
+pi@rasp-srvr1 ~ $ ls -l /media/USB-HDD1/test1
+-rw-r--r-- 1 pi pi 419430400 Feb 28 12:12 /media/USB-HDD1/test1
+
+pi@rasp-srvr1 ~ $ df -h /media/USB-HDD1/test1
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       114G  460M  107G   1% /media/USB-HDD1
+
+pi@rasp-srvr1 ~ $ rm /media/USB-HDD1/test1
+
+
+# Next is count=100 bs=2M ... (NOTE: parted based ext4 test ran real 3m29.581s )
+
+pi@rasp-srvr1 ~ $ time dd count=100 bs=2M if=/dev/urandom of=/media/USB-HDD1/test1
+100+0 records in
+100+0 records out
+209715200 bytes (210 MB) copied, 194.752 s, 1.1 MB/s
+
+real	3m14.773s
+user	0m0.000s
+sys	3m2.110s
+
+pi@rasp-srvr1 ~ $ ls -l /media/USB-HDD1/test1
+-rw-r--r-- 1 pi pi 209715200 Feb 28 12:25 /media/USB-HDD1/test1
+
+pi@rasp-srvr1 ~ $ rm /media/USB-HDD1/test1
+
+# Next is count=200 bs=2M ... (NOTE: parted based ext4 test ran real 7m9.296s )
+
+pi@rasp-srvr1 ~ $  time dd count=200 bs=2M if=/dev/urandom of=/media/USB-HDD1/test1
+200+0 records in
+200+0 records out
+419430400 bytes (419 MB) copied, 392.574 s, 1.1 MB/s
+
+real	6m32.601s
+user	0m0.000s
+sys	6m4.240s
+
+pi@rasp-srvr1 ~ $ ls -l /media/USB-HDD1/test1
+-rw-r--r-- 1 pi pi 419430400 Feb 28 12:34 /media/USB-HDD1/test1
+
+pi@rasp-srvr1 ~ $ rm /media/USB-HDD1/test1
+
+# Next is count=300 bs=2M ... (NOTE: parted based ext4 test ran real 10m50.128s )
+
+pi@rasp-srvr1 ~ $ time dd count=300 bs=2M if=/dev/urandom of=/media/USB-HDD1/test1
+300+0 records in
+300+0 records out
+629145600 bytes (629 MB) copied, 589.411 s, 1.1 MB/s
+
+real	9m49.438s
+user	0m0.000s
+sys	9m6.760s
+
+pi@rasp-srvr1 ~ $ ls -l /media/USB-HDD1/test1
+-rw-r--r-- 1 pi pi 629145600 Feb 28 14:00 /media/USB-HDD1/test1
+
+pi@rasp-srvr1 ~ $ rm /media/USB-HDD1/test1
+
+# Next is count=400 bs=2M ... 
+
+pi@rasp-srvr1 ~ $ time dd count=400 bs=2M if=/dev/urandom of=/media/USB-HDD1/test1
+400+0 records in
+400+0 records out
+838860800 bytes (839 MB) copied, 788.159 s, 1.1 MB/s
+
+real	13m8.182s
+user	0m0.000s
+sys	12m9.330s
+
+pi@rasp-srvr1 ~ $ df -h /media/USB-HDD1/test1
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       114G  860M  107G   1% /media/USB-HDD1
+
+pi@rasp-srvr1 ~ $ ls -l /media/USB-HDD1/test1
+-rw-r--r-- 1 pi pi 838860800 Feb 28 14:19 /media/USB-HDD1/test1
+
+pi@rasp-srvr1 ~ $ rm /media/USB-HDD1/test1
+
+# Next is count=600 bs=2M ...
+
+pi@rasp-srvr1 ~ $ time dd count=600 bs=2M if=/dev/urandom of=/media/USB-HDD1/test1
+600+0 records in
+600+0 records out
+1258291200 bytes (1.3 GB) copied, 1180.62 s, 1.1 MB/s
+
+real	19m40.643s
+user	0m0.010s
+sys	18m14.850s
+
+pi@rasp-srvr1 ~ $ ls -l /media/USB-HDD1/test1
+-rw-r--r-- 1 pi pi 1258291200 Feb 28 15:42 /media/USB-HDD1/test1
+
+pi@rasp-srvr1 ~ $ df -h /media/USB-HDD1/test1
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       114G  1.3G  107G   2% /media/USB-HDD1
+
+# And now the last one ... count=800 bs=2M ...
+
+pi@rasp-srvr1 ~ $ time dd count=800 bs=2M if=/dev/urandom of=/media/USB-HDD1/test1
+800+0 records in
+800+0 records out
+1677721600 bytes (1.7 GB) copied, 1575.58 s, 1.1 MB/s
+
+real	26m15.601s
+user	0m0.010s
+sys	24m20.030s
+
+pi@rasp-srvr1 ~ $ ls -l /media/USB-HDD1/test1
+-rw-r--r-- 1 pi pi 1677721600 Feb 28 17:19 /media/USB-HDD1/test1
+
+pi@rasp-srvr1 ~ $ rm /media/USB-HDD1/test1
+
+
+#############################################################################################
+# 
+#  Part 2 - Use dd to create test output file, make a copy, and then use diff to validate 
+#    the consistency of both files ...
+# 
+#############################################################################################
+
+# First remove all previous test files ...
+
+pi@rasp-srvr1 ~ $ rm /media/USB-HDD1/test1*
+
+pi@rasp-srvr1 ~ $ df -h /media/USB-HDD1
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       114G   60M  108G   1% /media/USB-HDD1
+
+# Next create the base output file test1 using dd count=100 bs=1M ... (NOTE: parted based 
+#   ext4 test ran real 1m46.674s )
+
+pi@rasp-srvr1 ~ $ time dd count=100 bs=1M if=/dev/urandom of=/media/USB-HDD1/test1
+100+0 records in
+100+0 records out
+104857600 bytes (105 MB) copied, 96.5352 s, 1.1 MB/s
+
+real	1m36.556s
+user	0m0.010s
+sys	1m31.030s 
+
+pi@rasp-srvr1 ~ $ sync; sync; sync
+
+# Create a copy of test1 called test1_copy
+
+pi@rasp-srvr1 ~ $ cp /media/USB-HDD1/test1 /media/USB-HDD1/test1_copy
+
+pi@rasp-srvr1 ~ $ sync; sync; sync
+
+# Use diff to confirm & validate both files match ...
+
+pi@rasp-srvr1 ~ $ diff -s /media/USB-HDD1/test1 /media/USB-HDD1/test1_copy
+Files /media/USB-HDD1/test1 and /media/USB-HDD1/test1_copy are identical
+
+
+# Re-run the above test sequence, creating a dd output file test1 using count=200 bs=1M ...
+#  (NOTE: parted based ext4 test ran real 3m40.302s )
+
+pi@rasp-srvr1 ~ $ rm /media/USB-HDD1/test1*
+
+pi@rasp-srvr1 ~ $ df -h /media/USB-HDD1/
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       114G   60M  108G   1% /media/USB-HDD1
+
+pi@rasp-srvr1 ~ $ time dd count=200 bs=1M if=/dev/urandom of=/media/USB-HDD1/test1
+200+0 records in
+200+0 records out
+209715200 bytes (210 MB) copied, 195.853 s, 1.1 MB/s
+
+real	3m15.873s
+user	0m0.010s
+sys	3m2.150s
+
+pi@rasp-srvr1 ~ $ sync; sync; sync
+
+pi@rasp-srvr1 ~ $ cp /media/USB-HDD1/test1 /media/USB-HDD1/test1_copy
+
+pi@rasp-srvr1 ~ $ sync; sync; sync
+
+pi@rasp-srvr1 ~ $ diff -s /media/USB-HDD1/test1 /media/USB-HDD1/test1_copy
+Files /media/USB-HDD1/test1 and /media/USB-HDD1/test1_copy are identical
+
+
+# Re-run the above test sequence, creating a dd output file test1 using count=300 bs=1M ...
+#  (NOTE: parted based ext4 test ran real 5m32.304s )
+
+pi@rasp-srvr1 ~ $ rm /media/USB-HDD1/test1*
+
+pi@rasp-srvr1 ~ $  df -h /media/USB-HDD1/
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       917G   72M  871G   1% /media/USB-HDD1
+
+pi@rasp-srvr1 ~ $ time dd count=300 bs=1M if=/dev/urandom of=/media/USB-HDD1/test1
+300+0 records in
+300+0 records out
+314572800 bytes (315 MB) copied, 293.27 s, 1.1 MB/s
+
+real	4m53.295s
+user	0m0.010s
+sys	4m33.110s
+
+pi@rasp-srvr1 ~ $ sync; sync; sync
+
+pi@rasp-srvr1 ~ $ cp /media/USB-HDD1/test1 /media/USB-HDD1/test1_copy
+
+pi@rasp-srvr1 ~ $ sync; sync; sync
+
+pi@rasp-srvr1 ~ $ diff -s /media/USB-HDD1/test1 /media/USB-HDD1/test1_copy
+Files /media/USB-HDD1/test1 and /media/USB-HDD1/test1_copy are identical
+
+
+# Re-run the above test sequence, creating a dd output file test1 using count=400 bs=1M ...
+#  (NOTE: parted based ext4 test ran real 7m35.381s )
+
+pi@rasp-srvr1 ~ $ rm /media/USB-HDD1/test1*
+
+pi@rasp-srvr1 ~ $ df -h /media/USB-HDD1/
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       114G  660M  107G   1% /media/USB-HDD1
+
+pi@rasp-srvr1 ~ $ time dd count=400 bs=1M if=/dev/urandom of=/media/USB-HDD1/test1
+400+0 records in
+400+0 records out
+419430400 bytes (419 MB) copied, 390.431 s, 1.1 MB/s
+
+real	6m30.456s
+user	0m0.010s
+sys	6m4.340s
+
+pi@rasp-srvr1 ~ $ sync; sync; sync
+
+pi@rasp-srvr1 ~ $ cp /media/USB-HDD1/test1 /media/USB-HDD1/test1_copy
+
+pi@rasp-srvr1 ~ $ sync; sync; sync
+
+pi@rasp-srvr1 ~ $ diff -s /media/USB-HDD1/test1 /media/USB-HDD1/test1_copy
+Files /media/USB-HDD1/test1 and /media/USB-HDD1/test1_copy are identical
+
+pi@rasp-srvr1 ~ $ df -h /media/USB-HDD1/
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       114G  860M  107G   1% /media/USB-HDD1
+
+
+# Re-run the above test sequence, creating a dd output file test1 using count=600 bs=2M ...
+
+pi@rasp-srvr1 ~ $ time dd count=600 bs=2M if=/dev/urandom of=/media/USB-HDD1/test1
+600+0 records in
+600+0 records out
+1258291200 bytes (1.3 GB) copied, 1180.29 s, 1.1 MB/s
+
+real	19m40.311s
+user	0m0.020s
+sys	18m14.340s
+
+pi@rasp-srvr1 ~ $ sync; sync; sync
+
+pi@rasp-srvr1 ~ $ cp /media/USB-HDD1/test1 /media/USB-HDD1/test1_copy
+
+pi@rasp-srvr1 ~ $ sync; sync; sync
+
+pi@rasp-srvr1 ~ $ diff -s /media/USB-HDD1/test1 /media/USB-HDD1/test1_copy
+Files /media/USB-HDD1/test1 and /media/USB-HDD1/test1_copy are identical
+
+
+#############################################################################################
+# 
+#  Part 3 - Test the external Micro Center 128GB USB 3.0 Flash Drive Stick using bonnie++ 
+# 
+#############################################################################################
+
+# See if bonnie++ is already installed ...
+
+pi@rasp-srvr1 ~ $ which bonnie++
+/usr/sbin/bonnie++
+
+# If already installed per above, skip ahead to "bonnie++ Simple Testing & Benchmarking Runs"
+
+# Otherwise, install bonnie++ via apt-get ...
+
+pi@rasp-srvr1 ~ $ sudo apt-get update
+Hit http://repository.wolfram.com stable Release.gpg
+Hit http://repository.wolfram.com stable Release
+Get:1 http://raspberrypi.collabora.com wheezy Release.gpg [836 B]
+Get:2 http://mirrordirector.raspbian.org wheezy Release.gpg [490 B]
+Get:3 http://raspberrypi.collabora.com wheezy Release [5,009 B]
+
+   < ... snip ... >
+
+Ign http://mirrordirector.raspbian.org wheezy/rpi Translation-en_US
+Ign http://mirrordirector.raspbian.org wheezy/rpi Translation-en
+Fetched 7,445 kB in 46s (160 kB/s)
+Reading package lists... Done
+
+pi@rasp-srvr1 ~ $ sudo apt-cache search bonnie++
+bonnie++ - Hard drive benchmark suite.
+
+pi@rasp-srvr1 ~ $ sudo apt-get install bonnie++
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+The following NEW packages will be installed:
+  bonnie++
+0 upgraded, 1 newly installed, 0 to remove and 2 not upgraded.
+Need to get 68.1 kB of archives.
+After this operation, 171 kB of additional disk space will be used.
+Get:1 http://mirrordirector.raspbian.org/raspbian/ wheezy/main bonnie++ armhf 1.96 [68.1 kB]
+Fetched 68.1 kB in 0s (99.2 kB/s)
+Selecting previously unselected package bonnie++.
+(Reading database ... 70321 files and directories currently installed.)
+Unpacking bonnie++ (from .../bonnie++_1.96_armhf.deb) ...
+Processing triggers for man-db ...
+Setting up bonnie++ (1.96) ...
+
+pi@rasp-srvr1 ~ $ which bonnie++
+/usr/sbin/bonnie++
+
+#
+# bonnie++ Simple Testing & Benchmarking Runs
+# 
+
+# Per reference URLs section, do the first bonnie++ simple benchmarking run ...
+# 
+# First clean-up the external Micro Center 128GB USB 3.0 Flash Drive Stick, and then do the 
+#  first bonnie++ test ... 
+
+pi@rasp-srvr1 ~ $  df -h /media/USB-HDD1/
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       114G  2.5G  106G   3% /media/USB-HDD1
+
+pi@rasp-srvr1 ~ $ ls -l /media/USB-HDD1/
+total 2457624
+drwx------ 2 root root      16384 Feb 26 18:58 lost+found
+-rw-r--r-- 1 pi   pi   1258291200 Feb 28 20:35 test1
+-rw-r--r-- 1 pi   pi   1258291200 Feb 28 20:38 test1_copy
+
+pi@rasp-srvr1 ~ $  rm  /media/USB-HDD1/test*
+
+pi@rasp-srvr1 ~ $ df -h /media/USB-HDD1/
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       114G   60M  108G   1% /media/USB-HDD1
+
+# VERY IMPORTANT to first run bonnie++ with the correct run-time parameters ... 
+
+# So first run with the target file size @ 250MB and DO NOT specify anything
+#   about amount of Raspberrypi RAM .... 
+
+pi@rasp-srvr1 ~ $ bonnie++ -d /media/USB-HDD1/ -u pi -b -s 250
+Using uid:1000, gid:1000.
+File size should be double RAM for good results, RAM is 436M.
+usage:
+bonnie++ [-d scratch-dir] [-c concurrency] [-s size(MiB)[:chunk-size(b)]]
+      [-n number-to-stat[:max-size[:min-size][:num-directories[:chunk-size]]]]
+      [-m machine-name] [-r ram-size-in-MiB]
+      [-x number-of-tests] [-u uid-to-use:gid-to-use] [-g gid-to-use]
+      [-q] [-f] [-b] [-p processes | -y] [-z seed | -Z random-file]
+      [-D]
+
+Version: 1.96 
+
+# So per above, amount of free RAM is 436M, and the file size should be 
+#   436MB x 2 = 872MB
+
+pi@rasp-srvr1 ~ $  time bonnie++ -d /media/USB-HDD1/ -u pi -r 436 -b -s 872
+Using uid:1000, gid:1000.
+Writing a byte at a time...done
+Writing intelligently...done
+Rewriting...done
+Reading a byte at a time...done
+Reading intelligently...done
+start 'em...done...done...done...done...done...
+Create files in sequential order...done.
+Stat files in sequential order...done.
+Delete files in sequential order...done.
+Create files in random order...done.
+Stat files in random order...done.
+Delete files in random order...done.
+Version  1.96       ------Sequential Output------ --Sequential Input- --Random-
+Concurrency   1     -Per Chr- --Block-- -Rewrite- -Per Chr- --Block-- --Seeks--
+Machine        Size K/sec %CP K/sec %CP K/sec %CP K/sec %CP K/sec %CP  /sec %CP
+rasp-srvr1     872M    45  98  6627  13  5015  12   361  99 27508  31  62.9   9
+Latency               276ms    4226ms    6013ms   42624us     366ms    1521ms
+Version  1.96       ------Sequential Create------ --------Random Create--------
+rasp-srvr1          -Create-- --Read--- -Delete-- -Create-- --Read--- -Delete--
+              files  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
+                 16    26   1 +++++ +++    41   1    29   1 +++++ +++    43   1
+Latency               400ms    4323us     642ms     201ms     273us     544ms
+1.96,1.96,rasp-srvr1,1,1393242365,872M,,45,98,6627,13,5015,12,361,99,27508,31,62.9,9,16,,,,,26,1,+++++,+++,41,1,29,1,+++++,+++,43,1,276ms,4226ms,6013ms,42624us,366ms,1521ms,400ms,4323us,642ms,201ms,273us,544ms
+
+real	41m40.073s
+user	0m5.670s
+sys	2m32.040s
+
+# Good news is the above bonnie++ test run successfully completed at over 4.5 times faster 
+#  than the initial Toshiba Canvio 1TB USB SATA Drive test, and same 41 mins as second
+#  Toshiba Cavio 1 TB USB SATA drive test ... 
+
+# Important Note: the previous exact same bonnie++ test on the Toshiba Canvio 1TB USB SATA 
+#  Drive partitioned & formatted with "parted -a optimal" + mkfs.ext4 command line tools 
+#  took a lot longer at real 189m38.246s ... 
+
+

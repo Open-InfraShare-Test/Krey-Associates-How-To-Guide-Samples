@@ -1,0 +1,222 @@
+#############################################################################################
+#
+# Group 3 - Part 5 - RP-B + Toshiba Canvio 1TB USB SATA Drive mount + cp Test 
+#               
+# 2013-02-23 - V#1-0
+#
+#            - 3rd series of RaspberryPi-B command line testing using cp 
+#
+#            - Using previously formatted 1TB SATA drive using Ubuntu 12.04.x desktop based 
+#              gparted GUI, and Toshiba Canvio 1TB USB SATA drive direct connected to
+#              RaspberryPi-B USB port
+#
+#            - Include change of default /media/USB-HDD1 from 'root' to 'pi', and initial 
+#              cp based validation testing
+#   
+#            - Drive was partitioned & ext4 formatted on desktop using gparted GUI running 
+#              on Ubuntu 12.04.4 desktop Linux distro ...
+#
+#            - Optimal external disk drive partition creation is assumed to have been 
+#              automatically done within gparted ...
+#
+#            - External drive used in the following is Toshiba Canvio 1TB Connect Portable 
+#              USB Hard Drive M/N v73600-C P/N HDTC710XS3A1, 5400 RPM ... 
+#              see http://www.toshiba.com/us/portable-hd
+#
+#            - IMPORTANT: the following tests assume that /etc/fstab contents was already
+#              created during the previous parted + mkfs.ext4 based testing ...
+#
+# 2015-01-02 - V#1-01 - Formatting & corrections ...
+#
+# 2015-05-20,
+# 2015-05-30 - V#1-1  - Formatting & corrections ...
+#
+#############################################################################################
+#
+# Reference URLs:
+#
+# "How to set the owner of a mounted partition in Linux?"
+# http://superuser.com/questions/320415/linux-mount-device-with-specific-user-rights
+#
+# "Linux - Mount device with specific user rights" 
+# http://superuser.com/questions/657974/how-to-set-the-owner-of-a-mounted-partition-in-linux 
+#
+# "Connect your Raspberry Pi to a USB hard disk ( Fat32 )"
+# http://raspberrywebserver.com/serveradmin/connect-your-raspberry-pi-to-a-USB-hard-disk.html
+#
+# "File Permissions - chmod"
+# http://www.linux.org/threads/file-permissions-chmod.4094/
+#
+#############################################################################################
+#
+# The following assumes all the steps of "RaspberryPi First Start-Up V#1-0" are already 
+#   completed, and that the Toshiba Canvio USB SATA drive was connected via the USB port
+#   while the Raspberrypi is TURNED OFF, prior to it being turned on.
+#
+# Important to note that if the Toshiba Canvio USB SATA drive is connected to the RaspberryPi
+#   USB port while turned on, this will cause the RaspberryPi to shut-off and reboot ...
+#
+#############################################################################################
+
+# The following assumes the Toshiba Canvio 1TB USB SATA Drive has already been partitioned
+#  and ext4 formatted using gparted on Ubuntu 12.04.4 desktop ...
+
+# Reason for doing this second USB SATA Drive partitioning + formatting was to see if the
+#  gparted version created a more optimally formatted, higher performance drive ... 
+
+# Again, the following assume the drive was already connected to the Raspberrypi before
+#   powering on ... 
+
+
+# Before starting, switch to su ...
+
+pi@rasp-srvr1 ~ $ su
+Password:
+root@rasp-srvr1:/home/pi#
+
+# Examine dmesg output and confirm that the external USB SATA drive is detected & mounted ...
+
+root@rasp-srvr1:/home/pi# dmesg | tail -25
+[    3.206658] smsc95xx 1-1.1:1.0 eth0: register 'smsc95xx' at usb-bcm2708_usb-1.1, smsc95xx USB 2.0 Ethernet, b8:27:eb:01:ef:af
+[    3.328968] usb 1-1.3: new high-speed USB device number 4 using dwc_otg
+[    3.461206] usb 1-1.3: New USB device found, idVendor=0480, idProduct=0200
+[    3.486133] usb 1-1.3: New USB device strings: Mfr=2, Product=3, SerialNumber=1
+[    3.507336] usb 1-1.3: Product: External USB 3.0
+[    3.528602] usb 1-1.3: Manufacturer: TOSHIBA
+[    3.546720] usb 1-1.3: SerialNumber: 20140112005002F
+[    3.567828] usb-storage 1-1.3:1.0: USB Mass Storage device detected
+[    3.592761] scsi0 : usb-storage 1-1.3:1.0
+[    4.090451] udevd[157]: starting version 175
+[    4.610166] scsi 0:0:0:0: Direct-Access     TOSHIBA  External USB 3.0 0    PQ: 0 ANSI: 6
+[    4.654317] sd 0:0:0:0: [sda] 1953525168 512-byte logical blocks: (1.00 TB/931 GiB)
+[    4.689945] sd 0:0:0:0: [sda] Write Protect is off
+[    4.728825] sd 0:0:0:0: [sda] Mode Sense: 43 00 00 00
+[    4.729822] sd 0:0:0:0: [sda] Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
+[    4.814674]  sda: sda1
+[    4.843204] sd 0:0:0:0: [sda] Attached SCSI disk
+[    6.445399] bcm2708-i2s bcm2708-i2s.0: Failed to create debugfs directory
+[   10.824662] EXT4-fs (mmcblk0p2): re-mounted. Opts: (null)
+[   11.325175] EXT4-fs (mmcblk0p2): re-mounted. Opts: (null)
+[   17.439759] FAT-fs (mmcblk0p1): Volume was not properly unmounted. Some data may be corrupt. Please run fsck.
+[   17.900995] EXT4-fs (sda1): mounted filesystem with ordered data mode. Opts: (null)
+
+  < ... snip ... >
+
+# Per [    4.814674] above, the Toshiba drive is found and assigned to sda:sda1 ...
+
+# Next check to see if the external USB SATA drive is mounted via "fdisk -l" ...  
+
+root@rasp-srvr1:/home/pi# fdisk -l
+
+Disk /dev/mmcblk0: 7969 MB, 7969177600 bytes
+4 heads, 16 sectors/track, 243200 cylinders, total 15564800 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0x000981cb
+
+        Device Boot      Start         End      Blocks   Id  System
+/dev/mmcblk0p1            8192      122879       57344    c  W95 FAT32 (LBA)
+/dev/mmcblk0p2          122880    15564799     7720960   83  Linux
+
+Disk /dev/sda: 1000.2 GB, 1000204886016 bytes
+255 heads, 63 sectors/track, 121601 cylinders, total 1953525168 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0x95fb7776
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1            2048  1953523711   976760832   83  Linux
+
+
+root@rasp-srvr1:/home/pi#  df -h
+Filesystem      Size  Used Avail Use% Mounted on
+rootfs          7.2G  2.3G  4.7G  33% /
+/dev/root       7.2G  2.3G  4.7G  33% /
+devtmpfs        211M     0  211M   0% /dev
+tmpfs            44M  216K   44M   1% /run
+tmpfs           5.0M     0  5.0M   0% /run/lock
+tmpfs            88M     0   88M   0% /run/shm
+/dev/mmcblk0p1   56M   19M   38M  34% /boot
+/dev/sda1       917G   72M  871G   1% /media/USB-HDD1
+
+
+# Per the above, the Toshiba Canvio 1TB USB SATA Drive has been automatically
+#  mounted on /media/USB-HDD1 upon system start-up ...
+
+# AFTER /dev/sda1 is mounted, because the filesystem type is ext4, we must change  
+#   the default owner from "root" of the /media/USB-HDD1 to "pi" to enable "pi" to 
+#   have read & write access to the external USB drive ...
+
+root@rasp-srvr1:/home/pi#  chown pi:pi /media/USB-HDD1
+
+root@rasp-srvr1:/home/pi#  ls -l /media/
+total 4
+drwxr-xr-x 3 pi pi 4096 Feb 23 16:46 USB-HDD1 
+
+# OPTIONAL: If all users are required to have read/write access, the following 
+#   provides read, write, execute access:  "chmod 777 /media/USB-HDD1" 
+#   and this one provides read, write access: "chmod 666 /media/USB-HDD1"    
+
+# Exit from being root / su back to user pi ...
+
+root@rasp-srvr1:/home/pi#  exit
+exit
+pi@rasp-srvr1 ~ $
+
+# Confirm pi now has read & write access to /media/USB-HDD1 by copying a file
+#   to that directory ... for testing purposes I've first used ocr_pi.png ... 
+
+pi@rasp-srvr1 ~ $  cp ./ocr_pi.png /media/USB-HDD1/
+
+pi@rasp-srvr1 ~ $  ls -l /media/USB-HDD1/
+total 24
+drwx------ 2 root root 16384 Feb 23 16:46 lost+found
+-rw-r--r-- 1 pi   pi    5781 Feb 23 18:13 ocr_pi.png 
+
+# And now try copying the entire Desktop directory ...
+
+pi@rasp-srvr1 ~ $  cp -avr ./Desktop /media/USB-HDD1/
+`./Desktop' -> `/media/USB-HDD1/Desktop'
+`./Desktop/wpa_gui.desktop' -> `/media/USB-HDD1/Desktop/wpa_gui.desktop'
+`./Desktop/debian-reference-common.desktop' -> `/media/USB-HDD1/Desktop/debian-reference-common.desktop'
+`./Desktop/idle.desktop' -> `/media/USB-HDD1/Desktop/idle.desktop'
+`./Desktop/ocr_resources.desktop' -> `/media/USB-HDD1/Desktop/ocr_resources.desktop'
+`./Desktop/idle3.desktop' -> `/media/USB-HDD1/Desktop/idle3.desktop'
+`./Desktop/wolfram-language.desktop' -> `/media/USB-HDD1/Desktop/wolfram-language.desktop'
+`./Desktop/scratch.desktop' -> `/media/USB-HDD1/Desktop/scratch.desktop'
+`./Desktop/lxterminal.desktop' -> `/media/USB-HDD1/Desktop/lxterminal.desktop'
+`./Desktop/wolfram-mathematica.desktop' -> `/media/USB-HDD1/Desktop/wolfram-mathematica.desktop'
+`./Desktop/shutdown.desktop' -> `/media/USB-HDD1/Desktop/shutdown.desktop'
+`./Desktop/midori.desktop' -> `/media/USB-HDD1/Desktop/midori.desktop'
+`./Desktop/python-games.desktop' -> `/media/USB-HDD1/Desktop/python-games.desktop'
+`./Desktop/pistore.desktop' -> `/media/USB-HDD1/Desktop/pistore.desktop' 
+
+pi@rasp-srvr1 ~ $  ls -l /media/USB-HDD1/
+total 28
+drwxr-xr-x 2 pi   pi    4096 Jan  7 17:09 Desktop
+drwx------ 2 root root 16384 Feb 23 16:46 lost+found
+-rw-r--r-- 1 pi   pi    5781 Feb 23 18:13 ocr_pi.png
+
+pi@rasp-srvr1 ~ $ ls -l /media/USB-HDD1/Desktop/
+total 60
+-rw-r--r-- 1 pi pi  634 Jan  7 17:09 debian-reference-common.desktop
+-rw-r--r-- 1 pi pi  224 May  6  2012 idle3.desktop
+-rw-r--r-- 1 pi pi  238 Jun 10  2012 idle.desktop
+-rw-r--r-- 1 pi pi 4953 Jun  1  2012 lxterminal.desktop
+-rw-r--r-- 1 pi pi 5398 Dec 31  2012 midori.desktop
+-rw-r--r-- 1 pi pi  233 Jan  7 17:09 ocr_resources.desktop
+-rw-r--r-- 1 pi pi  257 Jan  7 17:02 pistore.desktop
+-rw-r--r-- 1 pi pi  241 Jan  7 17:09 python-games.desktop
+-rw-r--r-- 1 pi pi  259 Jul  4  2012 scratch.desktop
+-rw-r--r-- 1 pi pi  205 Jan  7 17:09 shutdown.desktop
+-rw-r--r-- 1 pi pi  245 Nov 20 16:44 wolfram-language.desktop
+-rw-r--r-- 1 pi pi  333 Nov 20 16:44 wolfram-mathematica.desktop
+-rw-r--r-- 1 pi pi  230 Jan  7 17:09 wpa_gui.desktop
+pi@rasp-srvr1 ~ $
+
+
+# Per the above, looks like the user pi can now r/w to /media/USB-HDD1 ...
+
+

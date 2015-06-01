@@ -1,0 +1,156 @@
+#############################################################################################
+#
+# Group 3 - Part 4 - Ubuntu 12.04 gparted GUI Toshiba Canvio 1TB USB SATA Drive Create
+#
+# 2014-02-22 - V#1-0 
+#            - Creation of Toshiba Canvio 1TB USB SATA drive partitioning & ext4 formatting 
+#              using Ubuntu 12.04.x desktop Linux based gparted GUI
+#            - After Ubuntu gparted formatting, the Toshiba Canvio 1TB SATA drive is
+#              directly connected to USB port on RaspberryPi B 
+#
+# 2015-01-02 - V#1-01 - Formatting & corrections ...
+# 2015-05-20,
+# 2015-05-30 - V#1-1  - Formatting & corrections ...
+#
+#############################################################################################
+
+# On Ubuntu 12.04.x desktop confirm gparted is installed ...
+
+peterkreyjr@CoreSvces1:~$ which gparted
+/usr/sbin/gparted
+
+# Next take a look at dmesg to confirm the Toshiba 1TB USB SATA drive has been
+#   detected & mounted ...
+
+peterkreyjr@CoreSvces1:~$  dmesg | tail -15
+[   18.025700] ADDRCONF(NETDEV_UP): eth0: link is not ready
+[   18.101739] init: plymouth-stop pre-start process (1444) terminated with status 1
+[   19.666094] r8169 0000:03:00.0: eth0: link up
+[   19.666272] ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready
+[   30.352038] eth0: no IPv6 routers present
+[  581.068107] usb 1-1: new high-speed USB device number 3 using ehci_hcd
+[  581.204551] scsi5 : usb-storage 1-1:1.0
+[  582.205067] scsi 5:0:0:0: Direct-Access     TOSHIBA  External USB 3.0 0    PQ: 0 ANSI: 6
+[  582.206473] sd 5:0:0:0: Attached scsi generic sg7 type 0
+[  583.816065] sd 5:0:0:0: [sdg] 1953525168 512-byte logical blocks: (1.00 TB/931 GiB)
+[  583.817053] sd 5:0:0:0: [sdg] Write Protect is off
+[  583.817066] sd 5:0:0:0: [sdg] Mode Sense: 43 00 00 00
+[  583.818054] sd 5:0:0:0: [sdg] Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
+[  583.835925]  sdg: sdg1
+[  583.840129] sd 5:0:0:0: [sdg] Attached SCSI disk
+
+# So per [  583.835925] above, the Toshiba USB SATA drive has been detected and mounted as
+#   sdg: sdg1 ...
+
+# In order to use gparted to re-format the drive, see what partitions were mounted.  
+
+# Note: Following was done on Ubuntu 12.04.x ... will not always be /dev/sdg ... 
+# Can also be others such as /dev/sdc, etc, or other device names used by other 
+#   Linux distros ...
+ 
+peterkreyjr@CoreSvces1:~$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       910G   19G  845G   3% /
+udev            3.9G  4.0K  3.9G   1% /dev
+tmpfs           1.6G  900K  1.6G   1% /run
+none            5.0M     0  5.0M   0% /run/lock
+none            3.9G  200K  3.9G   1% /run/shm
+/dev/sdg1       932G  279M  932G   1% /media/TOSHIBA EXT
+
+# Per above /dev/sdg1 was mounted on /media/TOSHIBA EXT 
+# So as sudo, unmount /dev/sdg1
+
+peterkreyjr@CoreSvces1:~$ sudo umount /dev/sdg1
+[sudo] password for peterkreyjr: 
+
+# Before continuing, confirm /dev/sdg1 was unmounted ...
+
+peterkreyjr@CoreSvces1:~$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       910G   19G  845G   3% /
+udev            3.9G  4.0K  3.9G   1% /dev
+tmpfs           1.6G  900K  1.6G   1% /run
+none            5.0M     0  5.0M   0% /run/lock
+none            3.9G  200K  3.9G   1% /run/shm
+
+# From within Bash terminal shell, launch gparted
+
+peterkreyjr@CoreSvces1:~$ sudo gparted
+======================
+libparted : 2.3
+======================
+
+# Within gparted:
+
+# In URHC of screen select bottom drive ... per above select /dev/sdg
+
+# Within the middle of the screen within the Partition column, right-click on "/dev/sdg1", 
+#   and left-click on "Delete" 
+
+# Again within the middle of the screen within the Partition column, right-click on 
+#  "unallocated", left-click on "New", and on the middle of "Create new Partition" screen, 
+#  on the right hand side left-click on the "File System" ? and select "ext4" ...
+#
+# And confirm the "Create as" is set to "Primary Partition", and leave all other parameters 
+#  set to default values incl:
+#
+#      Free space proceding (MiB): 1
+#      New size  (MiB):            953869
+#      Align to:                   MiB
+#      Create as:                  Primary Partition
+
+# From the bottom LRHC of the screen, left-click on the "Add" button ...
+
+# Last, within the top-of-screen menu bar, left-click on green check mark graphic 
+#  "Apply All Operations" ...
+
+# In response to the pop-up screen "Are you sure you want to apply the pending operations?",
+#  in the LRHC of screen left click on the "Apply" button ...
+
+# The "Applying pending operations" screen will next pop-up ... Takes appx. 15-20 seconds 
+#  to create & format the 931+ GB ext4 partition ...
+
+# Re-mount the Toshiba USB SATA drive, and re-confirm the partition + formatting info ...
+
+peterkreyjr@CoreSvces1:~$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       910G   19G  845G   3% /
+udev            3.9G  4.0K  3.9G   1% /dev
+tmpfs           1.6G  900K  1.6G   1% /run
+none            5.0M     0  5.0M   0% /run/lock
+none            3.9G  200K  3.9G   1% /run/shm
+/dev/sdg1       917G  200M  871G   1% /media/8e2d8983-4e02-4409-85ce-0b0af396a0e0
+
+peterkreyjr@CoreSvces1:~$ sudo fdisk -l /dev/sdg
+
+Disk /dev/sdg: 1000.2 GB, 1000204886016 bytes
+255 heads, 63 sectors/track, 121601 cylinders, total 1953525168 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0x95fb7776
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdg1            2048  1953523711   976760832   83  Linux
+
+peterkreyjr@CoreSvces1:~$ dmesg | tail -15
+[ 2670.554010] EXT4-fs (sdb1): mounted filesystem with ordered data mode. Opts: (null)
+[ 2722.401168] usb 1-1: USB disconnect, device number 4
+[ 2722.402870] sd 6:0:0:0: [sdg] Synchronizing SCSI cache
+[ 2722.402961] sd 6:0:0:0: [sdg]  Result: hostbyte=DID_NO_CONNECT driverbyte=DRIVER_OK
+[ 2726.548113] usb 1-1: new high-speed USB device number 5 using ehci_hcd
+[ 2726.684058] scsi7 : usb-storage 1-1:1.0
+[ 2727.685993] scsi 7:0:0:0: Direct-Access     TOSHIBA  External USB 3.0 0    PQ: 0 ANSI: 6
+[ 2727.688164] sd 7:0:0:0: Attached scsi generic sg7 type 0
+[ 2730.100164] sd 7:0:0:0: [sdg] 1953525168 512-byte logical blocks: (1.00 TB/931 GiB)
+[ 2730.101153] sd 7:0:0:0: [sdg] Write Protect is off
+[ 2730.101165] sd 7:0:0:0: [sdg] Mode Sense: 43 00 00 00
+[ 2730.102157] sd 7:0:0:0: [sdg] Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
+[ 2730.120080]  sdg: sdg1
+[ 2730.124147] sd 7:0:0:0: [sdg] Attached SCSI disk
+[ 2730.789009] EXT4-fs (sdg1): mounted filesystem with ordered data mode. Opts: (null)
+
+# Per the above, the Toshiba 1TB USB SATA drive has been corrected partitoned and ext4 
+#  formatted ...
+
+

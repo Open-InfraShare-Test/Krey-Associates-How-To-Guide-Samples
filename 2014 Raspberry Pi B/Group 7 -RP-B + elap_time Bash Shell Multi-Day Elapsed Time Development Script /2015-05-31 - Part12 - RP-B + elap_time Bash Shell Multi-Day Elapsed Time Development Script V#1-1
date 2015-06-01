@@ -1,0 +1,67 @@
+
+#############################################################################################
+#
+# Group 7 - Part 12 - elap_time Bash Shell Multi-Day Elapsed Time Development Script  
+#
+# 2014-03-11 --> 2014-03-13 - V#1-0
+#  
+#  - Multi-day elapsed time calc & formatting based on elap_time.sh prototyping and 
+#      development Bash shell script ...
+#
+#  - Development & troubleshooting not completed ... still WIP 
+#
+#  - Produces days:hours:minutes:secs formatted output ...
+#
+# 2015-05-31 - V#1-1  - Formatting & corrections ... 
+#
+#############################################################################################
+#
+# elap_time.sh - Compute elapsed time & produce days:hours:minutes:secs formatted
+#                output ...
+#
+# Refernece URLs:
+#
+#  "Using time command in bash script" (... key Bash script time sample code ...) 
+#    http://stackoverflow.com/questions/3683434/using-time-command-in-bash-script
+#
+#  "Bash Shell Utils" (see demo_functions.sh for example multi-day format of 86600 seconds) 
+#    https://github.com/inacho/Bash-Shell-Utils/blob/master/demo_functions.sh
+#
+#  "Bash Shell Script Function Examples"
+#    http://www.cyberciti.biz/faq/bash-shell-script-function-examples/
+#
+#############################################################################################
+
+
+#############################################################################################
+#  Here's a test run of elap_time.sh ... sleeps for only 7 seconds for development reasons ..
+#############################################################################################
+
+pi@rasp-srvr1 ~ $ time ./elap_time.sh
+
+Start Date+Time: Sat Mar 15 11:27:13 EDT 2014
+Start Time TS in Seconds: 1394897233
+
+Sleep for 7 seconds ...
+
+Stop Time TE in Seconds: 1394897240
+Stop Date+Time: Sat Mar 15 11:27:20 EDT 2014
+
+Stop Time TE 1394897240 minus Start Time TS 1394897233 in Seconds:  7
+
+T2 = 7
+T2 formatted: 00:00:00:07
+
+T2 Test Value = 27999
+27999 formatted: 00:07:46:39
+
+T2 Test Value = 86600
+86600 formatted: 01:00:03:20
+
+tprint() function test:  ... within tprint ... T2 = 86600 T2 formatted: 01:00:03:20
+
+
+real	0m7.130s
+user	0m0.040s
+sys	0m0.040s
+

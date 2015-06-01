@@ -1,0 +1,161 @@
+#############################################################################################
+#
+# Group 5 - Part 8 - RP-B + Ubuntu 12.04.x + Micro Center 128GB USB 3.0 Flash Drive Stick 
+#           Create Via gparted GUI
+#
+# 2014-02-26 - V#1-0
+#
+#            - Creation of Micro Center 128GB USB 3.0 Flash Drive Stick partitioning and 
+#              ext4 formatting using Ubuntu 12.04.x desktop based gparted GUI and 
+#              mountability testing directly connected to RaspberryPi-B USB port 
+#
+# 2015-01-02 - V#1-01 - Formatting & corrections ...
+#
+# 2015-05-20,
+# 2015-05-30 - V#1-1  - Formatting & corrections ...
+#
+#############################################################################################
+
+# On Ubuntu 12.04.x desktop confirm gparted is installed ...
+
+peterkreyjr@CoreSvces1:~$  which gparted
+/usr/sbin/gparted
+
+# Next take a look at dmesg to confirm the Micro Center 128GB USB 3.0 
+#   Flash Drive Stick has been detected & mounted ...
+
+peterkreyjr@CoreSvces1:~$  dmesg | tail -10
+[  721.476121] usb 1-1: new high-speed USB device number 3 using ehci_hcd
+[  721.612623] scsi5 : usb-storage 1-1:1.0
+[  722.614026] scsi 5:0:0:0: Direct-Access                               PMAP PQ: 0 ANSI: 6
+[  722.616157] sd 5:0:0:0: Attached scsi generic sg7 type 0
+[  722.617541] sd 5:0:0:0: [sdg] 241405440 512-byte logical blocks: (123 GB/115 GiB)
+[  722.619337] sd 5:0:0:0: [sdg] Write Protect is off
+[  722.619351] sd 5:0:0:0: [sdg] Mode Sense: 2b 00 00 08
+[  722.621143] sd 5:0:0:0: [sdg] Write cache: disabled, read cache: enabled, doesn't support DPO or FUA
+[  724.404682]  sdg: sdg1
+[  724.408550] sd 5:0:0:0: [sdg] Attached SCSI removable disk
+
+
+# So per [  724.404682] above, the Micro Center 128GB USB 3.0 Flash Drive Stick has been 
+#  detected and mounted as sdg: sdg1 ...
+
+# In order to use gparted to re-format the drive, see what partitions were mounted.  
+
+# Note: Following was done on Ubuntu 1204 ... will not always be /dev/sdg ... Can also be 
+#  others such as /dev/sdc, etc, or other device names used by other Linux distros ...
+ 
+peterkreyjr@CoreSvces1:~$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       910G   19G  845G   3% /
+udev            3.9G  4.0K  3.9G   1% /dev
+tmpfs           1.6G  896K  1.6G   1% /run
+none            5.0M     0  5.0M   0% /run/lock
+none            3.9G  152K  3.9G   1% /run/shm
+/dev/sdg1       116G   32K  116G   1% /media/USB DISK
+
+# Per above /dev/sdg1 was mounted on /media/USB DISK 
+# So as sudo, unmount /dev/sdg1
+
+peterkreyjr@CoreSvces1:~$ sudo umount /dev/sdg1
+[sudo] password for peterkreyjr: 
+
+# Before continuing, confirm /dev/sdg1 was unmounted ...
+
+peterkreyjr@CoreSvces1:~$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       910G   19G  845G   3% /
+udev            3.9G  4.0K  3.9G   1% /dev
+tmpfs           1.6G  896K  1.6G   1% /run
+none            5.0M     0  5.0M   0% /run/lock
+none            3.9G  152K  3.9G   1% /run/shm
+
+# From within Bash terminal shell, launch gparted
+
+peterkreyjr@CoreSvces1:~$ sudo gparted
+======================
+libparted : 2.3
+======================
+
+# Within gparted:
+
+# In URHC of screen select bottom drive ... per above select /dev/sdg
+
+# Within the middle of the screen within the Partition column, right-click on "/dev/sdg1", 
+#  and left-click on "Delete" 
+
+# Again within the middle of the screen within the Partition column, right-click on 
+#  "unallocated", left-click on "New", and on the middle of "Create new Partition" screen, 
+#  on the right hand side left-click on the "File System" ? and select "ext4" ...
+
+# And confirm the "Create as" is set to "Primary Partition", and leave all other parameters 
+#  set to default values incl:
+#
+#      Free space proceding (MiB): 1
+#      New size  (MiB):            117873
+#      Align to:                   MiB
+#      Create as:                  Primary Partition
+
+# From the bottom LRHC of the screen, left-click on the "Add" button ...
+
+# Last, within the top-of-screen menu bar, left-click on green check mark 
+#   graphic "Apply All Operations" ...
+
+# In response to the pop-up screen "Are you sure you want to apply the pending operations? " 
+#   In LRHC of screen left click on the "Apply" button ...
+
+# The "Applying pending operations" screen will next pop-up ... Takes appx. 10-15 seconds to 
+#  create & format the 115+ GB ext4 partition ...
+
+# Once complete, in LRHC of screen left click on the "Close" button ..
+
+# At this point, exit the GParted GUI app ...
+
+
+# Last, re-mount the Micro Center 128GB USB 3.0 Flash Drive Stick within gparted GUI, and 
+#  re-confirm the partition and formatting info ...
+
+peterkreyjr@CoreSvces1:~$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       910G   19G  845G   3% /
+udev            3.9G  4.0K  3.9G   1% /dev
+tmpfs           1.6G  896K  1.6G   1% /run
+none            5.0M     0  5.0M   0% /run/lock
+none            3.9G  152K  3.9G   1% /run/shm
+/dev/sdg1       114G  188M  108G   1% /media/213b0ad7-0e6f-4696-bda5-5c2dbb90a990
+
+peterkreyjr@CoreSvces1:~$ sudo fdisk -l /dev/sdg
+
+Disk /dev/sdg: 123.6 GB, 123599585280 bytes
+255 heads, 63 sectors/track, 15026 cylinders, total 241405440 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0x8530874a
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdg1            2048   241403903   120700928   83  Linux
+ 
+peterkreyjr@CoreSvces1:~$ dmesg | tail -15
+[  722.621143] sd 5:0:0:0: [sdg] Write cache: disabled, read cache: enabled, doesn't support DPO or FUA
+[  724.404682]  sdg: sdg1
+[  724.408550] sd 5:0:0:0: [sdg] Attached SCSI removable disk
+[ 1359.039698] usb 1-1: USB disconnect, device number 3
+[ 1361.012113] usb 1-1: new high-speed USB device number 4 using ehci_hcd
+[ 1361.148673] scsi6 : usb-storage 1-1:1.0
+[ 1362.150060] scsi 6:0:0:0: Direct-Access                               PMAP PQ: 0 ANSI: 6
+[ 1362.152222] sd 6:0:0:0: Attached scsi generic sg7 type 0
+[ 1362.153456] sd 6:0:0:0: [sdg] 241405440 512-byte logical blocks: (123 GB/115 GiB)
+[ 1362.154184] sd 6:0:0:0: [sdg] Write Protect is off
+[ 1362.154196] sd 6:0:0:0: [sdg] Mode Sense: 2b 00 00 08
+[ 1362.154801] sd 6:0:0:0: [sdg] Write cache: disabled, read cache: enabled, doesn't support DPO or FUA
+[ 1363.979337]  sdg: sdg1
+[ 1363.983191] sd 6:0:0:0: [sdg] Attached SCSI removable disk
+[ 1364.256244] EXT4-fs (sdg1): mounted filesystem with ordered data mode. Opts: (null)
+peterkreyjr@CoreSvces1:~$ 
+
+
+# Per the above, the Micro Center 128GB USB 3.0 Flash Drive Stick has been correctely 
+#  partitoned and ext4 formatted ...
+
+

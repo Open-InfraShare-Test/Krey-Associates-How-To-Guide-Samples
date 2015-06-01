@@ -1,0 +1,478 @@
+#############################################################################################
+#
+# Group 1 - Part 1B - RaspberryPi-B Initial Start-Up + Config 
+#
+# 2013-02-13 - V#1-0
+#
+#            - Initial RaspberryPi-B SD card Linux OSX boot, raspi-config tool run 
+#              setup, apt-get Linux update, addtl Debian tools install, change of 
+#              hostname,and RaspberryPi-B board firmware update 
+#
+#            - The following was done after creating and booting for first time a 
+#              2014-01-07-wheezy-raspbian SD card Linux distro from 
+#              http://downloads.raspberrypi.org/raspbian_latest  
+#
+#            - Run on a Jan / 2014 Raspberrypi Model B 512MB 
+#
+# 2013-02-15 - V#1-01
+#
+# 2013-02-22 - V#1-02 - formatting & typo corrections ...
+#
+# 2015-01-02,
+# 2015-05-19,
+# 2014-05-30 - V#1-2 - Formatting + typo corrections ...
+#
+#############################################################################################
+#
+# Reference URLs:
+#
+# "How to Change Your Raspberry Pi or Other Linux Device's Hostname
+#   http://www.howtogeek.com/167195/how-to-change-your-raspberry-pi-or-other-linux-devices-hostname/
+#
+#############################################################################################
+
+#############################################################################################
+#
+# Upon the first power-up the RaspberryPI, the raspi-config tool will automatically
+#   start-up & run.
+# 
+# The following are entries from the text mode full screen raspi-config application, 
+#   entitled "Raspberry PI Software Configuration Tool (raspi-config)" 
+#
+# Important to note the following screen entries were from the 2014-01-07-wheezy-raspbian 
+#   SD card Linux version ...
+# 
+#############################################################################################
+
+
+1 Expand Filesystem 
+
+     Via arrow keys, go to "1 Expand Filesystem", tab to <Select>, and press Enter/Return
+
+     And on the next screen, and press Enter/Return 
+
+
+3 Enable Boot to Desktop/Scratch 
+
+      Via arrow keys, go to "3 Enable Boot to Desktop/Scratch", tab to <Select>, and press 
+         Enter/Return
+
+      On the next screen, select "Console Text console, requiring login (default)", tab to 
+         <Ok>, and press Enter/Return
+
+
+4 Internationalisation Options
+
+     Need to enable US English ...
+
+     Via arrow keys, go to "4 Internationalisation Options", tab to <Select>, and press 
+         Enter/Return
+
+     On the next screen, via arrow keys, go to "I1 Change Locale", tab to <Select>, and 
+         press Enter/Return
+
+     On the next screen, via PageDown and arrow keys, go to "en_GB.UTF-8 UTF-8" and de-select 
+         "[*]" via space bar, and scroll down & select "[*]" "en_US.UTF-8 UTF-8" via space 
+         bar, tab to <Ok>, and press Enter/Return
+
+     On the next screen, select "en_US.UTF-8", tab to <Ok>, and press Enter/Return
+
+     Will take some time ... after processing, it will return back to the "Raspberry PI 
+         Software Configuration Tool (raspi-config)" screen.  Arrow back down to 
+         "4 Internationalisation Options", tab to <Select>, and press Enter/Return
+
+     On the next screen, select "I2 Change Timezone", tab to <Ok>, and press Enter/Return
+
+     On the next screen, via arrow keys, go to "US", tab to <Ok>, and press Enter/Return
+
+     On the next screen, via arrow keys, go to "Eastern", tab to <Ok>, and press Enter/Return
+
+
+8 Advanced Options
+
+     Via arrow keys, go to "8 Advanced Options", tab to <Ok>, and press Enter/Return
+
+     On the next screen, via arrow keys, go to "A4 Enable/Disable remote command line access 
+         to your Pi using SSH", tab to <Ok>, and press Enter/Return
+
+     On the next screen, select <Enable>, and press Enter/Return 
+
+     And on the next screen, and press Enter/Return 
+
+
+Finally, tab to <Finish>, and press Enter/Return. On the next screen "Would you like to 
+     reboot now?", tab to <Yes>, and press Enter/Return
+
+System will re-boot ...
+
+At "raspberrypi login:" prompt, enter "pi" as the userid, and "raspberry" as the password ...
+
+
+# Next, since the default Raspberrypi Linux distro config is for the UK, reconfigure the 
+#   default keyboard settings using "dpkg-reconfigure keyboard-configuration".  
+
+# The following configs the keyboard settings for the US and as a generic 101-key PC 
+#   keyboard ...
+
+# FYI, this also runs in full-screen text mode ... 
+
+pi@raspberrypi ~ $ sudo dpkg-reconfigure keyboard-configuration
+
+    On the next screen, via PageDown and arrow keys, go to "Generic 101-key PC", 
+      tab to <Ok>, and press Enter/Return
+
+    On the next screen "Configuring keyboard-configuration", via arrow keys, go to 
+      "Other", tab to <Ok>, and press Enter/Return
+
+    On the next screen, via arrow keys, go to "English US", tab to <Ok>, and press 
+      Enter/Return
+ 
+    On the next screen "Keyboard layout", via arrow keys, go to "English US", tab to <Ok>, 
+      and press Enter/Return
+
+    On the next screen "Key to function as AltGr", via arrow keys, go to "No AltGr key", 
+      tab to <Ok>, and press Enter/Return
+
+    On the next screen "Compose Key", via arrow keys, go to "No compose key", tab to <Ok>, 
+      and press Enter/Return
+
+    On the next screen "Use Control+Alt+Backspace to terminate the X server?",  tab to <No>, 
+      and press Enter/Return 
+
+The keyboard configuration will then run, and return to the command line prompt.  Reboot the 
+      system in order for the new keyboard configuration to be setup.
+
+pi@raspberrypi ~ $ sudo shutdown -r now 
+
+
+# From a remote OSX or Linux laptop, ssh onto the machine ... in my case the ip address is 
+#   192.168.1.22 and the following is from my OSX MacBook Pro iTerm bash shell ...
+
+pkjr-Retina1:~ peterkreyjr$ ping 192.168.1.22
+PING 192.168.1.22 (192.168.1.22): 56 data bytes
+64 bytes from 192.168.1.22: icmp_seq=0 ttl=64 time=2.803 ms
+64 bytes from 192.168.1.22: icmp_seq=1 ttl=64 time=4.032 ms
+^C
+
+pkjr-Retina1:~ peterkreyjr$ ssh pi@192.168.1.22
+The authenticity of host '192.168.1.22 (192.168.1.22)' can't be established.
+RSA key fingerprint is 8f:58:0f:49:6a:16:0a:ab:ac:e4:cd:91:6c:41:2d:fd.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '192.168.1.22' (RSA) to the list of known hosts.
+pi@192.168.1.22's password:
+Linux raspberrypi 3.10.25+ #622 PREEMPT Fri Jan 3 18:41:00 GMT 2014 armv6l
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Thu Feb 13 19:07:03 2014
+pi@raspberrypi ~ $
+
+
+# Install all Raspbian Wheezy Linux updates.  First invoke "apt-get update" to refresh the 
+#   localfilesystems apt repo.  And second, invoke "apt-get upgrade" to bring all apps and 
+#   the Linux Os distro up to date ...
+
+pi@raspberrypi ~ $ sudo apt-get update
+Hit http://repository.wolfram.com stable Release.gpg
+Hit http://repository.wolfram.com stable Release
+Get:1 http://raspberrypi.collabora.com wheezy Release.gpg [836 B]
+Get:2 http://mirrordirector.raspbian.org wheezy Release.gpg [490 B]
+Hit http://repository.wolfram.com stable/non-free armhf Packages
+Get:3 http://raspberrypi.collabora.com wheezy Release [5,009 B]
+Get:4 http://archive.raspberrypi.org wheezy Release.gpg [490 B]
+Get:5 http://mirrordirector.raspbian.org wheezy Release [14.4 kB]
+Get:6 http://archive.raspberrypi.org wheezy Release [7,227 B]
+Get:7 http://raspberrypi.collabora.com wheezy/rpi armhf Packages [2,214 B]
+Ign http://repository.wolfram.com stable/non-free Translation-en_US
+Ign http://repository.wolfram.com stable/non-free Translation-en
+Get:8 http://mirrordirector.raspbian.org wheezy/main armhf Packages [7,424 kB]
+Get:9 http://archive.raspberrypi.org wheezy/main armhf Packages [16.9 kB]
+Ign http://raspberrypi.collabora.com wheezy/rpi Translation-en_US
+Ign http://raspberrypi.collabora.com wheezy/rpi Translation-en
+Ign http://archive.raspberrypi.org wheezy/main Translation-en_US
+Ign http://archive.raspberrypi.org wheezy/main Translation-en
+Hit http://mirrordirector.raspbian.org wheezy/contrib armhf Packages
+Hit http://mirrordirector.raspbian.org wheezy/non-free armhf Packages
+Hit http://mirrordirector.raspbian.org wheezy/rpi armhf Packages
+Ign http://mirrordirector.raspbian.org wheezy/contrib Translation-en_US
+Ign http://mirrordirector.raspbian.org wheezy/contrib Translation-en
+Ign http://mirrordirector.raspbian.org wheezy/main Translation-en_US
+Ign http://mirrordirector.raspbian.org wheezy/main Translation-en
+Ign http://mirrordirector.raspbian.org wheezy/non-free Translation-en_US
+Ign http://mirrordirector.raspbian.org wheezy/non-free Translation-en
+Ign http://mirrordirector.raspbian.org wheezy/rpi Translation-en_US
+Ign http://mirrordirector.raspbian.org wheezy/rpi Translation-en
+Fetched 7,472 kB in 49s (152 kB/s)
+Reading package lists... Done
+pi@raspberrypi ~ $
+
+pi@raspberrypi ~ $ sudo apt-get upgrade
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+The following packages will be upgraded:
+  curl dpkg dpkg-dev libcurl3 libcurl3-gnutls libdpkg-perl libxfont1 libyaml-0-2 tzdata wget
+10 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+Need to get 7,167 kB of archives.
+After this operation, 568 kB of additional disk space will be used.
+Do you want to continue [Y/n]? Y
+Get:1 http://mirrordirector.raspbian.org/raspbian/ wheezy/main dpkg armhf 1.16.12+rpi1 [2,583 kB]
+Get:2 http://mirrordirector.raspbian.org/raspbian/ wheezy/main libdpkg-perl all 1.16.12+rpi1 [953 kB]
+Get:3 http://mirrordirector.raspbian.org/raspbian/ wheezy/main curl armhf 7.26.0-1+wheezy8 [267 kB]
+Get:4 http://mirrordirector.raspbian.org/raspbian/ wheezy/main libcurl3 armhf 7.26.0-1+wheezy8 [315 kB]
+Get:5 http://mirrordirector.raspbian.org/raspbian/ wheezy/main libcurl3-gnutls armhf 7.26.0-1+wheezy8 [306 kB]
+Get:6 http://mirrordirector.raspbian.org/raspbian/ wheezy/main libyaml-0-2 armhf 0.1.4-2+deb7u3 [49.5 kB]
+Get:7 http://mirrordirector.raspbian.org/raspbian/ wheezy/main tzdata all 2013i-0wheezy1 [450 kB]
+Get:8 http://mirrordirector.raspbian.org/raspbian/ wheezy/main wget armhf 1.13.4-3+deb7u1 [749 kB]
+Get:9 http://mirrordirector.raspbian.org/raspbian/ wheezy/main dpkg-dev all 1.16.12+rpi1 [1,349 kB]
+Get:10 http://mirrordirector.raspbian.org/raspbian/ wheezy/main libxfont1 armhf 1:1.4.5-3 [145 kB]
+Fetched 7,167 kB in 21s (334 kB/s)
+Preconfiguring packages ...
+(Reading database ... 68746 files and directories currently installed.)
+Preparing to replace dpkg 1.16.12 (using .../dpkg_1.16.12+rpi1_armhf.deb) ...
+Unpacking replacement dpkg ...
+Processing triggers for man-db ...
+Setting up dpkg (1.16.12+rpi1) ...
+(Reading database ... 68746 files and directories currently installed.)
+Preparing to replace curl 7.26.0-1+wheezy7 (using .../curl_7.26.0-1+wheezy8_armhf.deb) ...
+Unpacking replacement curl ...
+Preparing to replace libcurl3:armhf 7.26.0-1+wheezy7 (using .../libcurl3_7.26.0-1+wheezy8_armhf.deb) ...
+Unpacking replacement libcurl3:armhf ...
+Preparing to replace libcurl3-gnutls:armhf 7.26.0-1+wheezy7 (using .../libcurl3-gnutls_7.26.0-1+wheezy8_armhf.deb) ...
+Unpacking replacement libcurl3-gnutls:armhf ...
+Preparing to replace libyaml-0-2:armhf 0.1.4-2 (using .../libyaml-0-2_0.1.4-2+deb7u3_armhf.deb) ...
+Unpacking replacement libyaml-0-2:armhf ...
+Preparing to replace tzdata 2013h-0wheezy1 (using .../tzdata_2013i-0wheezy1_all.deb) ...
+Unpacking replacement tzdata ...
+Processing triggers for man-db ...
+Setting up tzdata (2013i-0wheezy1) ...
+
+Current default time zone: 'America/New_York'
+Local time is now:      Thu Feb 13 19:16:57 EST 2014.
+Universal Time is now:  Fri Feb 14 00:16:57 UTC 2014.
+Run 'dpkg-reconfigure tzdata' if you wish to change it.
+
+(Reading database ... 68725 files and directories currently installed.)
+Preparing to replace wget 1.13.4-3 (using .../wget_1.13.4-3+deb7u1_armhf.deb) ...
+Unpacking replacement wget ...
+Preparing to replace dpkg-dev 1.16.12 (using .../dpkg-dev_1.16.12+rpi1_all.deb) ...
+Unpacking replacement dpkg-dev ...
+Preparing to replace libdpkg-perl 1.16.12 (using .../libdpkg-perl_1.16.12+rpi1_all.deb) ...
+Unpacking replacement libdpkg-perl ...
+Preparing to replace libxfont1 1:1.4.5-2 (using .../libxfont1_1%3a1.4.5-3_armhf.deb) ...
+Unpacking replacement libxfont1 ...
+Processing triggers for install-info ...
+Processing triggers for man-db ...
+Setting up libcurl3:armhf (7.26.0-1+wheezy8) ...
+Setting up curl (7.26.0-1+wheezy8) ...
+Setting up libcurl3-gnutls:armhf (7.26.0-1+wheezy8) ...
+Setting up libyaml-0-2:armhf (0.1.4-2+deb7u3) ...
+Setting up wget (1.13.4-3+deb7u1) ...
+Setting up libdpkg-perl (1.16.12+rpi1) ...
+Setting up dpkg-dev (1.16.12+rpi1) ...
+Setting up libxfont1 (1:1.4.5-3) ...
+pi@raspberrypi ~ $
+
+# Luckily in the above 'dpkg-reconfigure tzdata' is automatically run ...
+
+# To preserve SD disk storage space, flush out the apt cache directory 
+#    "/var/cache/apt/archives" using "sudo apt-get clean" ... all downloaded 
+#    .deb packages & expansions will be cleaned out.  
+
+# Before "sudo apt-get clean", take a look at what may already have been downloaded ... 
+
+pi@raspberrypi ~ $ ls -l /var/cache/apt/archives/
+total 5200
+-rw-r--r-- 1 root root   34852 Jun 18  2012 libgpm2_1.20.4-6_armhf.deb
+-rw-r----- 1 root root       0 Jan  7 16:09 lock
+drwxr-xr-x 2 root root    4096 Feb 13 21:35 partial
+-rw-r--r-- 1 root root  673576 Feb 20  2013 vim_2%3a7.3.547-7_armhf.deb
+-rw-r--r-- 1 root root 4606980 Feb  9  2013 vim-runtime_2%3a7.3.547-7_all.deb
+
+# ... and after "sudo apt-get clean" to clean out all downloaded .deb's and directories that
+#   these are copied into ... 
+
+pi@raspberrypi ~ $ sudo apt-get clean
+
+pi@raspberrypi ~ $ ls -l /var/cache/apt/archives/
+total 4
+-rw-r----- 1 root root    0 Jan  7 16:09 lock
+drwxr-xr-x 2 root root 4096 Feb 13 21:35 partial
+
+
+# Next add password for su / root ....
+
+pi@raspberrypi ~ $ sudo passwd root
+Enter new UNIX password:
+Retype new UNIX password:
+passwd: password updated successfully
+pi@raspberrypi ~ $
+
+
+# Edit / change hostname ... per the following by default it is raspberrypi ...
+
+pi@raspberrypi ~ $ hostname
+raspberrypi
+
+# As su, first make backup copy of /etc/hosts using $NOW date+timestamp, and then edit
+#  /etc/hosts levaing all of the entries alone except for the very last entry labeled 
+#  127.0.1.1 with the hostname "raspberrypi" ... this is the only line to edit. 
+# 
+#  Replace "raspberrypi" with "rasp-srvr1"  
+
+#  NOW=$(date +"%Y-%m-%d-%H:%M:%S")
+
+pi@raspberrypi ~ $ su
+Password:
+
+root@raspberrypi:/home/pi# NOW=$(date +"%Y-%m-%d-%H:%M:%S")
+
+root@raspberrypi:/home/pi# echo $NOW
+2014-02-15-10:38:27
+
+root@raspberrypi:/home/pi# cd /etc
+
+root@raspberrypi:/etc# cp hosts ./hosts+$NOW
+
+root@raspberrypi:/etc# ls hosts*
+hosts  hosts+2014-02-15-10:38:27  hosts.allow  hosts.deny
+
+root@raspberrypi:/etc# vi hosts
+
+root@raspberrypi:/etc# more hosts
+127.0.0.1	localhost
+::1		localhost ip6-localhost ip6-loopback
+fe00::0		ip6-localnet
+ff00::0		ip6-mcastprefix
+ff02::1		ip6-allnodes
+ff02::2		ip6-allrouters
+
+127.0.1.1	rasp-srvr1
+root@raspberrypi:/etc#
+
+# Again as su, first make a copy of /etc/hostname using $NOW date+timestamp, and then 
+#  edit /etc/hostname changing / replacing "raspberrypi" with "rasp-srvr1" 
+
+root@raspberrypi:/etc# more hostname
+raspberrypi
+
+root@raspberrypi:/etc# NOW=$(date +"%Y-%m-%d-%H:%M:%S")
+
+root@raspberrypi:/etc# echo $NOW
+2014-02-15-10:45:08
+
+root@raspberrypi:/etc# cp hostname ./hostname+$NOW
+
+root@raspberrypi:/etc# ls hostname*
+hostname  hostname+2014-02-15-10:45:08
+
+root@raspberrypi:/etc# vi hostname
+
+root@raspberrypi:/etc# more hostname
+rasp-srvr1 
+
+
+# Last, reboot and confirm hostname change ...
+
+root@raspberrypi:~# shutdown -r now
+
+Broadcast message from root@raspberrypi (pts/0) (Sat Feb 15 10:55:06 2014):
+The system is going down for reboot NOW!
+root@raspberrypi:~# Connection to 192.168.1.22 closed by remote host.
+Connection to 192.168.1.22 closed.
+
+pkjr-Retina1:~ peterkreyjr$ ssh pi@192.168.1.22
+pi@192.168.1.22's password:
+Linux rasp-srvr1 3.10.25+ #622 PREEMPT Fri Jan 3 18:41:00 GMT 2014 armv6l
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Sat Feb 15 09:16:36 2014 from 192.168.1.12
+pi@rasp-srvr1 ~ $
+
+pi@rasp-srvr1 ~ $ hostname
+rasp-srvr1
+
+
+# Install needed additional Debian packages ...
+#   - hdparm will be used to test & benchmark the external USB SATA drives ... 
+
+pi@rasp-srvr1 ~ $ sudo apt-get install hdparm
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+The following extra packages will be installed:
+  powermgmt-base
+Suggested packages:
+  apmd
+The following NEW packages will be installed:
+  hdparm powermgmt-base
+0 upgraded, 2 newly installed, 0 to remove and 0 not upgraded.
+Need to get 126 kB of archives.
+After this operation, 343 kB of additional disk space will be used.
+Do you want to continue [Y/n]? Y
+Get:1 http://mirrordirector.raspbian.org/raspbian/ wheezy/main hdparm armhf 9.39-1 [114 kB]
+Get:2 http://mirrordirector.raspbian.org/raspbian/ wheezy/main powermgmt-base armhf 1.31 [11.6 kB]
+Fetched 126 kB in 0s (148 kB/s)
+Selecting previously unselected package hdparm.
+(Reading database ... 70284 files and directories currently installed.)
+Unpacking hdparm (from .../hdparm_9.39-1_armhf.deb) ...
+Selecting previously unselected package powermgmt-base.
+Unpacking powermgmt-base (from .../powermgmt-base_1.31_armhf.deb) ...
+Processing triggers for man-db ...
+Setting up hdparm (9.39-1) ...
+insserv: warning: script 'mathkernel' missing LSB tags and overrides
+Setting up powermgmt-base (1.31) ...
+/run/udev or .udevdb or .udev presence implies active udev.  Aborting MAKEDEV invocation.
+
+
+# Last ... update the Raspberrypi's firmware using rpi-update ...
+
+#  WARNING: rpi-update will generate tons of output !  So the following copy / past is only
+#   from the second time rpi-update was run ... confirms the firmware is up to date.
+
+# If not up to date, there be tons of output ... pls remember to re-boot once rpi-update
+#   completes ...
+
+pi@rasp-srvr1 ~ $ su
+Password:
+root@rasp-srvr1:/home/pi#
+
+root@rasp-srvr1:/home/pi#  rpi-update
+ *** Raspberry Pi firmware updater by Hexxeh, enhanced by AndrewS
+ *** Performing self-update
+--2014-02-16 18:12:26--  https://github.com/Hexxeh/rpi-update/raw/master/rpi-update
+Resolving github.com (github.com)... 192.30.252.130
+Connecting to github.com (github.com)|192.30.252.130|:443... connected.
+HTTP request sent, awaiting response... 302 Found
+Location: https://raw.github.com/Hexxeh/rpi-update/master/rpi-update [following]
+--2014-02-16 18:12:31--  https://raw.github.com/Hexxeh/rpi-update/master/rpi-update
+Resolving raw.github.com (raw.github.com)... 199.27.78.133
+Connecting to raw.github.com (raw.github.com)|199.27.78.133|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 7174 (7.0K) [text/plain]
+Saving to: `/usr/bin/rpi-update.tmp'
+
+100%[================================================================================================================================================>] 7,174       --.-K/s   in 0.003s
+
+2014-02-16 18:12:37 (2.71 MB/s) - `/usr/bin/rpi-update.tmp' saved [7174/7174]
+
+ *** Relaunching after update
+ *** Raspberry Pi firmware updater by Hexxeh, enhanced by AndrewS
+ *** ARM/GPU split is now defined in /boot/config.txt using the gpu_mem option!
+ *** Your firmware is already up to date
+
+
+# In order for the firmware update to take effect: 
+# 
+#    "sudo shutdown -r now"
+
+

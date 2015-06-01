@@ -1,0 +1,335 @@
+#############################################################################################
+#
+# Group 1 - Part 1A - RaspberryPi-B Debian Linux Download + SD Card Creation On Ubuntu  
+#
+# 2014-02-10 - V#1-0 
+#
+#            - Download & creation of Debian Linux SD for RaspberryPi-B, on Ubuntu 
+#                12.04.x Linux Desktop
+#
+# 2014-02-11 - Updated version of "2013-09-25-Wheezy-Raspbian-On-Linux V#1-0" based
+#                on 2012-08-16 V#1-21 Original Raspbian SD card creation instructions doc
+#
+#            - Following created on Ubuntu 12.04.3 Linux desktop hostname "CoreSvces1"   
+#               (separate Mac OSX laptop example doc)
+#
+# 2015-01-02,
+# 2015-05-19 - V#1-1 - Formatting + typo corrections ...
+#
+#############################################################################################
+# 
+#  Reference URLs
+#
+#   RPi Easy SD Card Setup
+#     http://elinux.org/RPi_Easy_SD_Card_Setup 
+#
+#   Best way to prepare for the raspi-config is to watch the following YouTube videos of a
+#   wheezy-raspbian distro being configured.   So check these out before you do you first
+#   boot:
+#
+#   Raspberry Pi running Raspbian - Part 1 - First boot and Raspi-config
+#     http://www.youtube.com/watch?v=nXvODj6YpAE
+#
+#   Raspberry Pi running Raspbian - Part 2 - Booting to LXDE
+#     http://www.youtube.com/watch?v=mA0pTd7MG4k&feature=youtu.be
+#
+#############################################################################################
+
+
+#############################################################################################
+#
+# Step 1 - Download wheezy-raspbian distro from http://www.raspberrypi.org/downloads 
+#
+#   - Wheezy Raspian distro now renamed "raspbian_latest" and only downloadable from
+#     http://www.raspberrypi.org/downloads
+#   - Following is via wget & output to current image name "2014-01-07-wheezy-raspbian.zip"
+#
+#############################################################################################
+ 
+peterkreyjr@CoreSvces1:~$ cd Downloads/
+
+peterkreyjr@CoreSvces1:~/Downloads$ 
+
+peterkreyjr@CoreSvces1:~/Downloads$ wget http://downloads.raspberrypi.org/raspbian_latest -O ./2014-01-07-wheezy-raspbian.zip 
+--2014-02-10 12:58:48--  http://downloads.raspberrypi.org/raspbian_latest
+Resolving downloads.raspberrypi.org (downloads.raspberrypi.org)... 93.93.128.211, 93.93.128.230, 93.93.130.39, ...
+Connecting to downloads.raspberrypi.org (downloads.raspberrypi.org)|93.93.128.211|:80... connected.
+HTTP request sent, awaiting response... 302 Found
+Location: http://downloads.raspberrypi.org/raspbian/images/raspbian-2014-01-09/2014-01-07-wheezy-raspbian.zip [following]
+--2014-02-10 12:58:48--  http://downloads.raspberrypi.org/raspbian/images/raspbian-2014-01-09/2014-01-07-wheezy-raspbian.zip
+Reusing existing connection to downloads.raspberrypi.org:80.
+HTTP request sent, awaiting response... 302 Found
+Location: http://director.downloads.raspberrypi.org/raspbian/images/raspbian-2014-01-09/2014-01-07-wheezy-raspbian.zip [following]
+--2014-02-10 12:58:48--  http://director.downloads.raspberrypi.org/raspbian/images/raspbian-2014-01-09/2014-01-07-wheezy-raspbian.zip
+Resolving director.downloads.raspberrypi.org (director.downloads.raspberrypi.org)... 93.93.128.230, 93.93.130.39, 93.93.130.214, ...
+Reusing existing connection to downloads.raspberrypi.org:80.
+HTTP request sent, awaiting response... 302 Moved temporarily
+Location: http://files.velocix.com/c1410/newdownloads/raspbian/images/raspbian-2014-01-09/2014-01-07-wheezy-raspbian.zip [following]
+--2014-02-10 12:58:48--  http://files.velocix.com/c1410/newdownloads/raspbian/images/raspbian-2014-01-09/2014-01-07-wheezy-raspbian.zip
+Resolving files.velocix.com (files.velocix.com)... 212.187.212.226
+Connecting to files.velocix.com (files.velocix.com)|212.187.212.226|:80... connected.
+HTTP request sent, awaiting response... 302 Found
+Location: http://212.187.212.152/bt/fed394df53483a20bb44f549cce7e8cf7c4b2058/data/2014-01-07-wheezy-raspbian.zip [following]
+--2014-02-10 12:58:49--  http://212.187.212.152/bt/fed394df53483a20bb44f549cce7e8cf7c4b2058/data/2014-01-07-wheezy-raspbian.zip
+Connecting to 212.187.212.152:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 817931404 (780M) [application/zip]
+Saving to: `./2014-01-07-wheezy-raspbian.zip'
+
+100%[============================================================================================================>] 817,931,404 1.12M/s   in 11m 28s 
+
+2014-02-10 13:10:17 (1.13 MB/s) - `./2014-01-07-wheezy-raspbian.zip' saved [817931404/817931404]
+
+peterkreyjr@CoreSvces1:~/Downloads$ 
+
+
+#############################################################################################
+#
+# Step 2 - Verify SHA-1 checksum against http://www.raspberrypi.org/downloads 
+#            9d0afbf932ec22e3c29d793693f58b0406bcab86 
+# 
+#############################################################################################
+
+peterkreyjr@CoreSvces1:~/Downloads$ sha1sum ./2014-01-07-wheezy-raspbian.zip 
+9d0afbf932ec22e3c29d793693f58b0406bcab86  ./2014-01-07-wheezy-raspbian.zip
+
+
+#############################################################################################
+#
+# Step 3 - Expand / Unzip image file 
+#
+#############################################################################################
+
+peterkreyjr@CoreSvces1:~/Downloads$ unzip ./2014-01-07-wheezy-raspbian.zip 
+Archive:  ./2014-01-07-wheezy-raspbian.zip
+  inflating: 2014-01-07-wheezy-raspbian.img  
+ 
+peterkreyjr@CoreSvces1:~/Downloads$ ls -l ./2014-01-07-wheezy-raspbian.img 
+-rw-r--r-- 1 peterkreyjr peterkreyjr 2962227200 Jan  7 18:42 ./2014-01-07-wheezy-raspbian.img
+
+
+#############################################################################################
+#
+# Step 4 - Determine correct Linux DEVICE name for USB card reader
+#
+#############################################################################################
+
+# Important Note: For those with moderate Linux sysadmin experience, this step can be
+#    a bit tricky separating the Device name from the Partition name.  So in the 
+#    following examples read closely how the Device & Partition name are determined.
+
+# Before inserting & mounting SD card into host system's internal USB card reader or
+#  USB based card reader, see what's currently mounted
+
+peterkreyjr@CoreSvces1:~/Downloads$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       910G   19G  845G   3% /
+udev            3.9G  4.0K  3.9G   1% /dev
+tmpfs           1.6G  884K  1.6G   1% /run
+none            5.0M     0  5.0M   0% /run/lock
+none            3.9G  336K  3.9G   1% /run/shm
+
+# In the above, only storage device currently mounted is "/dev/sda1" (system hard drive)
+#  and denotes "sda" as the DEVICE name, and "sda1" as the PARTITION name ... 
+
+# Insert the SD card, and run "df -h" to see how it has been named and mounted
+
+# IMPORTANT NOTES:  
+#
+# (1) Two potential ways the SD card will be seen mounted: single versus multiple 
+#     partitions ...
+# (2) Can be mounted on /dev/sdc, /dev/sdg/, or other device names ... and will vary.
+#
+# The following 2 Options show both ...
+
+# OPTION #1
+#
+# If the SD card is NOT blank and already has a Raspberrypi Linux image, it may appear 
+#  like the following:
+
+peterkreyjr@CoreSvces1:~/Downloads$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       910G   15G  849G   2% /
+udev            3.9G   12K  3.9G   1% /dev
+tmpfs           1.6G  924K  1.6G   1% /run
+none            5.0M     0  5.0M   0% /run/lock
+none            3.9G  292K  3.9G   1% /run/shm
+/dev/sdc2       7.3G  1.6G  5.5G  22% /media/bc4cd0fa-afd9-4fac-b42d-1795a56a358d
+/dev/sdg1        56M   19M   38M  33% /media/boot
+
+# In the above the SD card is mounted on DEVICE "sdc" with partitions "/dev/sdg1"
+#  and "/dev/sdc2".  REMINDER ... this can vary ...
+
+# OPTION #2
+#
+# If the SD card is blank, it will appear like the following:
+
+peterkreyjr@CoreSvces1:~/Downloads$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       910G   19G  845G   3% /
+udev            3.9G  4.0K  3.9G   1% /dev
+tmpfs           1.6G  896K  1.6G   1% /run
+none            5.0M     0  5.0M   0% /run/lock
+none            3.9G  336K  3.9G   1% /run/shm
+/dev/sdg1       7.5G   32K  7.5G   1% /media/1087-A357
+
+# In the above df command ouput, the last line shows the SD card "/dev/sdg1" was added  
+#  and mounted as DEVICE = "sdg" PARTITION = "sdg1".  REMINDER ... this can vary ...
+
+# NOTE: the DEVICE name is never the same.  In the past the SD cards have also been
+#  mounted as sdg and others.   So ALWAYS review each mount ...
+
+# Re-confirm using "dmesg" 
+
+peterkreyjr@CoreSvces1:~/Downloads$ dmesg | tail -10 
+[275201.283161] scsi5 : usb-storage 1-1:1.0
+[275202.281010] scsi 5:0:0:0: Direct-Access     Generic  Storage Device   0.00 PQ: 0 ANSI: 2
+[275202.283165] sd 5:0:0:0: Attached scsi generic sg7 type 0
+[275202.286682] sd 5:0:0:0: [sdg] Attached SCSI removable disk
+[275206.632883] sd 5:0:0:0: [sdg] 15564800 512-byte logical blocks: (7.96 GB/7.42 GiB)
+[275206.634129] sd 5:0:0:0: [sdg] No Caching mode page found
+[275206.634141] sd 5:0:0:0: [sdg] Assuming drive cache: write through
+[275206.637011] sd 5:0:0:0: [sdg] No Caching mode page found
+[275206.637024] sd 5:0:0:0: [sdg] Assuming drive cache: write through
+[275206.638395]  sdg: sdg1
+
+# In the above dmesg command ouput, the last line shows the SD card as "sdg: sdg1" in
+#  "DEVICE: PARTITION" format, or DEVICE = "sdg" PARTITION = "sdg1" 
+#
+# REMINDER ... this can vary ... 
+
+# IMPORTANT NOTE:  Depending upon a variety of factors, the SD card reader can be
+#  assigned a variety of DEVICE names.  In running the above on multiple machines and
+#  different SD card readers (built-in & external USB based), some were named "sdb", 
+#  "sdc", "sdg", "sdi", ..., etc.  
+
+# So read and match according to the output of your Linux distro and SD card reader 
+#  combination. 
+
+
+#############################################################################################
+#
+# Step 5 - Use gparted GUI to re-format entire SD.  While most are already pre-formatted to
+#          FAT32, reformatting will ensure the SD is completely empty and of a pre-tested
+#          blank format ...
+#
+#############################################################################################
+
+# NOTE: for all the following steps, important to remember that the DEVICE name is never the 
+#  same.  In the past the SD cards have also been mounted as sdc and others.  So ALWAYS 
+#  review each mount ... 
+
+# First umount the SD ... per the above, in this example /dev/sdg1
+
+peterkreyjr@CoreSvces1:~/Downloads$ sudo umount /dev/sdg1
+[sudo] password for peterkreyjr: 
+ 
+# Next use GParted to reformat / erase the SD card ...
+
+peterkreyjr@CoreSvces1:~$ sudo gparted
+======================
+libparted : 2.3
+
+# Once gparted GUI is runnning ...
+#
+#   - in URHC, left-click on the disk selection & in our case select "/dev/sdg"
+#   - Under the "Partition" header, right-click on the "/dev/sdg1" row, and left-click on 
+#       "Delete" within pop-up menu list
+#
+#   - Under the "Partition" header, right-click on the "unallocated" row, and left-click on 
+#       "New" within pop-up menu list
+#
+#   - Within the "Creation new Partition pop-up, left-click within "File system", left-click
+#       on "fat32" within pop-up menu list, and left-click on "Add" button
+#
+#   - Below the Menu bar line under the "Partition" menu bar entry, left-click on the green 
+#       check mark.  Within the "Apply operations to device" pop-up screen, in LHRC 
+#       left-click on the "Apply" button.
+#
+#   - Within the "Applying pending operations" pop-up screen, when formatting operations are
+#       completed, in LHRC left-click on the "Close" button.
+#
+#   - A new "/dev/sdg1" Prtition and "fat32" Filesystem should now be displayed ...
+#
+#   - In the ULHC of the screen, on the menu bar, left-click on "GParted", and and left-click
+#       on "Exit" within pop-up menu list
+
+# Remove SD card from SD card reader, and re-insert ...
+
+#############################################################################################
+# 
+# Step 6 - Per Step 5 above the SD card has been erased / re-formatted, and per Step 4 we
+#          know exactly where the SD has been mounted (in my case "/dev/sdg1").
+#
+#          So now that we know exactly what to call the out SD card DEVICE, create the 
+#          bootable SD card via the Linux dd command ... 
+#
+#############################################################################################
+
+# First umount the PARTITION ... in my case "/dev/sdg1"
+
+peterkreyjr@CoreSvces1:~/Downloads$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       910G   19G  845G   3% /
+udev            3.9G  4.0K  3.9G   1% /dev
+tmpfs           1.6G  896K  1.6G   1% /run
+none            5.0M     0  5.0M   0% /run/lock
+none            3.9G  336K  3.9G   1% /run/shm
+/dev/sdg1       7.5G  4.0K  7.5G   1% /media/A55E-AE17
+peterkreyjr@CoreSvces1:~/Downloads$ 
+ 
+peterkreyjr@CoreSvces1:~/Downloads$ sudo umount /dev/sdg1
+[sudo] password for peterkreyjr: 
+
+# And finally dd the .img file to the DEVICE "sdg"  ...
+#
+#  IMPORTANT NOTE: when using dd to copy the .img to the SD card, YOU MUST BE VERY
+#    CAREFUL TO SPECIFY THE DEVICE NAME OF THE SD CARD, AND NOT ANOTHER DEVICE ON
+#    YOUR HOST SYSTEM ... SUCH AS ONE OF THE HARD DRIVES !! 
+#
+# No matter what, the dd command will copy data to the device your specify, so make 
+# sure the output file is the SD card, and not another device.  
+
+peterkreyjr@CoreSvces1:~/Downloads$ sudo dd bs=1M \
+>   if=./2014-01-07-wheezy-raspbian.img  of=/dev/sdg 
+[sudo] password for peterkreyjr: 
+2825+0 records in
+2825+0 records out
+2962227200 bytes (3.0 GB) copied, 150.613 s, 19.7 MB/s
+peterkreyjr@CoreSvces1:~/Downloads$ 
+
+# Make sure to sync SD card and then remove from the host system SD reader ...
+
+peterkreyjr@coresvcs1:~/Downloads$  sudo sync
+peterkreyjr@coresvcs1:~/Downloads$  sudo sync
+ 
+# Last, re-insert in SD reader, and double check contents & partitions ...
+
+peterkreyjr@CoreSvces1:~/Downloads$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       910G   19G  845G   3% /
+udev            3.9G  4.0K  3.9G   1% /dev
+tmpfs           1.6G  900K  1.6G   1% /run
+none            5.0M     0  5.0M   0% /run/lock
+none            3.9G  336K  3.9G   1% /run/shm
+/dev/sdg1        56M   19M   38M  34% /media/boot
+/dev/sdg2       2.7G  2.0G  586M  78% /media/fc254b57-8fff-4f96-9609-ea202d871acf
+
+
+#############################################################################################
+# 
+# Step 7 - Mount the SD card in RaspberryPi, apply power ... and it will the Linux distro 
+#   will boot !
+#
+#############################################################################################
+
+# Once the SD card is mounted into the RaspberryPi and the board is powered-on, the intial 
+# boot will install and conifg the wheezy-raspbian Linux Debian distro.
+
+# During the initial boot, a script called raspi-config will run, and display a menu of 
+# configuration options.
+
+
+
+
+

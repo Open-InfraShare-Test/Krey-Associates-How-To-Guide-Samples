@@ -1,0 +1,228 @@
+
+#############################################################################################
+#
+# Group 6 - Part 11 - RP-B + Toshiba Canvio 1TB USB SATA Drive Tests Via Multi Parallel 
+#            bonnie
+#
+# 2014-03-11 --> 2014-03-13 - V#1-0
+#
+#            - Multi-hour parallel multi-process & concurrent bonnie++ stress testing of
+#              RP-B and Toshiba Canvio 1TB USB SATA Drive
+#
+#            - Initial group test elapsed time app. 5.5 hours ... 
+#
+#            - the following uses the Raspberrypi Toshiba Canvio 1TB USB SATA Drive 
+#              partition created using the gparted GUI version on Ubuntu 12.04.x Linux, 
+#              NOT the "parted -a optimal" and mkfs.ext4 RP-B command line tools 
+#
+#            - Added bonnie++ triple process parallel testing from Bash shell script dev 
+#                series (bash_tst4.sh, bash_tst5.sh, bash_tst6.sh) finalizing to 
+#                bonnie_tst6.sh, and redirecting bonnie++ output to its bon_csv2txt 
+#                .csv output data to a formatted text file.
+#
+#            - Added multi-day elapsed time calc & formatting based on elap_time.sh 
+#                prototyping and dev Bash shell script ...
+#
+# 2015-05-31 - V#1-1  - Formatting & corrections ... 
+#
+#############################################################################################
+#
+# Reference URLs:
+#
+#  see elap_time.sh for seconds based multi-day elapsed time URLs ...
+#
+#  "bonnie++ Tips" ("If you want html or simple csv text output run bonie++ this way")
+#    http://mapopa.blogspot.com/2007/10/bonnie-tips.html
+#
+#  "Running several scripts in parallel bash script"
+#    http://stackoverflow.com/questions/15644991/running-several-scripts-in-parallel-bash-script
+#    http://ss64.com/bash/wait.html 
+#
+#  "bonnie++(8) - Linux man page"
+#    http://linux.die.net/man/8/bonnie++
+#
+#############################################################################################
+#
+# IMPORTANT NOTE: all of the following tests ARE NOT done with the external USB SATA drive 
+#  connected to a separately powered USB hub ... the USB SATA drive is connected directly
+#  to one of the two the Raspberrypi USB ports for all of the following tests ... 
+#
+#############################################################################################
+
+
+#############################################################################################
+# 
+#  Test the external USB SATA drive using the bonnie_tst6.sh bonnie++ triple process 
+#    parallel Bash shell script ....
+#
+#  Note: bonnie_tst6.sh features accurate, potentially multi-day test periods, accurately 
+#    captures & formats the elapsed test time, and pipes bonnie++ output throught the 
+#    bon_csv2txt text formatting script ...  
+# 
+#############################################################################################
+
+pi@rasp-srvr1 ~ $ pwd
+/home/pi
+
+pi@rasp-srvr1 ~ $ time ./bonnie_tst6.sh Toshiba-Canvio-1TB
+
+bonnie_tst6.sh ...
+bonnie++ output filename: Toshiba-Canvio-1TB
+
+Start Date+Time: Wed Mar 12 17:39:02 EDT 2014
+StartTime TS in Seconds: 1394660342
+
+Invoking bonnie -p3 ...
+Creating semaphore for 3 procs.
+
+Initiating 3 concurrent / parallel bonnie++ processes ...
+ ... Output file1: Toshiba-Canvio-1TB_multi_out1+2014-03-12-17:39:02
+ ... Output file2: Toshiba-Canvio-1TB_multi_out2+2014-03-12-17:39:02
+ ... Output file3: Toshiba-Canvio-1TB_multi_out3+2014-03-12-17:39:02
+
+Executing wait command to enable timing of all background process completion ...
+
+Using uid:1000, gid:1000.
+Using uid:1000, gid:1000.
+Using uid:1000, gid:1000.
+Writing a byte at a time...Writing a byte at a time...Writing a byte at a time...done
+done
+done
+Writing intelligently...Writing intelligently...Writing intelligently...done
+done
+done
+Rewriting...Rewriting...Rewriting...done
+done
+done
+Reading a byte at a time...Reading a byte at a time...Reading a byte at a time...done
+done
+done
+Reading intelligently...Reading intelligently...Reading intelligently...done
+done
+done
+start 'em...start 'em...start 'em...done...done...done...done...done...
+done...done...done...done...done...
+done...done...done...done...done...
+Create files in sequential order...Create files in sequential order...Create files in sequential order...done.
+Stat files in sequential order...done.
+Stat files in sequential order...done.
+Stat files in sequential order...done.
+Delete files in sequential order...done.
+Delete files in sequential order...done.
+Delete files in sequential order...done.
+done.
+done.
+Create files in random order...Create files in random order...Create files in random order...done.
+Stat files in random order...done.
+Stat files in random order...done.
+Stat files in random order...done.
+Delete files in random order...done.
+Delete files in random order...done.
+Delete files in random order...done.
+Can't process: Version  1.96       ------Sequential Output------ --Sequential Input- --Random-
+Can't process: Concurrency   1     -Per Chr- --Block-- -Rewrite- -Per Chr- --Block-- --Seeks--
+Can't process: Machine        Size K/sec %CP K/sec %CP K/sec %CP K/sec %CP K/sec %CP  /sec %CP
+Can't process: rasp-srvr1     872M    14  31  1011   1   658   1   130  33  3881   5   8.8   1
+Can't process: Latency              4095ms    8027ms   31402ms   91478us   31089ms   34598ms
+Can't process: Version  1.96       ------Sequential Create------ --------Random Create--------
+Can't process: rasp-srvr1          -Create-- --Read--- -Delete-- -Create-- --Read--- -Delete--
+Can't process:               files  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
+Can't process:                  16     2   0 20899  34     5   0     2   0 29196  32     7   0
+Can't process: Latency              5400ms   24610us    6849ms    6845ms   20304us    6495ms
+done.
+Can't process: Version  1.96       ------Sequential Output------ --Sequential Input- --Random-
+Can't process: Concurrency   1     -Per Chr- --Block-- -Rewrite- -Per Chr- --Block-- --Seeks--
+Can't process: Machine        Size K/sec %CP K/sec %CP K/sec %CP K/sec %CP K/sec %CP  /sec %CP
+Can't process: rasp-srvr1     872M    14  31   967   1   661   1   126  35  3863   5   9.0   1
+Can't process: Latency              4062ms   11458ms   31405ms     100ms   31079ms   32452ms
+Can't process: Version  1.96       ------Sequential Create------ --------Random Create--------
+Can't process: rasp-srvr1          -Create-- --Read--- -Delete-- -Create-- --Read--- -Delete--
+Can't process:               files  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
+Can't process:                  16     2   0 20828  33     5   0     2   0 30172  33     7   0
+Can't process: Latency              5575ms   30151us    8389ms    6067ms   20151us    7383ms
+done.
+Can't process: Version  1.96       ------Sequential Output------ --Sequential Input- --Random-
+Can't process: Concurrency   1     -Per Chr- --Block-- -Rewrite- -Per Chr- --Block-- --Seeks--
+Can't process: Machine        Size K/sec %CP K/sec %CP K/sec %CP K/sec %CP K/sec %CP  /sec %CP
+Can't process: rasp-srvr1     872M    14  32   997   1   662   1   130  33  3863   5   8.7   1
+Can't process: Latency              4020ms    8440ms   31410ms   93420us   31102ms   33501ms
+Can't process: Version  1.96       ------Sequential Create------ --------Random Create--------
+Can't process: rasp-srvr1          -Create-- --Read--- -Delete-- -Create-- --Read--- -Delete--
+Can't process:               files  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
+Can't process:                  16     2   0 21493  34     5   0     2   0 30341  33     7   0
+Can't process: Latency              5534ms   24657us    7301ms    5801ms   20148us    6494ms
+Stop Date+Time: Wed Mar 12 23:19:39 EDT 2014
+StopTime TE in Seconds: 1394680779
+
+StopTime TE 1394680779 minus Start Time TS 1394660342 in Seconds: 20437
+
+T2 in days:hours:minutes:seconds format ...
+T2 formatted: 00:05:40:37
+
+ ... end of bonnie_tst6.sh ...
+
+real	340m37.338s
+user	0m20.200s
+sys	8m34.490s
+pi@rasp-srvr1 ~ $ 
+
+#############################################################################################
+#
+#  Per above triple parallel bonnie++ took 5 hours 40 secs ... 40 / 60 secs = 0.667 
+#
+#  And per time command measuring bonnie_tst6.sh elapsed time of 340m37.338s, 
+#    340 / 60 = 5.667 hours ... so elapsed time calcs check out.
+#
+#############################################################################################
+
+
+#############################################################################################
+#
+#  Next take a look at the bonnie++ bon_csv2txt formatted output files ...
+#
+#############################################################################################
+
+pi@rasp-srvr1 ~ $ ls -l Toshiba-Canvio-1TB_multi_out*+2014-03-12-*
+-rw-r--r-- 1 pi pi 796 Mar 12 23:19 Toshiba-Canvio-1TB_multi_out1+2014-03-12-17:39:02
+-rw-r--r-- 1 pi pi 796 Mar 12 23:19 Toshiba-Canvio-1TB_multi_out2+2014-03-12-17:39:02
+-rw-r--r-- 1 pi pi 796 Mar 12 23:19 Toshiba-Canvio-1TB_multi_out3+2014-03-12-17:39:02
+
+pi@rasp-srvr1 ~ $ more Toshiba-Canvio-1TB_multi_out1+2014-03-12-17:39:02
+Version      1.96   ------Sequential Output------ --Sequential Input- --Random-
+                    -Per Chr- --Block-- -Rewrite- -Per Chr- --Block-- --Seeks--
+Machine        Size K/sec %CP K/sec %CP K/sec %CP K/sec %CP K/sec %CP  /sec %CP
+rasp-srvr1     872M    14  32   997   1   662   1   130  33  3863   5   8.7   1
+Latency              4020ms    8440ms   31410ms   93420us   31102ms   33501ms
+                    ------Sequential Create------ --------Random Create--------
+                    -Create-- --Read--- -Delete-- -Create-- --Read--- -Delete--
+files:max:min        /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
+rasp-srvr1       16     2   0 21493  34     5   0     2   0 30341  33     7   0
+Latency              5534ms   24657us    7301ms    5801ms   20148us    6494ms
+pi@rasp-srvr1 ~ $
+
+pi@rasp-srvr1 ~ $ more Toshiba-Canvio-1TB_multi_out2+2014-03-12-17:39:02
+Version      1.96   ------Sequential Output------ --Sequential Input- --Random-
+                    -Per Chr- --Block-- -Rewrite- -Per Chr- --Block-- --Seeks--
+Machine        Size K/sec %CP K/sec %CP K/sec %CP K/sec %CP K/sec %CP  /sec %CP
+rasp-srvr1     872M    14  31  1011   1   658   1   130  33  3881   5   8.8   1
+Latency              4095ms    8027ms   31402ms   91478us   31089ms   34598ms
+                    ------Sequential Create------ --------Random Create--------
+                    -Create-- --Read--- -Delete-- -Create-- --Read--- -Delete--
+files:max:min        /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
+rasp-srvr1       16     2   0 20899  34     5   0     2   0 29196  32     7   0
+Latency              5400ms   24610us    6849ms    6845ms   20304us    6495ms
+pi@rasp-srvr1 ~ $
+
+pi@rasp-srvr1 ~ $ more Toshiba-Canvio-1TB_multi_out3+2014-03-12-17:39:02
+Version      1.96   ------Sequential Output------ --Sequential Input- --Random-
+                    -Per Chr- --Block-- -Rewrite- -Per Chr- --Block-- --Seeks--
+Machine        Size K/sec %CP K/sec %CP K/sec %CP K/sec %CP K/sec %CP  /sec %CP
+rasp-srvr1     872M    14  31   967   1   661   1   126  35  3863   5   9.0   1
+Latency              4062ms   11458ms   31405ms     100ms   31079ms   32452ms
+                    ------Sequential Create------ --------Random Create--------
+                    -Create-- --Read--- -Delete-- -Create-- --Read--- -Delete--
+files:max:min        /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
+rasp-srvr1       16     2   0 20828  33     5   0     2   0 30172  33     7   0
+Latency              5575ms   30151us    8389ms    6067ms   20151us    7383ms
+
+
